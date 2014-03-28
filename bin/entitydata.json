@@ -1,0 +1,128 @@
+{
+	"1" :
+	{
+		"id" : "1",
+		"title" : "Субъект 1 2000-2020",
+		"milestones" :
+		{
+			"11100" :
+			{
+				"begin" : "20000101000000",
+				"end" : "20010101000000",
+				"title" : "Событие 1",
+				"link" : "",
+				"rank" : "0",
+				"shift" : 0,
+				"calendar" : "",
+				"category" : [
+					{
+						"id" : "27",
+						"name" : "Война",
+						"filename" : "vojna.png",
+						"subentityId" : "11100"
+					}
+				]
+			},
+			"11101" :
+			{
+				"begin" : "20050101000000",
+				"end" : "20100101000000",
+				"title" : "Событие 2",
+				"link" : "",
+				"rank" : "0",
+				"shift" : 0,
+				"calendar" : "",
+				"category" : [
+					{
+						"id" : "27",
+						"name" : "Война",
+						"filename" : "vojna.png",
+						"subentityId" : "11101"
+					}
+				]
+			},
+			"11110" :
+			{
+				"begin" : "20090101000000",
+				"end" : "20200101000000",
+				"title" : "Событие 10",
+				"link" : "",
+				"rank" : "0",
+				"shift" : 0,
+				"calendar" : "",
+				"category" : [
+					{
+						"id" : "27",
+						"name" : "Война",
+						"filename" : "vojna.png",
+						"subentityId" : "11110"
+					}
+				]
+			},
+		},
+		"ranks" : []
+	},
+	"2" :
+	{
+		"id" : "2",
+		"title" : "Субъект 2 2010-2025",
+		"milestones" :
+		{
+			"11100" :
+			{
+				"begin" : "20100101000000",
+				"end" : "20010101000000",
+				"title" : "Событие 1",
+				"link" : "",
+				"rank" : "0",
+				"shift" : 0,
+				"calendar" : "",
+				"category" : [
+					{
+						"id" : "27",
+						"name" : "Война",
+						"filename" : "vojna.png",
+						"subentityId" : "11100"
+					}
+				]
+			},
+			"11101" :
+			{
+				"begin" : "20110101000000",
+				"end" : "20120101000000",
+				"title" : "Событие 2",
+				"link" : "",
+				"rank" : "0",
+				"shift" : 0,
+				"calendar" : "",
+				"category" : [
+					{
+						"id" : "27",
+						"name" : "Война",
+						"filename" : "vojna.png",
+						"subentityId" : "11101"
+					}
+				]
+			},
+			"11110" :
+			{
+				"begin" : "20200101000000",
+				"end" : "20250101000000",
+				"title" : "Событие 10",
+				"link" : "",
+				"rank" : "0",
+				"shift" : 0,
+				"calendar" : "",
+				"category" : [
+					{
+						"id" : "27",
+						"name" : "Война",
+						"filename" : "vojna.png",
+						"subentityId" : "11110"
+					}
+				]
+			},
+		},
+		"ranks" : []
+	}
+}
