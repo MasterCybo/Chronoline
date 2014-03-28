@@ -17,7 +17,7 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="..\..\aa_framework_2.0" />
+    <class path="..\..\fw2cybo" />
   </classpaths>
   <!-- Build options -->
   <build>

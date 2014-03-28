@@ -1,4 +1,5 @@
 package controllers {
+	import data.MoDate;
 	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
@@ -22,8 +23,6 @@ package controllers {
 		private var _height:Number;
 		
 		
-		
-		
 		private var _visibleMoFacts:Vector.<MoFact> = new Vector.<MoFact>(); // Список отображаемых событий
 		private var _mapVisibleMoFacts:Dictionary/*MoFact*/ = new Dictionary( true ); // список элементов для отображения MoFact.id = MoFact
 		private var _displayedFacts:Dictionary/*MoFact*/ = new Dictionary( true ); // MoFact = Fact
@@ -33,8 +32,9 @@ package controllers {
 		private var _mapDisplayedFacts:Dictionary/*Dictionary*/; // MoEntity.id = { MoFact.id = Fact }
 		
 		
-		private var _rgBeginJD:Number;
-		private var _rgEndJD:Number;
+		private var _rgBegin:MoDate;
+		private var _rgEnd:MoDate;
+		
 		private var _scale:Number = 1;
 		private var _stepDate:Number;
 		private var _oldDuration:Number;
@@ -48,13 +48,13 @@ package controllers {
 		
 		public function start():void {
 			_mapDisplayedFacts = new Dictionary( true );
+			
+			_rgBegin = MoTimeline.me.rangeBegin;
+			_rgEnd = MoTimeline.me.rangeEnd;
 		}
 		
 		public function render( mapDisplayMoEntities:Dictionary/*MoEntity*/ ):void {
-			_rgBeginJD = MoTimeline.me.rangeBegin.jd;
-			_rgEndJD = MoTimeline.me.rangeEnd.jd;
-			
-			var newDuration:Number = _rgEndJD - _rgBeginJD;
+			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
 			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
 			_oldDuration = newDuration;
 			
@@ -144,7 +144,7 @@ package controllers {
 				}
 			}
 			
-			if ( ( item2.period.middle < _rgBeginJD ) || ( item1.period.middle > _rgEndJD ) ) {
+			if ( ( item2.period.middle < _rgBegin.jd ) || ( item1.period.middle > _rgEnd.jd ) ) {
 				return;
 			}
 			

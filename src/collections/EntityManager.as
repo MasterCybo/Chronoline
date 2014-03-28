@@ -12,8 +12,8 @@ package collections {
 	public class EntityManager {
 		
 		static private var _mapMoEntities:Dictionary/*MoEntity*/ = new Dictionary( true ); // MoEntity.id = MoEntity;
-		
 		static private var _period:MoPeriod = new MoPeriod();
+		static private var _length:uint;
 		
 		public function EntityManager() {
 			
@@ -30,6 +30,8 @@ package collections {
 			}
 			
 			_mapMoEntities[entity.id] = entity;
+			
+			_length++;
 			
 			updateBounds();
 		}
@@ -49,6 +51,7 @@ package collections {
 		 */
 		static public function removeItem( id:String ):void {
 			delete _mapMoEntities[id];
+			_length--;
 		}
 		
 		/**
@@ -75,12 +78,12 @@ package collections {
 			return arr;
 		}
 		
-		static public function get mapMoEntities():Dictionary {
+		/**
+		* Ссылка на карту сущностей
+		* MoEntity.id = MoEntity;
+		*/
+		static public function get mapMoEntities():Dictionary/*MoEntity*/ {
 			return _mapMoEntities;
-		}
-		
-		static public function getKeys():Array {
-			return DictionaryUtil.getKeys( _mapMoEntities );
 		}
 		
 		/**
@@ -102,6 +105,10 @@ package collections {
 		 */
 		static public function get maxDate():MoDate {
 			return _period.dateEnd;
+		}
+		
+		static public function get length():uint {
+			return _length;
 		}
 		
 		/**
@@ -129,13 +136,12 @@ package collections {
 		}
 		
 		static public function parseJSON( json:Object ):void {
-			var num:uint;
-			for ( var name:String in json ) {
-				num++;
+			var name:String;
+			for ( name in json ) {
 				addItem( MoEntity.fromJSON( json[name] ) );
 			}
 			
-			Log.traceText( "Entities " + num + " added." );
+			Log.traceText( "Entities " + length + " added." );
 		}
 		
 		/**
