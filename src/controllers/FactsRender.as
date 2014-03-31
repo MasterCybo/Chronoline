@@ -90,8 +90,8 @@ package controllers {
 		private function takeMiddle( fact1:MoFact, fact2:MoFact ):void {
 			if ( fact1 == fact2 ) return;
 			
-			var idx1:int = Math.min( _items.indexOf( item1 ), _items.indexOf( item2 ) );
-			var idx2:int = Math.max( _items.indexOf( item1 ), _items.indexOf( item2 ) );
+			//var idx1:int = Math.min( _items.indexOf( item1 ), _items.indexOf( item2 ) );
+			//var idx2:int = Math.max( _items.indexOf( item1 ), _items.indexOf( item2 ) );
 			
 			_num++;
 			
