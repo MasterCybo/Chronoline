@@ -11,7 +11,6 @@ package controllers {
 	import events.TimelineEvent;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	
 	/**

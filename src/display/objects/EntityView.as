@@ -27,6 +27,8 @@ package display.objects {
 			super.init();
 			
 			mouseEnabled = true;
+			doubleClickEnabled = true;
+			buttonMode = true;
 			
 			_bmp = new ABitmap().init();
 			

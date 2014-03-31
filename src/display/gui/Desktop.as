@@ -1,6 +1,7 @@
 package display.gui {
 	import controllers.BondsRender;
 	import controllers.EntitiesRender;
+	import controllers.EntityController;
 	import controllers.PopupController;
 	import data.MoTimeline;
 	import events.TimelineEvent;
@@ -19,6 +20,7 @@ package display.gui {
 		private var _popupController:PopupController;
 		private var _entRender:EntitiesRender;
 		private var _bondRender:BondsRender;
+		private var _entCtrl:EntityController;
 		
 		public function Desktop( width:uint, height:uint ) {
 			_width = width;
@@ -28,6 +30,8 @@ package display.gui {
 		}
 		
 		override public function init():* {
+			super.init();
+			
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
 			
@@ -40,12 +44,15 @@ package display.gui {
 			_bondRender = new BondsRender( _container, _width, height );
 			_bondRender.init();
 			
+			_entCtrl = new EntityController( _container );
+			_entCtrl.init();
+			
 			_popupController = new PopupController( this, _width, height );
 			_popupController.init();
 			
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineChanged );
 			
-			return super.init();
+			return this;
 		}
 		
 		private function onTimelineChanged( ev:TimelineEvent ):void {
@@ -81,6 +88,7 @@ package display.gui {
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineChanged );
 			
 			_popupController.dispose();
+			_entCtrl.dispose();
 			
 			super.kill();
 			

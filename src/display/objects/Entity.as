@@ -1,13 +1,11 @@
 package display.objects {
 
 	import collections.EntityColor;
-	import controllers.EntityController;
 	import data.MoDate;
 	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
 	import flash.utils.Dictionary;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 
 	/**
@@ -29,7 +27,6 @@ package display.objects {
 		private var _scale:Number;
 		private var _rangeBegin:MoDate;
 		private var _rangeEnd:MoDate;
-		private var _ctrl:EntityController;
 
 		private var _isUpdating:Boolean;
 		private var _stepDate:Number;
@@ -44,19 +41,15 @@ package display.objects {
 
 		override public function init():* {
 			super.init();
-
+			
 			_rangeBegin = MoTimeline.me.rangeBegin;
 			_rangeEnd = MoTimeline.me.rangeEnd;
 
 			_body = new EntityView( 1, EntityColor.getColor() ).init();
 			_hostFacts = new ASprite().init();
-
+			
 			addChild( _body );
 			addChild( _hostFacts );
-
-			_ctrl = new EntityController( _body, _moEntity );
-			_ctrl.init();
-
 
 
 
@@ -297,8 +290,6 @@ package display.objects {
 		}
 
 		override public function kill():void {
-			_ctrl.dispose();
-
 			super.kill();
 
 			_visibleMoFacts = null;
