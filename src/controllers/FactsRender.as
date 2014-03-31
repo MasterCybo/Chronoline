@@ -87,7 +87,12 @@ package controllers {
 		
 		private var _num:uint;
 		
-		private function getMiddleValue( item1:MoFact, item2:MoFact ):void {
+		private function takeMiddle( fact1:MoFact, fact2:MoFact ):void {
+			if ( fact1 == fact2 ) return;
+			
+			var idx1:int = Math.min( _items.indexOf( item1 ), _items.indexOf( item2 ) );
+			var idx2:int = Math.max( _items.indexOf( item1 ), _items.indexOf( item2 ) );
+			
 			_num++;
 			
 			//Log.traceText( "----------------------------------" );
@@ -100,17 +105,17 @@ package controllers {
 			
 			var moEntity:MoEntity; // FAKE!!!!!! Удалить
 			
-			var idx1:int = moEntity.facts.indexOf( item1 ); // Индекс первого элемента
-			var idx2:int = moEntity.facts.indexOf( item2 ); // Индекс второго элемента
+			var idx1:int = moEntity.facts.indexOf( fact1 ); // Индекс первого элемента
+			var idx2:int = moEntity.facts.indexOf( fact2 ); // Индекс второго элемента
 			
 			//Log.traceText( "Indexes idx1 - idx2 : " + idx1 + " - " + idx2 );
 			if (( idx2 - idx1 ) <= 1 )
 				return;
 			
-			//Log.traceText( "Item 1 date : " + item1.period.middle );
-			//Log.traceText( "Item 2 date : " + item2.period.middle );
+			//Log.traceText( "Item 1 date : " + fact1.period.middle );
+			//Log.traceText( "Item 2 date : " + fact2.period.middle );
 			
-			var deltaDates:Number = item2.period.middle - item1.period.middle;
+			var deltaDates:Number = fact2.period.middle - fact1.period.middle;
 			
 			//Log.traceText( "Delta dates > 2 * step date : " + deltaDates + " > " + (2 * _stepDate) );
 			
@@ -126,8 +131,8 @@ package controllers {
 			
 			//Log.traceText( "Middle item date : " + midFact.period.middle );
 			
-			var deltaDate1:Number = midFact.period.middle - item1.period.middle;
-			var deltaDate2:Number = item2.period.middle - midFact.period.middle;
+			var deltaDate1:Number = midFact.period.middle - fact1.period.middle;
+			var deltaDate2:Number = fact2.period.middle - midFact.period.middle;
 			
 			//Log.traceText( "deltaDate1 : " + deltaDate1 );
 			//Log.traceText( "deltaDate2 : " + deltaDate2 );
@@ -144,16 +149,16 @@ package controllers {
 				}
 			}
 			
-			if ( ( item2.period.middle < _rgBegin.jd ) || ( item1.period.middle > _rgEnd.jd ) ) {
+			if ( ( fact2.period.middle < _rgBegin.jd ) || ( fact1.period.middle > _rgEnd.jd ) ) {
 				return;
 			}
 			
 			if ( deltaDate1 > _stepDate ) {
-				getMiddleValue( item1, midFact );
+				takeMiddle( fact1, midFact );
 			}
 			
 			if ( deltaDate2 > _stepDate ) {
-				getMiddleValue( midFact, item2 );
+				takeMiddle( midFact, fact2 );
 			}
 		}
 		
