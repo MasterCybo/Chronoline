@@ -1,4 +1,0 @@
-Событие - Event, Fact
-Промежуток времени - Triennial, Span, Meantime, Interim, Period, TimeLapse
-RangeEditor, rangeBegin, rangeEnd
-PeriodEditor, periodBegin, periodEnd
