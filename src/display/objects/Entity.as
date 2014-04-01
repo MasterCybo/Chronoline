@@ -88,19 +88,13 @@ package display.objects {
 
 			_isUpdating = true;
 
-			//if ( _stepDate >= 0.5 ) {
-				_num = 0;
+			_num = 0;
 
-				//_visibleMoFacts.length = 0;
-				//_visibleMoFacts.push( _moEntity.facts[ 0 ] );
-				//_visibleMoFacts.push( _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
-				getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
-			//}
+			//getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
 
 			//Log.traceText( "_num : " + _num );
 
-			//updateVisibleMoFacts();
-			updateDisplayFacts();
+			//updateDisplayFacts();
 
 			_isUpdating = false;
 		}

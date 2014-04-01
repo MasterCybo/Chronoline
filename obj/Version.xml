@@ -2,8 +2,15 @@
 <version path="/" package="">
   <major>0</major>
   <minor>2</minor>
+<<<<<<< HEAD
   <build>4135</build>
   <revision>0</revision>
   <author>Artem Arslanov</author>
   <timestamp>31.03.2014 11:32:46</timestamp>
+=======
+  <build>4136</build>
+  <revision>0</revision>
+  <author>Artem Arslanov</author>
+  <timestamp>31.03.2014 13:10:14</timestamp>
+>>>>>>> 7765d46036a6e3d94ef8935b22b5158b497180f3
 </version>
