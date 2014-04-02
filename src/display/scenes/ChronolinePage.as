@@ -120,9 +120,18 @@ package display.scenes {
 			Log.traceText( "dateBegin : " + dateBegin );
 			Log.traceText( "dateEnd : " + dateEnd );
 			
-			var delta:Number = (dateEnd.jd - dateBegin.jd) * 0.1;
 			
-			MoTimeline.me.setTimePeriod( dateBegin.jd - delta, dateEnd.jd + delta ); // HACK: ручная установка 
+			var abc:Number = 50 * 365;
+			
+			var dateBeginJD:Number = Math.floor(dateBegin.jd / abc) * abc;
+			var dateEndJD:Number = Math.ceil(dateEnd.jd / abc) * abc;
+			
+			Log.traceText( "dateBeginJD : " + dateBeginJD );
+			Log.traceText( "dateEndJD : " + dateEndJD );
+			
+			//var delta:Number = Math.floor(dateEnd.jd - dateBegin.jd) * 0.1;
+			//MoTimeline.me.setTimePeriod( dateBegin.jd - delta, dateEnd.jd + delta ); // HACK: ручная установка 
+			MoTimeline.me.setTimePeriod( dateBeginJD, dateEndJD ); // HACK: ручная установка 
 			MoTimeline.me.setRange( dateBegin.jd, dateEnd.jd );
 			
 			//_desktop.update();
