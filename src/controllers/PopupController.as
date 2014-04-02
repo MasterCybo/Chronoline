@@ -6,6 +6,7 @@ package controllers {
 	import display.objects.Fact;
 	import events.TimelineEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
@@ -24,8 +25,8 @@ package controllers {
 		private var _width:Number;
 		private var _height:Number;
 		private var _scale:Number;
-		private var _popupX:Number;
-		private var _popupLockX:Number;
+		private var _ptLock:Point;
+		private var _ptPopup:Point;
 		
 		private var _rgBegin:MoDate;
 		private var _rgEnd:MoDate;
@@ -73,10 +74,7 @@ package controllers {
 			
 			_curMoFact = fact.moFact;
 			
-			_popupX = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) ).x;
-			
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
-			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
+			_ptPopup = _host.globalToLocal( fact.localToGlobal( fact.pivotPoint ) );
 			
 			displayPopup( _curMoFact );
 		}
@@ -122,7 +120,8 @@ package controllers {
 			}
 			
 			_lockedMoFact = fact.moFact;
-			_popupLockX = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) ).x;
+			//_ptLock = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) );
+			_ptLock = _ptPopup.clone();
 		}
 		
 		private function onResizeRange( ev:TimelineEvent ):void {
@@ -141,6 +140,18 @@ package controllers {
 			updatePopup( moFact );
 		}
 		
+		private function displayPopup( moFact:MoFact ):void {
+			var popup:PopupInfo = _popups[ moFact.id ];
+			
+			if ( !popup ) {
+				popup = new PopupInfo( moFact ).init();
+				
+				_popups[ moFact.id ] = popup;
+			}
+			
+			updatePopup( moFact );
+		}
+		
 		private function updatePopup( moFact:MoFact ):void {
 			var popup:PopupInfo = _popups[ moFact.id ];
 			
@@ -154,24 +165,12 @@ package controllers {
 			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
 			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
 			
-			popup.x = moFact == _lockedMoFact ? _popupLockX : _popupX;
-			popup.y = dateToY( moFact.period.dateBegin.jd );
+			popup.x = moFact == _lockedMoFact ? _ptLock.x : _ptPopup.x;
+			popup.y = moFact == _lockedMoFact ? dateToY( moFact.period.middle ) : _ptPopup.y;
 			
 			if ( !_host.contains( popup ) ) {
 				_host.addChild( popup );
 			}
-		}
-		
-		private function displayPopup( moFact:MoFact ):void {
-			var popup:PopupInfo = _popups[ moFact.id ];
-			
-			if ( !popup ) {
-				popup = new PopupInfo( moFact ).init();
-				
-				_popups[ moFact.id ] = popup;
-			}
-			
-			updatePopup( moFact );
 		}
 		
 		private function removePopup( moFact:MoFact ):void {
@@ -203,6 +202,8 @@ package controllers {
 			
 			_host = null;
 			_popups = null;
+			_ptLock = null;
+			_ptPopup = null;
 		}
 	}
 
