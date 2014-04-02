@@ -1,4 +1,5 @@
 package {
+	import constants.LocaleString;
 	import constants.TextFormats;
 	import data.MoTimeline;
 	import display.base.TextApp;
@@ -16,6 +17,7 @@ package {
 	import ru.arslanov.core.events.EventManager;
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.http.HTTPManager;
+	import ru.arslanov.core.utils.DateUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.Stats;
 	import ru.arslanov.flash.display.ASprite;
@@ -53,6 +55,9 @@ package {
 			Logger.init( this, "right" );
 			Log.customTracer = Logger.traceMessage;
 			//Logger.show();
+			
+			// Устанавливаем локализацию месяцев
+			DateUtils.monthsLocale = LocaleString.MONTHS;
 			
 			//AWindowsManager.me.init( this );
 			AHintManager.me.init( this, 15 );

@@ -29,6 +29,7 @@ package data {
 		
 		private var _timeline:MoPeriod;
 		private var _range:MoPeriod;
+		private var _scale:Number = 1;
 		
 		private var _eventManager:EventManager;
 		
@@ -77,6 +78,18 @@ package data {
 		
 		public function get duration():Number {
 			return _timeline.duration;
+		}
+		
+		public function get scale():Number {
+			return _scale;
+		}
+		
+		public function set scale( value:Number ):void {
+			if ( value == _scale ) return;
+			
+			_scale = value;
+			
+			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.SCALE_CHANGED ) );
 		}
 		
 		/***************************************************************************

@@ -1,6 +1,10 @@
 package display.gui {
+	import data.MoTimeline;
+	import display.components.DateGraduation;
+	import events.TimelineEvent;
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	
 	/**
@@ -22,14 +26,41 @@ package display.gui {
 		}
 		
 		override public function init():* {
-			update();
+			//update();
+			
+			var dateGrad:DateGraduation = new DateGraduation( MoTimeline.me.beginDate.jd, _width );
+			dateGrad.y = 200;
+			addChild( dateGrad );
+			
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineResize );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
 			
 			return super.init();
 		}
 		
+		private function onScaleChange( ev:TimelineEvent ):void {
+		
+		}
+		
+		private function onTimelineResize( ev:TimelineEvent ):void {
+			Log.traceText( "*execute* GridScale.onTimelineResize" );
+			
+			var stepTime:Number = MoTimeline.me.duration / 10;
+			var stepY:Number = _height / 10;
+			
+			killChildren();
+			
+			for ( var i:int = 0; i < 10; i++ ) {
+				Log.traceText( i + " add" );
+				var dateGrad:DateGraduation = new DateGraduation( MoTimeline.me.beginDate.jd + i * stepTime, _width ).init();
+				dateGrad.y = i * stepY;
+				addChild( dateGrad );
+			}
+		}
+		
 		private function update():void {
-			createPattern();
-			draw();
+			//createPattern();
+			//draw();
 		}
 		
 		private function draw():void {
@@ -46,7 +77,7 @@ package display.gui {
 		override public function set width( value:Number ):void {
 			_width = value;
 			
-			draw();
+			//draw();
 		}
 		
 		override public function get height():Number {
@@ -56,7 +87,7 @@ package display.gui {
 		override public function set height( value:Number ):void {
 			_height = value;
 			
-			draw();
+			//draw();
 		}
 		
 		private function createPattern():void {

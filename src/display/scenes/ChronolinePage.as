@@ -4,11 +4,9 @@ package display.scenes {
 	import controllers.DesktopController;
 	import data.MoDate;
 	import data.MoTimeline;
-	import display.components.DebugPanel;
 	import display.components.GuideLine;
 	import display.gui.Desktop;
 	import display.gui.MainGUI;
-	import display.gui.RulerGlobal;
 	import events.GuideLineNotice;
 	import events.ServerDataCompleteNotice;
 	import flash.events.Event;
@@ -26,9 +24,8 @@ package display.scenes {
 	 */
 	public class ChronolinePage extends AScene {
 		static public const SCENE_NAME:String = "chronolinePage";
-		static public const TIME_STEP:Number = 50;
 		
-		private var _rulerGlobal:RulerGlobal;
+		//private var _rulerGlobal:RulerGlobal;
 		private var _desktop:Desktop;
 		private var _deskCtrl:DesktopController;
 		private var _guideLine:GuideLine;
@@ -40,28 +37,22 @@ package display.scenes {
 		override public function init():* {
 			var gui:MainGUI = new MainGUI().init();
 			
-			var hh:uint = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
+			//_rulerGlobal = new RulerGlobal( hh ).init();
+			//_rulerGlobal.y = gui.y + Settings.TOOLBAR_HEIGHT;
 			
-			_rulerGlobal = new RulerGlobal( hh ).init();
-			_rulerGlobal.y = gui.y + Settings.TOOLBAR_HEIGHT;
-			
-			_desktop = new Desktop( Display.stageWidth - _rulerGlobal.width, hh ).init();
-			_desktop.x = _rulerGlobal.x + _rulerGlobal.width + Settings.DESK_OFFSET;
-			_desktop.y = _rulerGlobal.y;
+			_desktop = new Desktop( Display.stageWidth, Display.stageHeight - Settings.TOOLBAR_HEIGHT ).init();
+			//_desktop.x = Settings.DESK_OFFSET;
+			_desktop.y = Settings.TOOLBAR_HEIGHT;
 			
 			_guideLine = new GuideLine( _desktop.width ).init();
 			
 			addChild( _desktop );
 			addChild( _guideLine );
-			addChild( _rulerGlobal );
+			//addChild( _rulerGlobal );
 			addChild( gui );
 			
 			_deskCtrl = new DesktopController( _desktop );
 			_deskCtrl.init();
-			
-			var debugPanel:DebugPanel = new DebugPanel().init();
-			debugPanel.setXY( 100 + Math.random() * 200, 50 + Math.random() * 100 );
-			addChild( debugPanel );
 			
 			Notification.add( ServerDataCompleteNotice.NAME, onUpdateChronoline );
 			Notification.add( GuideLineNotice.NAME, onDisplayHelper );
@@ -138,8 +129,8 @@ package display.scenes {
 		}
 		
 		private function hrResizeStage( ev:Event ):void {
-			_rulerGlobal.height = Display.stageHeight - _rulerGlobal.y;
-			_desktop.height = Display.stageHeight - _rulerGlobal.y;
+			//_rulerGlobal.height = Display.stageHeight - _rulerGlobal.y;
+			_desktop.height = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
 			
 			var ww:Number = Display.stageWidth - _desktop.x;
 			
