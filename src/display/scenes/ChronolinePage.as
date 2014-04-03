@@ -125,6 +125,11 @@ package display.scenes {
 			MoTimeline.me.setTimePeriod( dateBeginJD, dateEndJD ); // HACK: ручная установка 
 			MoTimeline.me.setRange( dateBegin.jd, dateEnd.jd );
 			
+			Log.traceText( "(Display.stageHeight - Settings.TOOLBAR_HEIGHT) : " + (Display.stageHeight - Settings.TOOLBAR_HEIGHT) );
+			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
+			
+			MoTimeline.me.scale = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
+			
 			//_desktop.update();
 		}
 		

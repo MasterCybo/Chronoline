@@ -1,14 +1,19 @@
 package display.components {
-	import ru.arslanov.core.utils.Calc;
+	import display.gui.buttons.BtnIcon;
+	import flash.geom.Rectangle;
+	import ru.arslanov.core.controllers.SimpleDragController;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	import ru.arslanov.flash.gui.AVScroller;
 	
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
 	public class ZoomSlider extends ASprite {
+		public var onChange:Function;
+		
+		private var _dragCtrl:SimpleDragController;
+		private var _thumb:BtnIcon;
 		
 		public function ZoomSlider() {
 			super();
@@ -16,18 +21,58 @@ package display.components {
 		
 		override public function init():* {
 			var body:ABitmap = ABitmap.fromColor( Settings.GUI_COLOR, Settings.NAVBAR_WIDTH, 270 ).init();
-			addChild( body );
+			_thumb = new BtnIcon( PngThumbZoom ).init();
+			
+			var pad:Number = Math.round( 5 + _thumb.height / 2 );
 			
 			var track:ASprite = new ASprite().init();
 			track.graphics.beginFill( 0xc8c8c8 );
-			track.graphics.drawRect( 0, 0, 10, body.height - 20 );
+			track.graphics.drawRect( 0, 0, 2, body.height - 2 * pad );
 			track.graphics.endFill();
-			addChild( track );
 			
-			track.x = int((body.width - track.width) / 2);
-			track.y = 10;
+			track.x = Math.round(( body.width - track.width ) / 2 );
+			track.y = pad;
+			
+			_thumb.x = track.x + Math.round(( track.width - _thumb.width ) / 2 );
+			_thumb.y = track.y;
+			
+			_dragCtrl = new SimpleDragController();
+			_dragCtrl.dragArea = new Rectangle( Math.round( _thumb.x + _thumb.width / 2 ), track.y, 0, track.height );
+			_dragCtrl.init( _thumb, false );
+			_dragCtrl.onDrag = onThumbDrag;
+			
+			addChild( body );
+			addChild( track );
+			addChild( _thumb );
 			
 			return super.init();
+		}
+		
+		private function onThumbDrag():void {
+			if ( onChange != null ) {
+				onChange();
+			}
+		}
+		
+		public function get heightTrack():Number {
+			return _dragCtrl.dragArea.height;
+		}
+		
+		public function get position():Number {
+			return 1 - ( _dragCtrl.position.y + _dragCtrl.target.height / 2 - _dragCtrl.dragArea.y ) / _dragCtrl.dragArea.height;
+		}
+		
+		public function set position( value:Number ):void {
+			value = Math.max( 0, Math.min( value, 1 ) );
+			
+			_thumb.y = _dragCtrl.dragArea.y + _dragCtrl.dragArea.height - _dragCtrl.dragArea.height * value - _dragCtrl.target.height / 2;
+		}
+		
+		override public function kill():void {
+			onChange = null;
+			_dragCtrl.dispose();
+			
+			super.kill();
 		}
 	}
 

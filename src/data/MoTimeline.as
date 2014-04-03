@@ -2,6 +2,7 @@ package data {
 	import events.TimelineEvent;
 	import flash.events.EventDispatcher;
 	import ru.arslanov.core.events.EventManager;
+	import ru.arslanov.core.utils.Log;
 	
 	/**
 	 * ...
@@ -88,6 +89,8 @@ package data {
 			if ( value == _scale ) return;
 			
 			_scale = value;
+			
+			Log.traceText( "*execute* MoTimeline.scale : " + _scale );
 			
 			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.SCALE_CHANGED ) );
 		}
