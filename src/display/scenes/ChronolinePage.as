@@ -128,7 +128,15 @@ package display.scenes {
 			Log.traceText( "(Display.stageHeight - Settings.TOOLBAR_HEIGHT) : " + (Display.stageHeight - Settings.TOOLBAR_HEIGHT) );
 			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
 			
-			MoTimeline.me.scale = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
+			
+			//var minScale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
+			
+			//MoTimeline.me.scale = minScale;
+			
+			//Log.traceText( "minScale : " + minScale );
+			
+			//var maxScale:Number = MoTimeline.me.duration / (Display.stageHeight - Settings.TOOLBAR_HEIGHT);
+			//Log.traceText( "maxScale : " + maxScale );
 			
 			//_desktop.update();
 		}

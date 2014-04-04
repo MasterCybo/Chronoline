@@ -26,11 +26,6 @@ package display.gui {
 		}
 		
 		override public function init():* {
-			//update();
-			
-			var dateGrad:DateGraduation = new DateGraduation( MoTimeline.me.beginDate.jd, _width );
-			dateGrad.y = 200;
-			addChild( dateGrad );
 			
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineResize );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
@@ -45,6 +40,15 @@ package display.gui {
 		private function onTimelineResize( ev:TimelineEvent ):void {
 			Log.traceText( "*execute* GridScale.onTimelineResize" );
 			
+			draw();
+		}
+		
+		private function update():void {
+			//createPattern();
+			draw();
+		}
+		
+		private function draw():void {
 			var stepTime:Number = MoTimeline.me.duration / 10;
 			var stepY:Number = _height / 10;
 			
@@ -58,18 +62,6 @@ package display.gui {
 			}
 		}
 		
-		private function update():void {
-			//createPattern();
-			//draw();
-		}
-		
-		private function draw():void {
-			graphics.clear();
-			graphics.beginBitmapFill( _pattern, null, true );
-			graphics.drawRect( 0, 0, _width, _height );
-			graphics.endFill();
-		}
-		
 		override public function get width():Number {
 			return _width;
 		}
@@ -77,7 +69,7 @@ package display.gui {
 		override public function set width( value:Number ):void {
 			_width = value;
 			
-			//draw();
+			draw();
 		}
 		
 		override public function get height():Number {
@@ -87,17 +79,9 @@ package display.gui {
 		override public function set height( value:Number ):void {
 			_height = value;
 			
-			//draw();
+			draw();
 		}
 		
-		private function createPattern():void {
-			if ( _pattern ) {
-				_pattern.dispose();
-			}
-			
-			_pattern = new BitmapData( 1, 50, false, Settings.DESK_CLR_BG );
-			_pattern.fillRect( new Rectangle( 0, _pattern.height - 1, _pattern.width, 1 ), Settings.DESK_CLR_LINES );
-		}
 	}
 
 }
