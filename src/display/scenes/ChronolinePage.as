@@ -1,6 +1,7 @@
 package display.scenes {
 	import collections.EntityColor;
 	import collections.EntityManager;
+	import com.adobe.images.JPGEncoder;
 	import controllers.DesktopController;
 	import data.MoDate;
 	import data.MoTimeline;
@@ -9,8 +10,12 @@ package display.scenes {
 	import display.gui.MainGUI;
 	import events.GuideLineNotice;
 	import events.ServerDataCompleteNotice;
+	import events.SnapshotNotice;
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.net.FileReference;
+	import flash.utils.ByteArray;
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.DateUtils;
 	import ru.arslanov.core.utils.Log;
@@ -56,10 +61,34 @@ package display.scenes {
 			
 			Notification.add( ServerDataCompleteNotice.NAME, onUpdateChronoline );
 			Notification.add( GuideLineNotice.NAME, onDisplayHelper );
+			Notification.add( SnapshotNotice.NAME, onSnapshot );
 			
 			Display.stageAddEventListener( Event.RESIZE, hrResizeStage );
 			
 			return super.init();
+		}
+		
+		private function onSnapshot():void {
+			Log.traceText( "*execute* ChronolinePage.onSnapshot" );
+			var bd:BitmapData = new BitmapData( Display.stageWidth, Display.stageHeight );
+			//bd.draw( Display.stage );
+			bd.draw( _desktop );
+			
+			var enc:JPGEncoder = new JPGEncoder( 85 );
+			var ba:ByteArray = enc.encode( bd );
+			
+			var shotDate:Date = new Date();
+			var fname:String = shotDate.fullYear 
+								+ "-" + StringUtils.numberToString( shotDate.month + 1 ) 
+								+ "-" + StringUtils.numberToString( shotDate.date )
+								+ "_" + StringUtils.numberToString( shotDate.hours )
+								+ "-" + StringUtils.numberToString( shotDate.minutes )
+								+ "-" + StringUtils.numberToString( shotDate.seconds );
+			
+			Log.traceText( "fname : " + fname );
+			
+			var fr:FileReference = new FileReference();
+			fr.save( ba, fname + ".jpg" );
 		}
 		
 		private function onDisplayHelper( notice:GuideLineNotice ):void {

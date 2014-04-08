@@ -6,6 +6,7 @@ package display.gui {
 	import display.gui.buttons.ToggleIcon;
 	import display.windows.WinLegend;
 	import events.GuideLineNotice;
+	import events.SnapshotNotice;
 	import flash.display.BitmapData;
 	import net.ReqSavePreset;
 	import ru.arslanov.core.events.Notification;
@@ -34,7 +35,7 @@ package display.gui {
 			_slots = new HBox( 5 ).init();
 			_rangeEditor = new RangeEditor().init();
 			
-			var btnScreenshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
+			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
 			var btnSave:BtnIcon = new BtnIcon( PngBtnSavePreset ).init();
 			var btnLegend:BtnIcon = new BtnIcon( PngBtnLegend ).init();
 			var btnGuide:ToggleIcon = new ToggleIcon( PngBtnGuidlineOff, null, PngBtnGuidlineOn ).init();
@@ -42,10 +43,11 @@ package display.gui {
 			btnGuide.onRelease = onDisplayGuideLine;
 			btnSave.onRelease = hrClickSave;
 			btnLegend.onRelease = hrClickLegend;
+			btnSnapshot.onRelease = onClickSnapshot;
 			
 			_slots.addChildAndUpdate( btnGuide );
 			_slots.addChildAndUpdate( btnSave );
-			_slots.addChildAndUpdate( btnScreenshot );
+			_slots.addChildAndUpdate( btnSnapshot );
 			_slots.addChildAndUpdate( btnLegend );
 			
 			addChild( _body );
@@ -55,8 +57,13 @@ package display.gui {
 			return super.init();
 		}
 		
+		private function onClickSnapshot():void {
+			Log.traceText( "*execute* ToolBar.onClickSnapshot" );
+			Notification.send( SnapshotNotice.NAME );
+		}
+		
 		private function onDisplayGuideLine( btn:ToggleIcon ):void {
-			Notification.send( GuideLineNotice.NAME, new GuideLineNotice( btn.checked )  );
+			Notification.send( GuideLineNotice.NAME, new GuideLineNotice( btn.checked ) );
 		}
 		
 		private function hrClickSave():void {
