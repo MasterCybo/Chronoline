@@ -58,7 +58,6 @@ package display.gui {
 		}
 		
 		private function onClickSnapshot():void {
-			Log.traceText( "*execute* ToolBar.onClickSnapshot" );
 			Notification.send( SnapshotNotice.NAME );
 		}
 		

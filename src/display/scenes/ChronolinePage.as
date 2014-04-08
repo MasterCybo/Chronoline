@@ -1,7 +1,6 @@
 package display.scenes {
 	import collections.EntityColor;
 	import collections.EntityManager;
-	import com.adobe.images.JPGEncoder;
 	import controllers.DesktopController;
 	import data.MoDate;
 	import data.MoTimeline;
@@ -14,14 +13,18 @@ package display.scenes {
 	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
+	import flash.net.FileFilter;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.DateUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.StringUtils;
+	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.scenes.AScene;
 	import ru.arslanov.flash.utils.Display;
+	import by.blooddy.crypto.image.JPEGEncoder;
 	
 	/**
 	 * ...
@@ -69,26 +72,21 @@ package display.scenes {
 		}
 		
 		private function onSnapshot():void {
-			Log.traceText( "*execute* ChronolinePage.onSnapshot" );
-			var bd:BitmapData = new BitmapData( Display.stageWidth, Display.stageHeight );
-			//bd.draw( Display.stage );
-			bd.draw( _desktop );
+			var snapshot:ABitmap = ABitmap.fromDisplayObject( _desktop );
+			var bytes:ByteArray = JPEGEncoder.encode( snapshot.bitmapData, 100 );
 			
-			var enc:JPGEncoder = new JPGEncoder( 85 );
-			var ba:ByteArray = enc.encode( bd );
+			var dateStamp:Date = new Date();
+			var fname:String = "chronoline_" 
+								+ dateStamp.fullYear 
+								+ "-" + StringUtils.numberToString( dateStamp.month + 1 ) 
+								+ "-" + StringUtils.numberToString( dateStamp.date )
+								+ "_" + StringUtils.numberToString( dateStamp.hours )
+								+ "-" + StringUtils.numberToString( dateStamp.minutes )
+								+ "-" + StringUtils.numberToString( dateStamp.seconds )
+								+ ".jpg";
 			
-			var shotDate:Date = new Date();
-			var fname:String = shotDate.fullYear 
-								+ "-" + StringUtils.numberToString( shotDate.month + 1 ) 
-								+ "-" + StringUtils.numberToString( shotDate.date )
-								+ "_" + StringUtils.numberToString( shotDate.hours )
-								+ "-" + StringUtils.numberToString( shotDate.minutes )
-								+ "-" + StringUtils.numberToString( shotDate.seconds );
-			
-			Log.traceText( "fname : " + fname );
-			
-			var fr:FileReference = new FileReference();
-			fr.save( ba, fname + ".jpg" );
+			var file:FileReference = new FileReference();
+			file.save( bytes, fname );
 		}
 		
 		private function onDisplayHelper( notice:GuideLineNotice ):void {
