@@ -5,7 +5,11 @@ package controllers {
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
 	import ru.arslanov.core.controllers.MouseController;
+	import ru.arslanov.core.controllers.SimpleDragController;
+	import ru.arslanov.core.events.MouseControllerEvent;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
+	import ru.arslanov.flash.utils.Display;
 	
 	/**
 	 * ...
@@ -14,7 +18,7 @@ package controllers {
 	public class DesktopController {
 		
 		private var _mouseTarget:ASprite;
-		private var _mouse:MouseController;
+		private var _mouse:SimpleDragController;
 		private var _offset:Number = 0;
 		
 		public function DesktopController( mouseTarget:ASprite ) {
@@ -22,51 +26,42 @@ package controllers {
 		}
 		
 		public function init():void {
-			_mouse = new MouseController( _mouseTarget );
-			_mouse.handlerDown = onStageDown;
-			_mouse.handlerUp = onStageUp;
-			_mouse.handlerDrag = onDragMouse;
-			_mouse.handlerWheel = onDragMouse;
+			//_mouse = new MouseController( _mouseTarget );
+			_mouse = new SimpleDragController( Display.stage );
+			_mouse.addEventListener( MouseControllerEvent.MOUSE_DOWN, onStageDown );
+			_mouse.addEventListener( MouseControllerEvent.MOUSE_UP, onStageUp );
+			_mouse.addEventListener( MouseControllerEvent.MOUSE_DRAG, dragDesktop );
+			_mouse.addEventListener( MouseControllerEvent.MOUSE_WHEEL, dragDesktop );
 		}
 		
-		private function onStageDown( ev:MouseEvent ):void {
-			_offset = 0;
+		private function onStageDown( ev:MouseControllerEvent ):void {
+			//_offset = 0;
 			
 			if ( ev.target is ButtonApp ) return;
 			
 			Mouse.cursor = MouseCursor.HAND;
 		}
 		
-		private function onStageUp( ev:MouseEvent ):void {
+		private function onStageUp( ev:MouseControllerEvent ):void {
 			Mouse.cursor = MouseCursor.AUTO;
 			
-			if ( ev.target is ButtonApp ) return;
+			//if ( ev.target is ButtonApp ) return;
 			
-			if ( Math.abs( _offset ) > 10 ) return;
+			//if ( Math.abs( _offset ) > 10 ) return;
 		}
 		
-		private function onDragMouse( ev:MouseEvent ):void {
-			var delta:Number = 0;
+		private function dragDesktop( ev:MouseControllerEvent ):void {
+			var dy:Number = _mouse.movement.y;
 			
-			if ( ev.delta != 0 ) {
-				delta = 10 * ev.delta; // Если зафиксировали вращение колеса
-			} else {
-				delta = _mouse.movement.y; // Если мышой драгаем
+			if ( _mouse.deltaWheel != 0 ) {
+				dy = 10 * _mouse.deltaWheel; // Если вращаем колесо, тогда берём шаг колеса
 			}
 			
-			var rDur:Number = MoTimeline.me.rangeEnd.jd - MoTimeline.me.rangeBegin.jd;
+			var deltaJD:Number = dy / MoTimeline.me.scale;
 			
-			var dy:Number = delta * ( rDur / _mouseTarget.height );
+			//_offset += dy;
 			
-			_offset += delta;
-			
-			var nbJD:Number = MoTimeline.me.rangeBegin.jd - dy;
-			var neJD:Number = MoTimeline.me.rangeEnd.jd - dy;
-			
-			if ( nbJD < MoTimeline.me.beginDate.jd ) return;
-			if ( neJD > MoTimeline.me.endDate.jd ) return;
-			
-			MoTimeline.me.setRange( nbJD, neJD );
+			MoTimeline.me.currentDateJD -= deltaJD;
 		}
 		
 		public function dispose():void {

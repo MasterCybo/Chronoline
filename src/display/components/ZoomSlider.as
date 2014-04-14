@@ -1,7 +1,10 @@
 package display.components {
+	import data.MoTimeline;
 	import display.gui.buttons.BtnIcon;
+	import events.TimelineEvent;
 	import flash.geom.Rectangle;
 	import ru.arslanov.core.controllers.SimpleDragController;
+	import ru.arslanov.core.events.MouseControllerEvent;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 	
@@ -11,6 +14,8 @@ package display.components {
 	 */
 	public class ZoomSlider extends ASprite {
 		public var onChange:Function;
+		public var onPress:Function;
+		public var onRelease:Function;
 		
 		private var _dragCtrl:SimpleDragController;
 		private var _thumb:BtnIcon;
@@ -36,10 +41,11 @@ package display.components {
 			_thumb.x = track.x + Math.round(( track.width - _thumb.width ) / 2 );
 			_thumb.y = track.y;
 			
-			_dragCtrl = new SimpleDragController();
+			_dragCtrl = new SimpleDragController( _thumb, false );
 			_dragCtrl.dragArea = new Rectangle( Math.round( _thumb.x + _thumb.width / 2 ), track.y, 0, track.height );
-			_dragCtrl.init( _thumb, false );
-			_dragCtrl.onDrag = onThumbDrag;
+			_dragCtrl.addEventListener(MouseControllerEvent.MOUSE_DRAG, onThumbDrag);
+			_dragCtrl.addEventListener(MouseControllerEvent.MOUSE_DOWN, onMouseDown);
+			_dragCtrl.addEventListener(MouseControllerEvent.MOUSE_UP, onMouseUp);
 			
 			addChild( body );
 			addChild( track );
@@ -48,7 +54,19 @@ package display.components {
 			return super.init();
 		}
 		
-		private function onThumbDrag():void {
+		private function onMouseDown( ev:MouseControllerEvent ):void {
+			if ( onPress != null ) {
+				onPress();
+			}
+		}
+		
+		private function onMouseUp( ev:MouseControllerEvent ):void {
+			if ( onRelease != null ) {
+				onRelease();
+			}
+		}
+		
+		private function onThumbDrag( ev:MouseControllerEvent ):void {
 			if ( onChange != null ) {
 				onChange();
 			}
@@ -70,6 +88,8 @@ package display.components {
 		
 		override public function kill():void {
 			onChange = null;
+			onPress = null;
+			onRelease = null;
 			_dragCtrl.dispose();
 			
 			super.kill();

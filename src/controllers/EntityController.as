@@ -7,6 +7,7 @@ package controllers {
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.hints.AHintManager;
+	import ru.arslanov.flash.utils.Display;
 	
 	/**
 	 * ...
@@ -47,7 +48,13 @@ package controllers {
 			if ( ent.moEntity.duration == 0 )
 				return;
 			
-			MoTimeline.me.setRange( ent.moEntity.beginPeriod.dateBegin.jd, ent.moEntity.endPeriod.dateEnd.jd );
+			//MoTimeline.me.setRange( ent.moEntity.beginPeriod.dateBegin.jd, ent.moEntity.endPeriod.dateEnd.jd );
+			
+			var scale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / ent.moEntity.duration;
+			
+			MoTimeline.me.currentDateJD = (ent.moEntity.beginPeriod.dateBegin.jd + ent.moEntity.endPeriod.dateEnd.jd) / 2;
+			MoTimeline.me.scale = scale;
+			//MoTimeline.me.setRange( ent.moEntity.beginPeriod.dateBegin.jd, ent.moEntity.endPeriod.dateEnd.jd );
 		}
 		
 		public function dispose():void {

@@ -31,6 +31,7 @@ package data {
 		private var _timeline:MoPeriod;
 		private var _range:MoPeriod;
 		private var _scale:Number = 1;
+		private var _curDateJD:Number = 0;
 		
 		private var _eventManager:EventManager;
 		
@@ -93,6 +94,23 @@ package data {
 			Log.traceText( "*execute* MoTimeline.scale : " + _scale );
 			
 			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.SCALE_CHANGED ) );
+		}
+		
+		/***************************************************************************
+		Текущая дата
+		***************************************************************************/
+		public function get currentDateJD():Number {
+			return _curDateJD;
+		}
+		
+		public function set currentDateJD( value:Number ):void {
+			if (value == _curDateJD) return;
+			
+			_curDateJD = value;
+			
+			Log.traceText( "*execute* MoTimeline.currentDateJD : " + _curDateJD );
+			
+			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.CURRENT_DATE_CHANGED ) );
 		}
 		
 		/***************************************************************************

@@ -21,53 +21,40 @@ package controllers {
 		private var _mapEntities:Dictionary /*Entity*/; // MoEntity.id = Entity
 		private var _mapTitles:Dictionary /*TitleEntity*/; // MoEntity.id = TitleEntity
 		
-		private var _scale:Number = 1;
 		private var _width:Number = 0;
 		private var _height:Number = 0;
 		private var _space:Number = 0;
-		private var _oldDuration:Number = 0;
-		private var _isResize:Boolean;
-		
-		private var _rgBegin:MoDate;
-		private var _rgEnd:MoDate;
+		private var _yCenter:Number;
 		
 		public function EntitiesRender( host:ASprite, width:Number, height:Number ) {
 			_host = host;
 			_width = width;
 			_height = height;
+			_yCenter = height / 2;
 		}
 		
 		public function init():void {
-			_rgBegin = MoTimeline.me.rangeBegin;
-			_rgEnd = MoTimeline.me.rangeEnd;
-			
 			_listMoEntities = new Vector.<MoEntity>();
 			
-			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.CURRENT_DATE_CHANGED, onDateChanged );
 		}
 		
 		private function onResizeTimeline( ev:TimelineEvent ):void {
 			update();
 		}
 		
+		private function onScaleChanged( ev:TimelineEvent ):void {
+			updateSizeAndPositions();
+		}
+		
+		private function onDateChanged( ev:TimelineEvent ):void {
+			updateSizeAndPositions();
+		}
+		
 		public function update():void {
 			updateListMoEntities();
-			updateScale();
-			updateSizeAndPositions();
-		}
-		
-		private function onResizeRange( ev:TimelineEvent ):void {
-			//Log.traceText( "*execute* EntitiesRender.onResizeRange" );
-			
-			updateScale();
-			updateSizeAndPositions();
-		}
-		
-		private function onMoveRange( ev:TimelineEvent ):void {
-			//Log.traceText( "*execute* EntitiesRender.onMoveRange" );
-			
 			updateSizeAndPositions();
 		}
 		
@@ -101,16 +88,6 @@ package controllers {
 			_space = _width / ( len + 1 );
 		}
 		
-		private function updateScale():void {
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
-			
-			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
-			
-			_isResize = ( _oldDuration != newDuration );
-			
-			_oldDuration = newDuration;
-		}
-		
 		/**
 		 * Обновляем положение и размеры
 		 */
@@ -127,35 +104,25 @@ package controllers {
 				ent = _mapEntities[ moEnt.id ];
 				title = _mapTitles[ moEnt.id ];
 				
-				// Если сущность не входит в диапазон...
-				if (( moEnt.endPeriod.dateEnd.jd < _rgBegin.jd ) || ( moEnt.beginPeriod.dateBegin.jd > _rgEnd.jd ) ) {
-					// ... и если отображается, тогда удаляем её
-					if ( _host.contains( ent ) ) {
-						//Log.traceText( "---------- removeChild" );
+				ent.y = dateToY( moEnt.beginPeriod.dateBegin.jd );
+				ent.height = moEnt.duration * MoTimeline.me.scale;
+				
+				if ( _host.contains( ent ) ) {
+					if ( (ent.y > _height) || ( (ent.y + ent.height) < 0 ) ) {
 						_host.removeChild( ent );
 						_host.removeChild( title );
 					}
 				} else {
-					// ... если входит в диапазон и не отображается, тогда отображаем её
-					ent.y = dateToY( moEnt.beginPeriod.dateBegin.jd );
+					//Log.traceText( "++++++++++ addChild" );
 					
-					// Если размер диапазона был изменён, то меняем размер сущностей
-					if ( _isResize ) {
-						ent.height = moEnt.duration * _scale;
-					}
+					ent.x = calcX( i );
+					ent.height = moEnt.duration * MoTimeline.me.scale;
 					
-					if ( !_host.contains( ent ) ) {
-						//Log.traceText( "++++++++++ addChild" );
-						
-						ent.x = calcX( i );
-						ent.height = moEnt.duration * _scale;
-						
-						_host.addChild( title );
-						_host.addChild( ent );
-					}
-					
-					ent.updateDisplayFacts();
+					_host.addChild( title );
+					_host.addChild( ent );
 				}
+				
+				ent.updateDisplayFacts();
 				
 				if ( _host.contains( title ) ) {
 					title.x = ent.x + ent.body.width;
@@ -169,25 +136,23 @@ package controllers {
 			//Log.traceText( "Perf.stop() : " + Perf.stop() );
 		}
 		
-		private function calcX( num:uint ):Number {
-			return _space + num * _space;
+		private function calcX( ordinal:uint ):Number {
+			return _space + ordinal * _space;
 		}
 		
-		private function dateToY( date:Number ):Number {
-			return _scale * ( date - _rgBegin.jd );
+		private function dateToY( jd:Number ):Number {
+			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.currentDateJD );
 		}
 		
 		public function dispose():void {
-			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.CURRENT_DATE_CHANGED, onDateChanged );
 			
 			_host = null;
 			_listMoEntities = null;
 			_mapEntities = null;
 			_mapTitles = null;
-			_rgBegin = null;
-			_rgEnd = null;
 		}
 	}
 

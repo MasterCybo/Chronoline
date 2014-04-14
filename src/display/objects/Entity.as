@@ -85,7 +85,9 @@ package display.objects {
 			//Log.traceText( "_moEntity.duration : " + _moEntity.duration );
 			//Log.traceText( "div : " + div );
 			//Log.traceText( "_stepDate : " + _stepDate );
-
+			
+			return;
+			
 			_isUpdating = true;
 
 			//if ( _stepDate >= 0.5 ) {
@@ -192,6 +194,8 @@ package display.objects {
 		}
 
 		public function updateDisplayFacts():void {
+			return;
+			
 			var fact:Fact;
 			var moFact:MoFact;
 			var factY:Number;

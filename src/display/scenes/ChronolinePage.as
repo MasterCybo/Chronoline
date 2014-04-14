@@ -93,22 +93,18 @@ package display.scenes {
 			if ( notice.visible ) {
 				_guideLine.x = _desktop.x;
 				_guideLine.visible = true;
-				Display.stageAddEventListener( MouseEvent.MOUSE_MOVE, hrMoveMouse );
+				Display.stageAddEventListener( MouseEvent.MOUSE_MOVE, onMoveHelper );
 			} else {
 				_guideLine.visible = false;
-				Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, hrMoveMouse );
+				Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onMoveHelper );
 			}
 		}
 		
-		private function hrMoveMouse( ev:MouseEvent ):void {
-			//var rDur:Number = MoTimeline.me.rangeEnd.jd - MoTimeline.me.rangeBegin.jd;
-			//var kd:Number = rDur / ( Display.stageHeight - _desktop.y );
-			//var year:Number = Math.round( MoTimeline.me.rangeBegin.jd + ( Display.mouseY - _desktop.y ) * kd );
-			//_guideLine.textLabel = year;
+		private function onMoveHelper( ev:MouseEvent ):void {
+			var yCenter:Number = (_desktop.y + Display.stageHeight) / 2;
+			var dy:Number = ev.stageY - yCenter;
 			
-			var rDur:Number = MoTimeline.me.rangeEnd.jd - MoTimeline.me.rangeBegin.jd;
-			var kd:Number = rDur / ( Display.stageHeight - _desktop.y );
-			var curJD:Number = MoTimeline.me.rangeBegin.jd + ( Display.mouseY - _desktop.y ) * kd;
+			var curJD:Number = MoTimeline.me.currentDateJD + dy / MoTimeline.me.scale;
 			
 			var gdate:Object = DateUtils.JDNToDate( curJD );
 			_guideLine.textLabel = StringUtils.substitute( "{2}.{1}.{0}"
@@ -139,21 +135,14 @@ package display.scenes {
 			Log.traceText( "dateEnd : " + dateEnd );
 			
 			
-			var abc:Number = 50 * 365;
-			
-			var dateBeginJD:Number = Math.floor(dateBegin.jd / abc) * abc;
-			var dateEndJD:Number = Math.ceil(dateEnd.jd / abc) * abc;
-			
-			Log.traceText( "dateBeginJD : " + dateBeginJD );
-			Log.traceText( "dateEndJD : " + dateEndJD );
-			
-			//var delta:Number = Math.floor(dateEnd.jd - dateBegin.jd) * 0.1;
-			//MoTimeline.me.setTimePeriod( dateBegin.jd - delta, dateEnd.jd + delta ); // HACK: ручная установка 
-			MoTimeline.me.setTimePeriod( dateBeginJD, dateEndJD ); // HACK: ручная установка 
-			MoTimeline.me.setRange( dateBegin.jd, dateEnd.jd );
+			MoTimeline.me.setTimePeriod( dateBegin.jd, dateEnd.jd );
 			
 			Log.traceText( "(Display.stageHeight - Settings.TOOLBAR_HEIGHT) : " + (Display.stageHeight - Settings.TOOLBAR_HEIGHT) );
 			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
+			
+			
+			MoTimeline.me.scale = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
+			MoTimeline.me.currentDateJD = (dateBegin.jd + dateEnd.jd) / 2;
 			
 			
 			//var minScale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
