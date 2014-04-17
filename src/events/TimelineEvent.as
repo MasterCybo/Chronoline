@@ -8,11 +8,9 @@ package events {
 	public class TimelineEvent extends Event {
 		
 		// Новые события
-		static public const TIMELINE_RESIZE 	:String = "timelineResize"; // Изменение границ временной шкалы
-		static public const RANGE_MOVE 			:String = "rangeMove"; // Смещение наблюдаемого диапазона
-		static public const RANGE_RESIZE 		:String = "rangeResize"; // Изменнеие границ диапазона
 		static public const SCALE_CHANGED		:String = "scaleChanged"; // Изменение временного масштаба
-		static public const CURRENT_DATE_CHANGED:String = "currentDateChanged"; // Измененине текущей даты
+		static public const BASE_CHANGED		:String = "baseChanged"; // Измененине текущей даты
+		static public const INITED				:String = "inited"; // Событие окончания инициализации временной шкалы
 		
 		//public var deltaBegin:Number;
 		//public var deltaEnd:Number;

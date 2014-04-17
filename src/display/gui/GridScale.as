@@ -13,7 +13,8 @@ package display.gui {
 	 */
 	public class GridScale extends ASprite {
 		
-		private var _pattern:BitmapData;
+		private var _offsetJD:Number; // Величина изменнения MoTimeline.me.currentDateJD
+		private var _oldCurJD:Number; // Предыдущее значение MoTimeline.me.currentDateJD
 		
 		private var _width:uint;
 		private var _height:uint;
@@ -26,25 +27,62 @@ package display.gui {
 		}
 		
 		override public function init():* {
-			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineResize );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChange );
 			
 			return super.init();
 		}
 		
-		private function onScaleChange( ev:TimelineEvent ):void {
-		
+		private function onDateChange( ev:TimelineEvent ):void {
+			//var yCenter:Number = _height / 2;
+			//var djd:Number = yCenter / MoTimeline.me.scale;
+			//Log.traceText( "djd : " + djd );
+			//var jd:Number = MoTimeline.me.currentDateJD - djd;
+			//Log.traceText( "jd : " + jd );
+			
+			_offsetJD = MoTimeline.me.baseJD - _oldCurJD;
+			
+			Log.traceText( "_offsetJD : " + _offsetJD );
+			
+			//var deltaJD:Number = dy / MoTimeline.me.scale;
+			
+			_oldCurJD = MoTimeline.me.baseJD;
 		}
 		
-		private function onTimelineResize( ev:TimelineEvent ):void {
-			Log.traceText( "*execute* GridScale.onTimelineResize" );
+		private function onScaleChange( ev:TimelineEvent ):void {
+			Log.traceText( "*execute* GridScale.onScaleChange" );
+			
+			Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
+			
+			var totalDur:Number = MoTimeline.me.duration;
+			var totalYears:Number = totalDur / 365.25;
+			Log.traceText( "Total years : " + totalYears );
+			
+			var heightJD:Number = _height / MoTimeline.me.scale;
+			var heightYears:Number = heightJD / 365.25;
+			Log.traceText( "heightJD : " + heightJD );
+			Log.traceText( "heightYears : " + heightYears );
+		}
+		
+		private function onInitTimeline( ev:TimelineEvent ):void {
+			Log.traceText( "*execute* GridScale.onInitTimeline" );
+			
+			//Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
+			//
+			//var totalDur:Number = MoTimeline.me.duration;
+			//var totalYears:Number = totalDur / 365.25;
+			//Log.traceText( "Total years : " + totalYears );
+			//
+			//var heightJD:Number = _height * MoTimeline.me.scale;
+			//var heightYears:Number = heightJD / 365.25;
+			//Log.traceText( "heightJD : " + heightJD );
+			//Log.traceText( "heightYears : " + heightYears );
 			
 			draw();
 		}
 		
 		private function update():void {
-			//createPattern();
 			draw();
 		}
 		
@@ -56,7 +94,7 @@ package display.gui {
 			
 			for ( var i:int = 0; i < 10; i++ ) {
 				Log.traceText( i + " add" );
-				var dateGrad:DateGraduation = new DateGraduation( MoTimeline.me.beginDate.jd + i * stepTime, _width ).init();
+				var dateGrad:DateGraduation = new DateGraduation( MoTimeline.me.beginJD + i * stepTime, _width ).init();
 				dateGrad.y = i * stepY;
 				addChild( dateGrad );
 			}

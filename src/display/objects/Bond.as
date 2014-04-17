@@ -80,7 +80,7 @@ package display.objects {
 			title = StringUtils.substitute( title, ent1.title, ent2.title );
 			
 			
-			AHintManager.me.displayHint( HintApp, { text:ent1.beginPeriod.string + "\n" + title, width:200 } );
+			AHintManager.me.displayHint( HintApp, { text:ent1.beginPeriod + "\n" + title, width:200 } );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {

@@ -1,12 +1,12 @@
 package controllers {
 	import collections.EntityManager;
-	import data.MoDate;
 	import data.MoEntity;
 	import data.MoTimeline;
 	import display.components.TitleEntity;
 	import display.objects.Entity;
 	import events.TimelineEvent;
 	import flash.utils.Dictionary;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	
 	/**
@@ -36,12 +36,12 @@ package controllers {
 		public function init():void {
 			_listMoEntities = new Vector.<MoEntity>();
 			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.CURRENT_DATE_CHANGED, onDateChanged );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 		}
 		
-		private function onResizeTimeline( ev:TimelineEvent ):void {
+		private function onInitTimeline( ev:TimelineEvent ):void {
 			update();
 		}
 		
@@ -104,7 +104,8 @@ package controllers {
 				ent = _mapEntities[ moEnt.id ];
 				title = _mapTitles[ moEnt.id ];
 				
-				ent.y = dateToY( moEnt.beginPeriod.dateBegin.jd );
+				ent.y = dateToY( moEnt.beginPeriod.beginJD );
+				
 				ent.height = moEnt.duration * MoTimeline.me.scale;
 				
 				if ( _host.contains( ent ) ) {
@@ -141,13 +142,13 @@ package controllers {
 		}
 		
 		private function dateToY( jd:Number ):Number {
-			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.currentDateJD );
+			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
 		}
 		
 		public function dispose():void {
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.CURRENT_DATE_CHANGED, onDateChanged );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 			
 			_host = null;
 			_listMoEntities = null;

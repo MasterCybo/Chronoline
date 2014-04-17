@@ -68,7 +68,7 @@ package {
 			Notification.unlog( BondRemoveNotice.NAME );
 			Notification.unlog( GetPositionNotice.NAME );
 			
-			MoTimeline.me.init(); // Инициализация временной шкалы
+			//MoTimeline.me.init(); // Инициализация временной шкалы
 			
 			var sceneContainer:ASprite = new ASprite().init();
 			addChild( sceneContainer );

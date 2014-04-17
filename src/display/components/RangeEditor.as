@@ -29,7 +29,7 @@ package display.components {
 			
 			_inpDate.eventManager.addEventListener( KeyboardEvent.KEY_UP, onKeyUp );
 			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.CURRENT_DATE_CHANGED, onDateChanged );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 			
 			return super.init();
 		}
@@ -45,17 +45,17 @@ package display.components {
 			
 			var jd:Number = DateUtils.dateToJD( year );
 			
-			MoTimeline.me.currentDateJD = jd;
+			MoTimeline.me.baseJD = jd;
 		}
 		
 		private function update():void {
-			var date:Object = DateUtils.JDToDate( MoTimeline.me.currentDateJD );
+			var date:Object = DateUtils.JDToDate( MoTimeline.me.baseJD );
 			
 			_inpDate.text = String( date.year );
 		}
 		
 		override public function kill():void {
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.CURRENT_DATE_CHANGED, onDateChanged );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 			
 			super.kill();
 		}

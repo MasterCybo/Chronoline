@@ -4,8 +4,10 @@ package display.gui {
 	import controllers.EntityController;
 	import controllers.PopupController;
 	import data.MoTimeline;
+	import display.components.DateGraduation;
 	import events.TimelineEvent;
 	import ru.arslanov.flash.display.ASprite;
+	import ru.arslanov.flash.utils.Display;
 	
 	/**
 	 * ...
@@ -21,6 +23,7 @@ package display.gui {
 		private var _entRender:EntitiesRender;
 		private var _bondRender:BondsRender;
 		private var _entCtrl:EntityController;
+		private var _curDateMarker:DateGraduation;
 		
 		public function Desktop( width:uint, height:uint ) {
 			_width = width;
@@ -34,8 +37,11 @@ package display.gui {
 			
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
+			_curDateMarker = new DateGraduation( MoTimeline.me.baseJD, Display.stageWidth, 0xFF8000, 0xFF8000 ).init();
+			_curDateMarker.y = int( _height / 2 );
 			
 			addChild( _gridScale );
+			addChild( _curDateMarker );
 			addChild( _container );
 			
 			_entRender = new EntitiesRender( _container, _width, height );
@@ -50,16 +56,23 @@ package display.gui {
 			_popupController = new PopupController( this, _width, height );
 			_popupController.init();
 			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineChanged );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, updateBaseDate );
 			
 			return this;
 		}
 		
-		private function onTimelineChanged( ev:TimelineEvent ):void {
+		private function onInitTimeline( ev:TimelineEvent ):void {
+			updateBaseDate();
+			
 			_container.killChildren();
 			
 			_entRender.update();
 			_bondRender.update();
+		}
+		
+		private function updateBaseDate( ev:TimelineEvent = null ):void {
+			_curDateMarker.jd = MoTimeline.me.baseJD;
 		}
 		
 		override public function get width():Number {
@@ -85,7 +98,7 @@ package display.gui {
 		//} endregion
 		
 		override public function kill():void {
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineChanged );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
 			
 			_popupController.dispose();
 			_entCtrl.dispose();

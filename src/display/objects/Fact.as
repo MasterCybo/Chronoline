@@ -79,11 +79,11 @@ package display.objects {
 			_body.stateOver = true;
 			
 			if ( !_labelBegin ) {
-				_labelBegin = new FactDateLabel( moFact.period.dateBegin ).init();
+				_labelBegin = new FactDateLabel( moFact.period.beginJD ).init();
 			}
 			
 			if ( !_labelEnd ) {
-				_labelEnd = new FactDateLabel( moFact.period.dateEnd ).init();
+				_labelEnd = new FactDateLabel( moFact.period.endJD ).init();
 			}
 			
 			//var labHeight:Number = _labelEnd.getHeightLabel() + _labelBegin.getHeightLabel();

@@ -1,5 +1,4 @@
 package controllers {
-	import data.MoDate;
 	import data.MoFact;
 	import data.MoTimeline;
 	import display.components.PopupInfo;
@@ -8,8 +7,8 @@ package controllers {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
+	import ru.arslanov.flash.utils.Display;
 	
 	/**
 	 * ...
@@ -28,10 +27,12 @@ package controllers {
 		private var _ptLock:Point;
 		private var _ptPopup:Point;
 		
-		private var _rgBegin:MoDate;
-		private var _rgEnd:MoDate;
+		//private var _rgBegin:MoDate;
+		//private var _rgEnd:MoDate;
 		
 		private var _isDragged:Boolean;
+		private var _minJD:Number;
+		private var _maxJD:Number;
 		
 		public function PopupController( host:ASprite, width:Number, height:Number ) {
 			_host = host;
@@ -40,8 +41,12 @@ package controllers {
 		}
 		
 		public function init():void {
-			_rgBegin = MoTimeline.me.rangeBegin;
-			_rgEnd = MoTimeline.me.rangeEnd;
+			//_rgBegin = MoTimeline.me.rangeBegin;
+			//_rgEnd = MoTimeline.me.rangeEnd;
+			
+			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
+			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
+			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
 			
 			_host.eventManager.addEventListener( MouseEvent.CLICK, onClickFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OVER, onOverFact );
@@ -49,8 +54,8 @@ package controllers {
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
 			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
 		}
 		
 		private function onMouseDown( ev:MouseEvent ):void {
@@ -133,6 +138,10 @@ package controllers {
 		private function onMoveRange( ev:TimelineEvent ):void {
 			if ( !_lockedMoFact ) return;
 			
+			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
+			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
+			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
+			
 			updatePosition( _lockedMoFact );
 		}
 		
@@ -155,14 +164,14 @@ package controllers {
 		private function updatePopup( moFact:MoFact ):void {
 			var popup:PopupInfo = _popups[ moFact.id ];
 			
-			if ( ( moFact.period.middle < _rgBegin.jd ) || ( moFact.period.middle > _rgEnd.jd ) ) {
+			if ( ( moFact.period.middle < _minJD ) || ( moFact.period.middle > _maxJD ) ) {
 				if ( _host.contains( popup ) ) {
 					_host.removeChild( popup );
 				}
 				return;
 			}
 			
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
+			var newDuration:Number = _maxJD - _minJD;
 			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
 			
 			popup.x = moFact == _lockedMoFact ? _ptLock.x : _ptPopup.x;
@@ -185,7 +194,7 @@ package controllers {
 		}
 
 		private function dateToY( date:Number ):Number {
-			return _scale * ( date - _rgBegin.jd );
+			return _scale * ( date - _minJD );
 		}
 		
 		public function dispose():void {
@@ -194,8 +203,8 @@ package controllers {
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OUT, onOutFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
 			
 			_lockedMoFact = null;
 			_curMoFact = null;

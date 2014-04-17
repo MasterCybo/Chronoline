@@ -61,7 +61,7 @@ package controllers {
 			
 			//_offset += dy;
 			
-			MoTimeline.me.currentDateJD -= deltaJD;
+			MoTimeline.me.baseJD -= deltaJD;
 		}
 		
 		public function dispose():void {

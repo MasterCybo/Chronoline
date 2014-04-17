@@ -1,8 +1,8 @@
 package display.scenes {
+	import by.blooddy.crypto.image.JPEGEncoder;
 	import collections.EntityColor;
 	import collections.EntityManager;
 	import controllers.DesktopController;
-	import data.MoDate;
 	import data.MoTimeline;
 	import display.components.GuideLine;
 	import display.gui.Desktop;
@@ -10,11 +10,8 @@ package display.scenes {
 	import events.GuideLineNotice;
 	import events.ServerDataCompleteNotice;
 	import events.SnapshotNotice;
-	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Rectangle;
-	import flash.net.FileFilter;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	import ru.arslanov.core.events.Notification;
@@ -24,7 +21,6 @@ package display.scenes {
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.scenes.AScene;
 	import ru.arslanov.flash.utils.Display;
-	import by.blooddy.crypto.image.JPEGEncoder;
 	
 	/**
 	 * ...
@@ -104,7 +100,7 @@ package display.scenes {
 			var yCenter:Number = (_desktop.y + Display.stageHeight) / 2;
 			var dy:Number = ev.stageY - yCenter;
 			
-			var curJD:Number = MoTimeline.me.currentDateJD + dy / MoTimeline.me.scale;
+			var curJD:Number = MoTimeline.me.baseJD + dy / MoTimeline.me.scale;
 			
 			var gdate:Object = DateUtils.JDNToDate( curJD );
 			_guideLine.textLabel = StringUtils.substitute( "{2}.{1}.{0}"
@@ -121,29 +117,12 @@ package display.scenes {
 			
 			EntityColor.reset();
 			
-			var dateBegin:MoDate = new MoDate();
-			var dateEnd:MoDate = new MoDate();
-			
 			Log.traceText( "EntityManager.period.duration : " + EntityManager.period.duration );
 			
-			if ( EntityManager.period.duration > 0 ) {
-				dateBegin.jd = EntityManager.period.dateBegin.jd;
-				dateEnd.jd = EntityManager.period.dateEnd.jd;
-			}
+			var initScale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / EntityManager.period.duration;
+			var centralJD:Number = (EntityManager.period.beginJD + EntityManager.period.endJD ) / 2;
 			
-			Log.traceText( "dateBegin : " + dateBegin );
-			Log.traceText( "dateEnd : " + dateEnd );
-			
-			
-			MoTimeline.me.setTimePeriod( dateBegin.jd, dateEnd.jd );
-			
-			Log.traceText( "(Display.stageHeight - Settings.TOOLBAR_HEIGHT) : " + (Display.stageHeight - Settings.TOOLBAR_HEIGHT) );
-			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
-			
-			
-			MoTimeline.me.scale = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
-			MoTimeline.me.currentDateJD = (dateBegin.jd + dateEnd.jd) / 2;
-			
+			MoTimeline.me.init( EntityManager.period.beginJD, EntityManager.period.endJD, centralJD, initScale );
 			
 			//var minScale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
 			

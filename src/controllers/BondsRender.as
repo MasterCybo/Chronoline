@@ -2,7 +2,6 @@ package controllers {
 	import collections.BondsManager;
 	import com.adobe.utils.DictionaryUtil;
 	import data.MoBond;
-	import data.MoDate;
 	import data.MoFact;
 	import data.MoTimeline;
 	import display.objects.Bond;
@@ -12,6 +11,7 @@ package controllers {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	import ru.arslanov.flash.display.ASprite;
+	import ru.arslanov.flash.utils.Display;
 	
 	/**
 	 * ...
@@ -31,8 +31,10 @@ package controllers {
 		private var _isResize:Boolean;
 		private var _oldDuration:Number;
 		
-		private var _rgBegin:MoDate;
-		private var _rgEnd:MoDate;
+		//private var _rgBegin:MoDate;
+		//private var _rgEnd:MoDate;
+		private var _minJD:Number;
+		private var _maxJD:Number;
 		
 		public function BondsRender( host:ASprite, width:Number, height:Number ) {
 			_host = host;
@@ -45,15 +47,21 @@ package controllers {
 			_cacheBonds = new Dictionary( true );
 			_mapVisibleBonds = new Dictionary( true );
 			
-			_rgBegin = MoTimeline.me.rangeBegin;
-			_rgEnd = MoTimeline.me.rangeEnd;
+			//_rgBegin = MoTimeline.me.rangeBegin;
+			//_rgEnd = MoTimeline.me.rangeEnd;
+			
+			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
+			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
+			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
 			
 			//updateScale();
 			//updateVisibleBonds();
 			
 			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
+			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 		}
 		
 		private function onResizeTimeline( ev:Event ):void {
@@ -93,7 +101,7 @@ package controllers {
 		}
 		
 		private function updateScale():void {
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
+			var newDuration:Number = _maxJD - _minJD;
 			
 			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
 			
@@ -173,7 +181,7 @@ package controllers {
 							}
 							
 							bond.x = ent1.x + Settings.ENT_WIDTH;
-							bond.y = dateToY( moFact.period.dateBegin.jd );
+							bond.y = dateToY( moFact.period.beginJD );
 							
 							if ( !_host.contains( bond ) ) {
 								_host.addChildAt( bond, 0 );
@@ -214,13 +222,16 @@ package controllers {
 		}
 		
 		private function dateToY( date:Number ):Number {
-			return _scale * ( date - _rgBegin.jd );
+			return _scale * ( date - _minJD );
 		}
 		
 		public function dispose():void {
 			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
+			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 			
 			_visibleBonds = null;
 			_mapVisibleBonds = null;
@@ -228,8 +239,8 @@ package controllers {
 			
 			_host = null;
 			
-			_rgBegin = null;
-			_rgEnd = null;
+			//_rgBegin = null;
+			//_rgEnd = null;
 		}
 	}
 

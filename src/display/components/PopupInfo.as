@@ -24,7 +24,7 @@ package display.components {
 		override public function init():* {
 			super.init();
 			
-			var text:String = moFact.period.string + "\n" + moFact.title;
+			var text:String = moFact.period + "\n" + moFact.title;
 			
 			_tf = new TextApp( text ? text : "" ).init();
 			_tf.setBorder( true, Settings.FACT_CLR );

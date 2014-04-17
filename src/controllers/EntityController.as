@@ -1,9 +1,11 @@
 package controllers {
+	import constants.LocaleString;
 	import data.MoEntity;
 	import data.MoTimeline;
 	import display.base.HintApp;
 	import display.objects.Entity;
 	import flash.events.MouseEvent;
+	import ru.arslanov.core.utils.DateUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.hints.AHintManager;
@@ -31,7 +33,13 @@ package controllers {
 			var ent:Entity = ev.target.parent as Entity;
 			if ( !ent ) return;
 			
-			AHintManager.me.displayHint( HintApp, { text: ent.moEntity.title } );
+			var textHint:String = ent.moEntity.title
+								+ "\r"
+								+ DateUtils.getFormatString( ent.moEntity.beginPeriod.beginJD, LocaleString.DATE_ENTITY_HINT )
+								+ "\r"
+								+ DateUtils.getFormatString( ent.moEntity.beginPeriod.endJD, LocaleString.DATE_ENTITY_HINT );
+			
+			AHintManager.me.displayHint( HintApp, { text: textHint } );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {
@@ -52,7 +60,7 @@ package controllers {
 			
 			var scale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / ent.moEntity.duration;
 			
-			MoTimeline.me.currentDateJD = (ent.moEntity.beginPeriod.dateBegin.jd + ent.moEntity.endPeriod.dateEnd.jd) / 2;
+			MoTimeline.me.baseJD = (ent.moEntity.beginPeriod.beginJD + ent.moEntity.endPeriod.endJD) / 2;
 			MoTimeline.me.scale = scale;
 			//MoTimeline.me.setRange( ent.moEntity.beginPeriod.dateBegin.jd, ent.moEntity.endPeriod.dateEnd.jd );
 		}

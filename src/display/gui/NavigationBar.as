@@ -34,9 +34,9 @@ package display.gui {
 			addChildAndUpdate( _zoSlider );
 			addChildAndUpdate( _zoStep );
 			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineResize );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			
-			onTimelineResize();
+			onInitTimeline();
 			onSliderRelease();
 			
 			_zoSlider.position = 0;
@@ -74,8 +74,8 @@ package display.gui {
 			MoTimeline.me.scale = _minScale + _zoStep.position * (_maxScale - _minScale);
 		}
 		
-		private function onTimelineResize( ev:TimelineEvent = null ):void {
-			//Log.traceText( "*execute* NavigationBar.onTimelineResize" );
+		private function onInitTimeline( ev:TimelineEvent = null ):void {
+			//Log.traceText( "*execute* NavigationBar.onInitTimeline" );
 			
 			_minScale = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
 			_maxScale = MoTimeline.me.duration / (Display.stageHeight - Settings.TOOLBAR_HEIGHT);
@@ -91,7 +91,7 @@ package display.gui {
 		
 		override public function kill():void {
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onTimelineRescale );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onTimelineResize );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
 			
 			super.kill();
 		}

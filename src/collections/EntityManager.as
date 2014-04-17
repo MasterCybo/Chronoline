@@ -1,6 +1,5 @@
 package collections {
 	import com.adobe.utils.DictionaryUtil;
-	import data.MoDate;
 	import data.MoEntity;
 	import data.MoPeriod;
 	import flash.utils.Dictionary;
@@ -93,15 +92,15 @@ package collections {
 		/**
 		 * Минимальная дата в списке Сущностей
 		 */
-		static public function get minDate():MoDate {
-			return _period.dateBegin;
+		static public function get minDate():Number {
+			return _period.beginJD;
 		}
 		
 		/**
 		 * Максимальная дата в списке Сущностей
 		 */
-		static public function get maxDate():MoDate {
-			return _period.dateEnd;
+		static public function get maxDate():Number {
+			return _period.endJD;
 		}
 		
 		/**
@@ -111,17 +110,17 @@ package collections {
 			var item:MoEntity;
 			for each ( item in _mapMoEntities ) {
 				// Устанавливаем начальную дату
-				if ( _period.dateBegin.jd == 0 ) {
-					_period.dateBegin.jd = item.beginPeriod.dateBegin.jd;
+				if ( _period.beginJD == 0 ) {
+					_period.beginJD = item.beginPeriod.beginJD;
 				} else {
 					if ( item.beginPeriod ) {
-						_period.dateBegin.jd = Math.min( _period.dateBegin.jd, item.beginPeriod.dateBegin.jd );
+						_period.beginJD = Math.min( _period.beginJD, item.beginPeriod.beginJD );
 					}
 				}
 				
 				// Устанавливаем конечную дату
 				if ( item.endPeriod ) {
-					_period.dateEnd.jd = Math.max( _period.dateEnd.jd, item.endPeriod.dateEnd.jd );
+					_period.endJD = Math.max( _period.endJD, item.endPeriod.endJD );
 				}
 			}
 			
