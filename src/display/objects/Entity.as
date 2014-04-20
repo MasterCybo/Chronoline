@@ -5,6 +5,7 @@ package display.objects {
 	import data.MoFact;
 	import data.MoTimeline;
 	import flash.utils.Dictionary;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
@@ -57,7 +58,9 @@ package display.objects {
 			addChild( _body );
 			addChild( _hostFacts );
 
-
+			Log.traceText( "_moEntity : " + _moEntity );
+			//Log.traceText( "_moEntity.beginPeriod : " + _moEntity.beginPeriod );
+			//Log.traceText( "_moEntity.endPeriod : " + _moEntity.endPeriod );
 
 			var firstFact:MoFact = _moEntity.facts[ 0 ];
 			_mapVisibleMoFacts[ firstFact.id ] = firstFact;

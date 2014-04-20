@@ -2,7 +2,7 @@ package display.components {
 	import constants.LocaleString;
 	import constants.TextFormats;
 	import display.base.TextApp;
-	import ru.arslanov.core.utils.DateUtils;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.AShape;
 	import ru.arslanov.flash.display.ASprite;
 	
@@ -84,7 +84,7 @@ package display.components {
 			}
 			
 			if ( _changeDate ) {
-				_label.text = DateUtils.getFormatString( _jd, LocaleString.DATE_YYYY_MONTH_DD );
+				_label.text = JDUtils.getFormatString( _jd, LocaleString.DATE_YYYY_MONTH_DD );
 				_label.y = -_label.height;
 				
 				_changeDate = false;

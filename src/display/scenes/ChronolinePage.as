@@ -15,7 +15,7 @@ package display.scenes {
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 	import ru.arslanov.core.events.Notification;
-	import ru.arslanov.core.utils.DateUtils;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ABitmap;
@@ -102,7 +102,7 @@ package display.scenes {
 			
 			var curJD:Number = MoTimeline.me.baseJD + dy / MoTimeline.me.scale;
 			
-			var gdate:Object = DateUtils.JDNToDate( curJD );
+			var gdate:Object = JDUtils.JDNToDate( curJD );
 			_guideLine.textLabel = StringUtils.substitute( "{2}.{1}.{0}"
 										, StringUtils.numberToString( gdate.date )
 										//, DateUtils.getMonthName( gdate.month )

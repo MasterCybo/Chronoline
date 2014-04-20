@@ -1,5 +1,6 @@
 package data {
 	import flash.utils.getQualifiedClassName;
+	import ru.arslanov.core.utils.JDUtils;
 	/**
 	 * Объект исторического периода, содержащий даты начала и конца периода.
 	 * @author Artem Arslanov
@@ -34,7 +35,7 @@ package data {
 		}
 		
 		override public function toString():String {
-			return "[" + getQualifiedClassName( this ) + ", " + beginJD + " - " + endJD + "]"
+			return "[" + getQualifiedClassName( this ) + ", " + JDUtils.getFormatString( beginJD ) + " - " + JDUtils.getFormatString( endJD ) + "]"
 		}
 	}
 

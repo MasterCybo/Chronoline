@@ -1,14 +1,20 @@
 package display.gui {
 	import collections.EntityManager;
+
 	import display.base.ToggleApp;
 	import display.components.RangeEditor;
 	import display.gui.buttons.BtnIcon;
 	import display.gui.buttons.ToggleIcon;
 	import display.windows.WinLegend;
+
 	import events.GuideLineNotice;
 	import events.SnapshotNotice;
+
 	import flash.display.BitmapData;
+	import flash.net.getClassByAlias;
+
 	import net.ReqSavePreset;
+
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
@@ -16,7 +22,7 @@ package display.gui {
 	import ru.arslanov.flash.gui.layout.HBox;
 	import ru.arslanov.flash.gui.windows.AWindowsManager;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -34,7 +40,7 @@ package display.gui {
 			_body = ABitmap.fromColor( Settings.GUI_COLOR, Display.stageWidth, Settings.TOOLBAR_HEIGHT, false ).init();
 			_slots = new HBox( 5 ).init();
 			_rangeEditor = new RangeEditor().init();
-			
+
 			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
 			var btnSave:BtnIcon = new BtnIcon( PngBtnSavePreset ).init();
 			var btnLegend:BtnIcon = new BtnIcon( PngBtnLegend ).init();

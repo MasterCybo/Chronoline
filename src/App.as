@@ -17,7 +17,7 @@ package {
 	import ru.arslanov.core.events.EventManager;
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.http.HTTPManager;
-	import ru.arslanov.core.utils.DateUtils;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.Stats;
 	import ru.arslanov.flash.display.ASprite;
@@ -57,7 +57,7 @@ package {
 			//Logger.show();
 			
 			// Устанавливаем локализацию месяцев
-			DateUtils.monthsLocale = LocaleString.MONTHS;
+			JDUtils.monthsLocale = LocaleString.MONTHS;
 			
 			//AWindowsManager.me.init( this );
 			AHintManager.me.init( this, 15 );

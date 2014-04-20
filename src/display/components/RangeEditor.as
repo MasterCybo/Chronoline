@@ -3,8 +3,9 @@ package display.components {
 	import data.MoTimeline;
 	import display.base.InputApp;
 	import events.TimelineEvent;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import ru.arslanov.core.utils.DateUtils;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.ASprite;
 	
 	/**
@@ -29,9 +30,14 @@ package display.components {
 			
 			_inpDate.eventManager.addEventListener( KeyboardEvent.KEY_UP, onKeyUp );
 			
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitedTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 			
 			return super.init();
+		}
+		
+		private function onInitedTimeline( ev:TimelineEvent ):void {
+			update();
 		}
 		
 		private function onDateChanged( ev:TimelineEvent ):void {
@@ -43,13 +49,13 @@ package display.components {
 			
 			var year:Number = Number( _inpDate.text );
 			
-			var jd:Number = DateUtils.dateToJD( year );
+			var jd:Number = JDUtils.dateToJD( year );
 			
 			MoTimeline.me.baseJD = jd;
 		}
 		
 		private function update():void {
-			var date:Object = DateUtils.JDToDate( MoTimeline.me.baseJD );
+			var date:Object = JDUtils.JDToDate( MoTimeline.me.baseJD );
 			
 			_inpDate.text = String( date.year );
 		}

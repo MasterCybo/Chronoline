@@ -2,7 +2,7 @@ package display.components {
 	import constants.LocaleString;
 	import constants.TextFormats;
 	import display.base.TextApp;
-	import ru.arslanov.core.utils.DateUtils;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 	
@@ -33,7 +33,7 @@ package display.components {
 			
 			_canvas = new ASprite().init();
 			
-			var text:String = DateUtils.getFormatString( _jd, LocaleString.DATE_FULL_FORMAT );
+			var text:String = JDUtils.getFormatString( _jd, LocaleString.DATE_FULL_FORMAT );
 			
 			_tfLabel = new TextApp( text, TextFormats.DATE_LABEL ).init();
 			_canvas.addChild( _tfLabel );

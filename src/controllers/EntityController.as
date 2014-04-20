@@ -5,7 +5,7 @@ package controllers {
 	import display.base.HintApp;
 	import display.objects.Entity;
 	import flash.events.MouseEvent;
-	import ru.arslanov.core.utils.DateUtils;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.hints.AHintManager;
@@ -35,9 +35,9 @@ package controllers {
 			
 			var textHint:String = ent.moEntity.title
 								+ "\r"
-								+ DateUtils.getFormatString( ent.moEntity.beginPeriod.beginJD, LocaleString.DATE_ENTITY_HINT )
+								+ JDUtils.getFormatString( ent.moEntity.beginPeriod.beginJD, LocaleString.DATE_ENTITY_HINT )
 								+ "\r"
-								+ DateUtils.getFormatString( ent.moEntity.beginPeriod.endJD, LocaleString.DATE_ENTITY_HINT );
+								+ JDUtils.getFormatString( ent.moEntity.endPeriod.endJD, LocaleString.DATE_ENTITY_HINT );
 			
 			AHintManager.me.displayHint( HintApp, { text: textHint } );
 		}
