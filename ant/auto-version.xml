@@ -1,0 +1,27 @@
+<project name="AutoVersion" default="ver_increment">
+    <target name="ver_increment">
+		<tstamp>
+			<format property="TODAY" pattern="MM/dd/yyyy kk:mm" locale="en,ru"/>
+		</tstamp>
+		<buildnumber file="mybuild.number"/>
+		<propertyfile
+				file="my.properties"
+				comment="My properties">
+			<entry  key="akey" value="avalue"/>
+			<entry  key="adate" type="date" value="now"/>
+			<entry  key="anint" type="int" default="0" operation="+"/>
+			<entry  key="formated.int" type="int" default="0013" operation="+" pattern="0000"/>
+			<entry  key="formated.date" type="date" value="now" pattern="DDD HH:mm"/>
+		</propertyfile>
+        <echo file="../src/AAVersion.as">package {
+	public final class AAVersion {
+		public static const major:int = 0;
+		public static const minor:int = 2;
+		public static const build:int = 4339;
+		public static const revision:int = 0;
+		public static const timestamp:String = "${TODAY}";
+		public static const author:String = "Artem Arslanov";
+	}
+}</echo>
+    </target>
+</project>
