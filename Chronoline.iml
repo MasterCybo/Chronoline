@@ -5,22 +5,20 @@
       <configuration name="Chronoline" pure-as="true" main-class="Main" output-file="chronoline.swf" output-folder="$MODULE_DIR$/bin">
         <dependencies target-player="11.2">
           <entries>
-            <entry library-id="1855d782-1ff8-421b-a050-932bf3e357e5">
+            <entry library-name="lib" library-level="project">
               <dependency linkage="Merged" />
             </entry>
-            <entry library-id="ad680579-4155-48d9-88e1-5bc6ae159123">
-              <dependency linkage="External" />
-            </entry>
-            <entry library-id="98213575-52bb-43cf-afe9-9791838bedee">
-              <dependency linkage="Merged" />
-            </entry>
-            <entry library-id="f64561cc-9c5a-4ffd-ac35-f890f2130bed">
+            <entry library-name="fw2cybo" library-level="project">
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="AIR_SDK_40" />
+          <sdk name="4.6.0.23201B" />
         </dependencies>
-        <compiler-options />
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swf" value="true" />
+          </map>
+        </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
@@ -33,48 +31,10 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="AIR_SDK_40" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="4.6.0.23201B" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library type="flex">
-        <properties id="1855d782-1ff8-421b-a050-932bf3e357e5" />
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../../fw2cybo" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library type="flex">
-        <properties id="ad680579-4155-48d9-88e1-5bc6ae159123" />
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/assets.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library type="flex">
-        <properties id="98213575-52bb-43cf-afe9-9791838bedee" />
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/blooddy_crypto.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library type="flex">
-        <properties id="f64561cc-9c5a-4ffd-ac35-f890f2130bed" />
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/greensock.swc!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" exported="" name="lib" level="project" />
+    <orderEntry type="library" exported="" name="fw2cybo" level="project" />
   </component>
 </module>
 

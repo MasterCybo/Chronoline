@@ -11,7 +11,6 @@ package display.gui {
 	import events.SnapshotNotice;
 
 	import flash.display.BitmapData;
-	import flash.net.getClassByAlias;
 
 	import net.ReqSavePreset;
 

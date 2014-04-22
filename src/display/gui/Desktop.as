@@ -81,8 +81,8 @@ package display.gui {
 		
 		override public function set width( value:Number ):void {
 			_width = value;
-			
-			_gridScale.width = width;
+			_gridScale.width = _width;
+			_curDateMarker.width = _width;
 		}
 		
 		override public function get height():Number {
@@ -91,8 +91,8 @@ package display.gui {
 		
 		override public function set height( value:Number ):void {
 			_height = value;
-			
-			_gridScale.height = height;
+			_gridScale.height = _height;
+			_curDateMarker.y = int( _height / 2 );
 		}
 		
 		//} endregion
