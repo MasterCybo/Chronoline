@@ -88,7 +88,7 @@ package {
 				addChild( _stats );
 			}
 			
-			_tfVersion = new TextApp( "v." + Version.Major + "." + Version.Minor + "." + Version.Build + " - " + Version.Timestamp, TextFormats.VERSION ).init();
+			_tfVersion = new TextApp( "v." + Version.major + "." + Version.minor + "." + Version.build + " - " + Version.timestamp, TextFormats.VERSION ).init();
 			_tfVersion.mouseEnabled = false;
 			addChild( _tfVersion );
 			

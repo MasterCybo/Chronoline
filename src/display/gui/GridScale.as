@@ -114,16 +114,16 @@ package display.gui {
 			draw();
 		}
 
-		private function update():void {
+		/*private function update():void {
 			draw();
-		}
+		}*/
 
 		private function draw():void {
 			Log.traceText( "*execute* GridScale.draw" );
 			var deltaJD:Number = MoTimeline.me.baseJD - MoTimeline.me.beginJD;
 			var divJD:Number = deltaJD / _stepJD;
 			var modBaseJD:Number = deltaJD % _stepJD;
-			var offsetJD:Number = modBaseJD * _stepJD;
+			var offsetJD:Number = modBaseJD;
 
 			Log.traceText( "	deltaJD : " + deltaJD );
 			Log.traceText( "	divJD : " + divJD );
@@ -138,9 +138,10 @@ package display.gui {
 			killChildren();
 
 			for ( var i:int = 0; i < _div; i++ ) {
-				var jd:Number = jd0 + offsetJD + i * _stepJD;
+//				var jd:Number = jd0 - offsetJD + i * _stepJD;
+				var jd:Number = MoTimeline.me.baseJD + offsetJD + i * _stepJD;
 				var yy:Number = dateToY( jd );
-				Log.traceText( "		yy : " + yy );
+//				Log.traceText( "		yy : " + yy );
 
 				var dateGrad:DateGraduation = new DateGraduation( jd, _width ).init();
 				dateGrad.y = yy;
@@ -171,6 +172,7 @@ package display.gui {
 		}
 
 		private function dateToY( jd:Number ):Number {
+//			return MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
 			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
 		}
 	}
