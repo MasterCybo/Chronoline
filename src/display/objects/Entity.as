@@ -1,10 +1,13 @@
 package display.objects {
 
 	import collections.EntityColor;
+
 	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
+
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;

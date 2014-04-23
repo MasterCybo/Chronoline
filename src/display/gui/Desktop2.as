@@ -1,20 +1,25 @@
 package display.gui {
 	import collections.BondsManager;
+
 	import controllers.EntitiesRender;
 	import controllers.PopupController;
+
 	import data.MoBond;
-	import data.MoDate;
 	import data.MoFact;
 	import data.MoTimeline;
+
 	import display.objects.Bond;
 	import display.objects.Entity;
+
 	import events.BondDisplayNotice;
 	import events.BondRemoveNotice;
 	import events.TimelineEvent;
+
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

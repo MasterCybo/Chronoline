@@ -1,9 +1,9 @@
 package display.objects {
 	import flash.display.BitmapData;
-	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

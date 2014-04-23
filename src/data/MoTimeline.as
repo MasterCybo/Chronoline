@@ -1,9 +1,8 @@
 package data {
 	import events.TimelineEvent;
-	import flash.events.EventDispatcher;
+
 	import ru.arslanov.core.events.EventManager;
-	import ru.arslanov.core.utils.Log;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

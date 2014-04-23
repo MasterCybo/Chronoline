@@ -1,7 +1,6 @@
 package data {
 	import flash.utils.getQualifiedClassName;
-	import ru.arslanov.core.utils.Calc;
-	
+
 	/**
 	 * Событие, веха сущности Fact
 	 * @author Artem Arslanov

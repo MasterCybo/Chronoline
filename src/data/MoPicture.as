@@ -1,6 +1,6 @@
 package data {
 	import flash.utils.getQualifiedClassName;
-	import ru.arslanov.core.utils.Log;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

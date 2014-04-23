@@ -1,7 +1,6 @@
 package collections.tree {
 	import flash.utils.Dictionary;
-	import ru.arslanov.core.utils.Log;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

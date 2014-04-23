@@ -1,16 +1,18 @@
 package controllers {
 	import constants.LocaleString;
-	import data.MoEntity;
+
 	import data.MoTimeline;
+
 	import display.base.HintApp;
 	import display.objects.Entity;
+
 	import flash.events.MouseEvent;
+
 	import ru.arslanov.core.utils.JDUtils;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.hints.AHintManager;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

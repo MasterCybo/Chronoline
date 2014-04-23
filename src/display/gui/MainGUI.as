@@ -1,10 +1,10 @@
 package display.gui {
-	import data.MoTimeline;
 	import flash.events.Event;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.windows.AWindowsManager;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

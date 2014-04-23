@@ -1,6 +1,6 @@
 package net {
 	import ru.arslanov.core.http.HTTPRequest;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

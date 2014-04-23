@@ -1,6 +1,8 @@
 package data {
 	import flash.utils.getQualifiedClassName;
+
 	import ru.arslanov.core.utils.JDUtils;
+
 	/**
 	 * Объект исторического периода, содержащий даты начала и конца периода.
 	 * @author Artem Arslanov

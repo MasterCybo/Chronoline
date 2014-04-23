@@ -1,19 +1,22 @@
 package {
 	import constants.LocaleString;
 	import constants.TextFormats;
-	import data.MoTimeline;
+
 	import display.base.TextApp;
 	import display.components.LockScreenProcess;
 	import display.components.MessageFullScreen;
 	import display.scenes.ChronolinePage;
+
 	import events.BondDisplayNotice;
 	import events.BondRemoveNotice;
 	import events.GetPositionNotice;
 	import events.ProcessFinishNotice;
 	import events.ProcessStartNotice;
 	import events.SysMessageDisplayNotice;
+
 	import flash.events.Event;
 	import flash.system.Capabilities;
+
 	import ru.arslanov.core.events.EventManager;
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.http.HTTPManager;
@@ -26,7 +29,7 @@ package {
 	import ru.arslanov.flash.text.ATextField;
 	import ru.arslanov.flash.utils.Display;
 	import ru.arslanov.flash.utils.Logger;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

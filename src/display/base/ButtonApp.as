@@ -1,7 +1,7 @@
 package display.base {
 	import ru.arslanov.flash.gui.buttons.AButton;
 	import ru.arslanov.flash.interfaces.IKillable;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

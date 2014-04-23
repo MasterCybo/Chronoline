@@ -1,13 +1,17 @@
 package display.components {
 	import constants.TextFormats;
+
 	import data.MoTimeline;
+
 	import display.base.InputApp;
+
 	import events.TimelineEvent;
-	import flash.events.Event;
+
 	import flash.events.KeyboardEvent;
+
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

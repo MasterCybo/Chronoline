@@ -1,12 +1,13 @@
 package display.gui.buttons {
-	import display.base.ButtonApp;
 	import display.base.ToggleApp;
 	import display.gui.TextTriming;
+
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.Bmp9Scale;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

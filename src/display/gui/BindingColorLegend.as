@@ -1,10 +1,11 @@
 package display.gui {
-	
+
 	import constants.BindingColor;
-	import display.base.Text;
+
 	import flash.events.Event;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

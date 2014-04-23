@@ -1,19 +1,26 @@
 package display.scenes {
 	import by.blooddy.crypto.image.JPEGEncoder;
+
 	import collections.EntityColor;
 	import collections.EntityManager;
+
 	import controllers.DesktopController;
+
 	import data.MoTimeline;
+
 	import display.components.GuideLine;
 	import display.gui.Desktop;
 	import display.gui.MainGUI;
+
 	import events.GuideLineNotice;
 	import events.ServerDataCompleteNotice;
 	import events.SnapshotNotice;
+
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
+
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
@@ -21,7 +28,7 @@ package display.scenes {
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.scenes.AScene;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

@@ -1,9 +1,13 @@
 package collections {
 	import com.adobe.utils.DictionaryUtil;
+
 	import data.MoEntity;
 	import data.MoPeriod;
+
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.utils.Log;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

@@ -1,12 +1,15 @@
 package display.components {
 	import collections.tree.ItemOfList;
+
 	import display.gui.buttons.BtnItemTransfer;
 	import display.gui.buttons.BtnPartItem;
 	import display.gui.buttons.BtnPartTransfer;
+
 	import flash.events.MouseEvent;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.buttons.AButton;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

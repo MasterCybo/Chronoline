@@ -1,11 +1,13 @@
 package display.components {
 	import display.gui.buttons.BtnIcon;
+
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.layout.VBox;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

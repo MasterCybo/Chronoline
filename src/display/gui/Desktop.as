@@ -3,12 +3,16 @@ package display.gui {
 	import controllers.EntitiesRender;
 	import controllers.EntityController;
 	import controllers.PopupController;
+
 	import data.MoTimeline;
+
 	import display.components.DateGraduation;
+
 	import events.TimelineEvent;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

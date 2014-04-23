@@ -1,9 +1,8 @@
 package display.base {
-	import display.base.TextApp;
-	import flash.events.Event;
 	import flash.text.TextFieldAutoSize;
+
 	import ru.arslanov.flash.gui.hints.AHint;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

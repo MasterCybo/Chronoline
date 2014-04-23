@@ -1,12 +1,15 @@
 package display.gui {
 	import data.MoTimeline;
+
 	import display.components.ZoomSlider;
 	import display.components.ZoomStepper;
+
 	import events.TimelineEvent;
+
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.gui.layout.VBox;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

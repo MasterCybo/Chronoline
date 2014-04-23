@@ -1,8 +1,7 @@
 package display.windows {
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.windows.AWindow;
-	import ru.arslanov.flash.interfaces.IKillable;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

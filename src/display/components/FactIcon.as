@@ -1,8 +1,10 @@
 package display.components {
 	import data.MoPicture;
+
 	import display.base.ExternalPicture;
+
 	import ru.arslanov.core.utils.Calc;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

@@ -1,17 +1,21 @@
 package display.components {
 	import collections.tree.ItemOfList;
 	import collections.tree.TreeList;
+
 	import com.adobe.utils.DictionaryUtil;
+
 	import display.gui.buttons.BtnPartItem;
 	import display.skins.ScrollbarThumb;
+
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.AVScroller;
 	import ru.arslanov.flash.gui.layout.VBox;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

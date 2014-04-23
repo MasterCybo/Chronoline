@@ -1,11 +1,12 @@
 package display.base {
 	import flash.display.BitmapData;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.events.LoaderEvent;
 	import ru.arslanov.core.load.DisplayLoader;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

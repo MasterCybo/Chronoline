@@ -1,8 +1,8 @@
 package display.skins {
 	import display.base.ButtonApp;
+
 	import ru.arslanov.flash.display.ABitmap;
-	import ru.arslanov.flash.interfaces.IKillable;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

@@ -1,11 +1,13 @@
 package display.components {
 	import constants.LocaleString;
 	import constants.TextFormats;
+
 	import display.base.TextApp;
+
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.AShape;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

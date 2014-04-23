@@ -1,22 +1,29 @@
 package controllers {
 	import collections.BondsManager;
 	import collections.EntityManager;
+
 	import constants.LocaleString;
+
 	import data.MoBond;
 	import data.MoEntity;
-	import data.MoListEntity;
 	import data.MoFact;
+	import data.MoListEntity;
+
 	import events.ProcessFinishNotice;
 	import events.ProcessStartNotice;
 	import events.ProcessUpdateNotice;
 	import events.ServerDataCompleteNotice;
 	import events.SysMessageDisplayNotice;
+
 	import flash.utils.Dictionary;
+
 	import net.ReqBindingsData;
 	import net.ReqEntityData;
+
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.StringUtils;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

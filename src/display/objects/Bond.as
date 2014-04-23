@@ -1,14 +1,18 @@
 package display.objects {
 	import collections.EntityManager;
+
 	import data.MoBond;
 	import data.MoEntity;
 	import data.MoFact;
+
 	import display.base.HintApp;
+
 	import flash.events.MouseEvent;
+
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.hints.AHintManager;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

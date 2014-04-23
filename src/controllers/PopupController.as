@@ -1,15 +1,19 @@
 package controllers {
 	import data.MoFact;
 	import data.MoTimeline;
+
 	import display.components.PopupInfo;
 	import display.objects.Fact;
+
 	import events.TimelineEvent;
+
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

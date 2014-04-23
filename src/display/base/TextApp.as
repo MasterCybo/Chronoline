@@ -1,8 +1,8 @@
 package display.base {
-	import constants.TextFormats;
 	import flash.text.TextFormat;
+
 	import ru.arslanov.flash.text.ATextField;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

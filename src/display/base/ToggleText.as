@@ -1,6 +1,6 @@
 package display.base {
 	import ru.arslanov.flash.display.ABitmap;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

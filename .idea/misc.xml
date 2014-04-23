@@ -4,7 +4,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="2545AC7123C8EB424364F67DF1A3AE53" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="4.6.0.23201B" project-jdk-type="Flex SDK Type (new)">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="FlexSDK_46" project-jdk-type="Flex SDK Type (new)">
     <output url="file://$PROJECT_DIR$/bin" />
   </component>
 </project>

@@ -1,11 +1,11 @@
 package display.components {
 	import data.MoFact;
+
 	import display.base.TextApp;
-	import flash.filters.DropShadowFilter;
-	import flash.geom.Point;
+
 	import ru.arslanov.flash.display.AShape;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

@@ -1,12 +1,14 @@
 package display.objects {
 	import data.MoFact;
+
 	import display.components.FactDateLabel;
 	import display.components.IconsPile;
+
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
-	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

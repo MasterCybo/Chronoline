@@ -1,6 +1,6 @@
 package events {
 	import ru.arslanov.core.events.ANotice;
-	
+
 	/**
 	 * Получение глобальных координат экранного объекта
 	 * @author Artem Arslanov

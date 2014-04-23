@@ -1,14 +1,18 @@
 package controllers {
 	import collections.EntityManager;
+
 	import data.MoEntity;
 	import data.MoTimeline;
+
 	import display.components.TitleEntity;
 	import display.objects.Entity;
+
 	import events.TimelineEvent;
+
 	import flash.utils.Dictionary;
-	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

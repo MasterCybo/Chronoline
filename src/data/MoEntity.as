@@ -1,7 +1,9 @@
 package data {
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
+
 	import ru.arslanov.core.utils.Log;
+
 	/**
 	 * Историческая сущность
 	 * @author Artem Arslanov

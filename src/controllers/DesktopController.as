@@ -1,16 +1,16 @@
 package controllers {
 	import data.MoTimeline;
+
 	import display.base.ButtonApp;
-	import flash.events.MouseEvent;
+
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
-	import ru.arslanov.core.controllers.MouseController;
+
 	import ru.arslanov.core.controllers.SimpleDragController;
 	import ru.arslanov.core.events.MouseControllerEvent;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

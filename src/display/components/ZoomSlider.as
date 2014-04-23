@@ -1,13 +1,13 @@
 package display.components {
-	import data.MoTimeline;
 	import display.gui.buttons.BtnIcon;
-	import events.TimelineEvent;
+
 	import flash.geom.Rectangle;
+
 	import ru.arslanov.core.controllers.SimpleDragController;
 	import ru.arslanov.core.events.MouseControllerEvent;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

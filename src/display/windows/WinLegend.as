@@ -1,6 +1,6 @@
 package display.windows {
 	import ru.arslanov.flash.gui.windows.AWindowsManager;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

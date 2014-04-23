@@ -1,18 +1,24 @@
 package controllers {
 	import collections.BondsManager;
+
 	import com.adobe.utils.DictionaryUtil;
+
 	import data.MoBond;
 	import data.MoFact;
 	import data.MoTimeline;
+
 	import display.objects.Bond;
 	import display.objects.Entity;
 	import display.objects.Fact;
+
 	import events.TimelineEvent;
+
 	import flash.events.Event;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author ...
