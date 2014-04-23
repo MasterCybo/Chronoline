@@ -48,13 +48,13 @@ package display.gui {
 			//var jd:Number = MoTimeline.me.currentDateJD - djd;
 			//Log.traceText( "jd : " + jd );
 
-			_offsetJD = MoTimeline.me.baseJD - _oldBaseJD;
+//			_offsetJD = MoTimeline.me.baseJD - _oldBaseJD;
 
-			Log.traceText( "_offsetJD : " + _offsetJD );
+//			Log.traceText( "_offsetJD : " + _offsetJD );
 
-			//var deltaJD:Number = dy / MoTimeline.me.scale;
+//			var deltaJD:Number = dy / MoTimeline.me.scale;
 
-			_oldBaseJD = MoTimeline.me.baseJD;
+//			_oldBaseJD = MoTimeline.me.baseJD;
 
 			draw();
 		}
@@ -119,29 +119,32 @@ package display.gui {
 		}*/
 
 		private function draw():void {
+//			var lenBaseJD:Number = MoTimeline.me.baseJD - MoTimeline.me.beginJD;
+//			var offSegJD:Number = lenBaseJD % _stepJD;
+			var offSegJD:Number = MoTimeline.me.baseJD % _stepJD;
+
+			var jdPerHeight:Number = _height / MoTimeline.me.scale;
+//			var minJD:Number = MoTimeline.me.baseJD - jdPerHeight / 2;
+
 			Log.traceText( "*execute* GridScale.draw" );
-			var deltaJD:Number = MoTimeline.me.baseJD - MoTimeline.me.beginJD;
-			var divJD:Number = deltaJD / _stepJD;
-			var modBaseJD:Number = deltaJD % _stepJD;
-			var offsetJD:Number = modBaseJD;
-
-			Log.traceText( "	deltaJD : " + deltaJD );
-			Log.traceText( "	divJD : " + divJD );
-			Log.traceText( "	modBaseJD : " + modBaseJD );
-			Log.traceText( "	offsetJD : " + offsetJD );
-
-			var heightJD:Number = _height / MoTimeline.me.scale;
-			var jd0:Number = MoTimeline.me.baseJD - heightJD / 2;
-			var divBefore0:Number = (jd0 - MoTimeline.me.beginJD) / _stepJD;
-			Log.traceText( "	divBefore0 : " + divBefore0 );
+			Log.traceText( "    MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
+			Log.traceText( "    MoTimeline.me.baseJD : " + MoTimeline.me.baseJD );
+//			Log.traceText( "    Lenght BaseJD : " + lenBaseJD );
+			Log.traceText( "    Offset segment JD : " + offSegJD );
 
 			killChildren();
 
 			for ( var i:int = 0; i < _div; i++ ) {
-//				var jd:Number = jd0 - offsetJD + i * _stepJD;
-				var jd:Number = MoTimeline.me.baseJD + offsetJD + i * _stepJD;
-				var yy:Number = dateToY( jd );
-//				Log.traceText( "		yy : " + yy );
+				var jd:Number = MoTimeline.me.baseJD - jdPerHeight / 2 - offSegJD + i * _stepJD;
+//				var jd:Number = MoTimeline.me.baseJD - jdPerHeight / 2 + i * _stepJD;
+				Log.traceText("        jd : " + JDUtils.getFormatString(jd));
+
+//				var yy:Number = _yCenter + MoTimeline.me.scale * (jd - MoTimeline.me.baseJD);
+				var yy:Number = MoTimeline.me.scale * (jd - MoTimeline.me.baseJD);
+//				var yy:Number = MoTimeline.me.scale * jd;
+//				var yy:Number = _yCenter - MoTimeline.me.scale * (jd - MoTimeline.me.baseJD);
+//				var yy:Number = _yCenter - MoTimeline.me.scale * (minJD + jd - MoTimeline.me.baseJD);
+				Log.traceText( "        yy : " + yy );
 
 				var dateGrad:DateGraduation = new DateGraduation( jd, _width ).init();
 				dateGrad.y = yy;
@@ -171,10 +174,6 @@ package display.gui {
 			draw();
 		}
 
-		private function dateToY( jd:Number ):Number {
-//			return MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
-			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
-		}
 	}
 
 }
