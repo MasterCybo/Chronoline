@@ -12,7 +12,7 @@
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="AIR_SDK_40" />
+          <sdk name="4.6.0.23201B" />
         </dependencies>
         <compiler-options />
         <packaging-air-desktop />
@@ -27,7 +27,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="AIR_SDK_40" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="jdk" jdkName="4.6.0.23201B" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="fw2cybo" level="project" />
     <orderEntry type="library" exported="" name="lib" level="project" />

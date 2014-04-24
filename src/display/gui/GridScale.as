@@ -72,10 +72,10 @@ package display.gui {
 			Log.traceText( "*execute* GridScale.updateScale" );
 			Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
 
-			var totalDur:Number = MoTimeline.me.duration;
-			var totalYears:Number = totalDur / JDUtils.DAYS_PER_YEAR;
+//			var totalDur:Number = MoTimeline.me.duration;
+//			var totalYears:Number = totalDur / JDUtils.DAYS_PER_YEAR;
 			//Log.traceText( "Total duration : " + totalDur );
-			Log.traceText( "Total years : " + totalYears );
+//			Log.traceText( "Total years : " + totalYears );
 
 			var heightJD:Number = _height / MoTimeline.me.scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
@@ -108,8 +108,8 @@ package display.gui {
 			_div = MoTimeline.me.duration / _stepJD;
 			Log.traceText( "Total divide : " + _div );
 
-			var baseDiv:Number = (MoTimeline.me.baseJD - MoTimeline.me.beginJD) / _stepJD;
-			Log.traceText( "Divide before baseJD : " + baseDiv );
+//			var baseDiv:Number = (MoTimeline.me.baseJD - MoTimeline.me.beginJD) / _stepJD;
+//			Log.traceText( "Divide before baseJD : " + baseDiv );
 
 			draw();
 		}
@@ -119,12 +119,9 @@ package display.gui {
 		}*/
 
 		private function draw():void {
-//			var lenBaseJD:Number = MoTimeline.me.baseJD - MoTimeline.me.beginJD;
-//			var offSegJD:Number = lenBaseJD % _stepJD;
 			var offSegJD:Number = MoTimeline.me.baseJD % _stepJD;
-
 			var jdPerHeight:Number = _height / MoTimeline.me.scale;
-//			var minJD:Number = MoTimeline.me.baseJD - jdPerHeight / 2;
+			var minJD:Number = MoTimeline.me.baseJD - jdPerHeight / 2;
 
 			Log.traceText( "*execute* GridScale.draw" );
 			Log.traceText( "    MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
@@ -135,16 +132,8 @@ package display.gui {
 			killChildren();
 
 			for ( var i:int = 0; i < _div; i++ ) {
-				var jd:Number = MoTimeline.me.baseJD - jdPerHeight / 2 - offSegJD + i * _stepJD;
-//				var jd:Number = MoTimeline.me.baseJD - jdPerHeight / 2 + i * _stepJD;
-				Log.traceText("        jd : " + JDUtils.getFormatString(jd));
-
-//				var yy:Number = _yCenter + MoTimeline.me.scale * (jd - MoTimeline.me.baseJD);
-				var yy:Number = MoTimeline.me.scale * (jd - MoTimeline.me.baseJD);
-//				var yy:Number = MoTimeline.me.scale * jd;
-//				var yy:Number = _yCenter - MoTimeline.me.scale * (jd - MoTimeline.me.baseJD);
-//				var yy:Number = _yCenter - MoTimeline.me.scale * (minJD + jd - MoTimeline.me.baseJD);
-				Log.traceText( "        yy : " + yy );
+				var jd:Number = MoTimeline.me.beginJD + i * _stepJD;
+				var yy:Number = MoTimeline.me.scale * ( jd - minJD );
 
 				var dateGrad:DateGraduation = new DateGraduation( jd, _width ).init();
 				dateGrad.y = yy;
