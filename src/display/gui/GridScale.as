@@ -119,15 +119,12 @@ package display.gui {
 		}*/
 
 		private function draw():void {
-			var offSegJD:Number = MoTimeline.me.baseJD % _stepJD;
 			var jdPerHeight:Number = _height / MoTimeline.me.scale;
 			var minJD:Number = MoTimeline.me.baseJD - jdPerHeight / 2;
 
 			Log.traceText( "*execute* GridScale.draw" );
 			Log.traceText( "    MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
 			Log.traceText( "    MoTimeline.me.baseJD : " + MoTimeline.me.baseJD );
-//			Log.traceText( "    Lenght BaseJD : " + lenBaseJD );
-			Log.traceText( "    Offset segment JD : " + offSegJD );
 
 			killChildren();
 
