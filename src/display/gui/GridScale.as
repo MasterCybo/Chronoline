@@ -15,6 +15,8 @@ package display.gui {
 	 */
 	public class GridScale extends ASprite {
 
+		private static var _pool:Object = {}; // Пул объектов jd = DateGraduation
+
 		private var _offsetJD:Number; // Величина изменнения MoTimeline.me.currentDateJD
 		private var _oldBaseJD:Number; // Предыдущее значение MoTimeline.me.currentDateJD
 
@@ -48,13 +50,14 @@ package display.gui {
 			//var jd:Number = MoTimeline.me.currentDateJD - djd;
 			//Log.traceText( "jd : " + jd );
 
-//			_offsetJD = MoTimeline.me.baseJD - _oldBaseJD;
+			_offsetJD += MoTimeline.me.baseJD - _oldBaseJD;
 
 //			Log.traceText( "_offsetJD : " + _offsetJD );
 
 //			var deltaJD:Number = dy / MoTimeline.me.scale;
 
 //			_oldBaseJD = MoTimeline.me.baseJD;
+			_oldBaseJD = MoTimeline.me.baseJD;
 
 			draw();
 		}
@@ -119,25 +122,28 @@ package display.gui {
 		}*/
 
 		private function draw():void {
-			var offSegJD:Number = MoTimeline.me.baseJD % _stepJD;
-			var jdPerHeight:Number = _height / MoTimeline.me.scale;
-			var minJD:Number = MoTimeline.me.baseJD - jdPerHeight / 2;
+			var minJD:Number = MoTimeline.me.baseJD - _height / ( 2 * MoTimeline.me.scale );
 
-			Log.traceText( "*execute* GridScale.draw" );
-			Log.traceText( "    MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
-			Log.traceText( "    MoTimeline.me.baseJD : " + MoTimeline.me.baseJD );
-//			Log.traceText( "    Lenght BaseJD : " + lenBaseJD );
-			Log.traceText( "    Offset segment JD : " + offSegJD );
+//			killChildren();
 
-			killChildren();
+			var dateGrad:DateGraduation;
+			var yy:Number = 0;
+			var jd:Number = 0;
 
-			for ( var i:int = 0; i < _div; i++ ) {
-				var jd:Number = MoTimeline.me.beginJD + i * _stepJD;
-				var yy:Number = MoTimeline.me.scale * ( jd - minJD );
+			for ( var i:int = 0; i <= _div; i++ ) {
+				jd = MoTimeline.me.beginJD + i * _stepJD;
 
-				var dateGrad:DateGraduation = new DateGraduation( jd, _width ).init();
+				dateGrad =_pool[jd];
+
+				if( !dateGrad ){
+					dateGrad = new DateGraduation( jd, _width ).init();
+					addChild( dateGrad );
+
+					_pool[jd] = dateGrad;
+				}
+
+				yy = MoTimeline.me.scale * ( jd - minJD );
 				dateGrad.y = yy;
-				addChild( dateGrad );
 			}
 		}
 
