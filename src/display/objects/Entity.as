@@ -98,7 +98,7 @@ package display.objects {
 			//Log.traceText( "div : " + div );
 			//Log.traceText( "_stepDate : " + _stepDate );
 			
-			return;
+//			return;
 			
 			_isUpdating = true;
 			
@@ -212,7 +212,7 @@ package display.objects {
 		}
 
 		public function updateDisplayFacts():void {
-			return;
+//			return;
 			
 			var fact:Fact;
 			var moFact:MoFact;

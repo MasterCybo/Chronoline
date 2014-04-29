@@ -13,6 +13,9 @@ package display.components {
 	 * @author Artem Arslanov
 	 */
 	public class DateGraduation extends ASprite {
+//		static public const MODE_GHOST:String = "modeGhost";
+//		static public const MODE_GHOST:String = "modeGhost";
+
 		private var _jd:Number = 0;
 		private var _width:uint;
 		

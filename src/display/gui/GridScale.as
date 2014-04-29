@@ -152,7 +152,7 @@ package display.gui {
 				}
 			}
 
-			// Чистим не отображаемые
+			// Чистим не отображаемые при изменении размеров приложения
 //			var nm:String;
 //			for ( nm in _displayed ) {
 //				dateGrad = _displayed[nm];
