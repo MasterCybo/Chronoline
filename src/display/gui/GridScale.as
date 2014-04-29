@@ -5,6 +5,8 @@ package display.gui {
 
 	import events.TimelineEvent;
 
+	import flash.sampler.getMemberNames;
+
 	import ru.arslanov.core.utils.Calc;
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
@@ -19,9 +21,8 @@ package display.gui {
 		static private var _pool:Array = [];
 		static private var _displayed:Object = {}; // jd = DateGraduation
 
-		private var _oldBaseJD:Number = NaN; // Предыдущее значение MoTimeline.me.baseJD
+		private var _oldBaseJD:Number = 0; // Предыдущее значение MoTimeline.me.baseJD
 		private var _offsetJD:Number = 0; // Величина изменнения MoTimeline.me.baseJD
-		private var _offsetY:Number = 0; //
 
 		private var _width:uint;
 		private var _height:uint;
@@ -59,15 +60,8 @@ package display.gui {
 //			Log.traceText( "*execute* GridScale.onDateChange" );
 
 			var dJD:Number = MoTimeline.me.baseJD - _oldBaseJD;
-			var dPx:Number = dJD * MoTimeline.me.scale;
 
 			_offsetJD += dJD;
-			_offsetY += dPx;
-
-//			Log.traceText( "    Delta JD = px : " + dJD + " = " + dPx );
-//			Log.traceText( "        Offset JD = px : " + _offsetJD + " = " + _offsetY );
-//			Log.traceText( "        Step JD : " + _stepJD );
-
 			_oldBaseJD = MoTimeline.me.baseJD;
 
 			draw();
@@ -79,19 +73,9 @@ package display.gui {
 
 		private function updateScale():void {
 //			Log.traceText( "*execute* GridScale.updateScale" );
-//			Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
-
-//			var totalDur:Number = MoTimeline.me.duration;
-//			var totalYears:Number = totalDur / JDUtils.DAYS_PER_YEAR;
-			//Log.traceText( "Total duration : " + totalDur );
-//			Log.traceText( "Total years : " + totalYears );
 
 			var heightJD:Number = _height / MoTimeline.me.scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
-			//Log.traceText( "heightJD : " + heightJD );
-//			Log.traceText( "Years/height : " + heightYears );
-
-//			var oldStep:Number = _stepJD;
 
 			if ( heightYears <= 1 ) {
 				_stepJD = JDUtils.DAYS_PER_YEAR / 12;
@@ -109,21 +93,7 @@ package display.gui {
 				_stepJD = 1000 * JDUtils.DAYS_PER_YEAR;
 			}
 
-//			Log.traceText( "Step years : " + (_stepJD / JDUtils.DAYS_PER_YEAR) );
-//			Log.traceText( "Step JD : " + _stepJD );
-
-
-			//_div = heightJD / _stepJD;
-
-			//Log.traceText( "_div : " + _div );
-
-//			_div = MoTimeline.me.duration / _stepJD;
-//			Log.traceText( "Total divide : " + _div );
 			_div = heightJD / _stepJD;
-//			Log.traceText( "Height divide : " + _div );
-
-//			var baseDiv:Number = (MoTimeline.me.baseJD - MoTimeline.me.beginJD) / _stepJD;
-//			Log.traceText( "Divide before baseJD : " + baseDiv );
 
 			draw();
 		}
@@ -134,68 +104,65 @@ package display.gui {
 
 		private function draw():void {
 //			Log.traceText( "*execute* GridScale.draw" );
-//			killChildren();
-//			removeChildren();
 
 			var dateGrad:DateGraduation;
+
 			var len:uint = _div + 1;
-
-//			Log.traceText( "_offsetJD > _stepJD : " + _offsetJD + " > " + _stepJD + " = " + (_offsetJD > _stepJD) );
-//			Log.traceText( "_offsetJD : " + _offsetJD );
-//			Log.traceText( "_stepJD : " + _stepJD );
-
-//			if ( Math.abs( _offsetJD ) >= _stepJD ) {
-//				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
-//			}
-
-			var minY:Number = _yCenter - MoTimeline.me.scale * int( len / 2 ) * _stepJD;
-			var maxY:Number = _yCenter + MoTimeline.me.scale * int( len / 2 ) * _stepJD;
+			var lenHalf:Number = int( len / 2 );
+			var deltaY:Number = MoTimeline.me.scale * lenHalf * _stepJD;
+			var minY:Number = _yCenter - deltaY;
+			var maxY:Number = _yCenter + deltaY;
 //			Log.traceText( "    minY, maxY : " + minY + ", " + maxY );
 
 			for ( var i:int = 0; i <= len; i++ ) {
-				var jdi:Number = ( -int( len / 2 ) + i ) * _stepJD - _offsetJD;
+				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetJD;
 				var yy:Number = _yCenter + MoTimeline.me.scale * ( jdi );
 				var jd:Number = MoTimeline.me.baseJD + jdi;
 
 				dateGrad = _displayed[jd];
 
-				if( !dateGrad ) {
-					if( _pool.length ) {
-						Log.traceText( "=== Get from Pool : " + JDUtils.getFormatString( jd ) );
-						dateGrad = _pool.pop();
-						dateGrad.jd = jd;
-					} else {
-						Log.traceText( "+++ Create new : " + JDUtils.getFormatString( jd ) );
-						dateGrad = new DateGraduation( jd, _width ).init();
+				if ( (yy >= minY ) && ( yy <= maxY ) ) {
+					if( !dateGrad ) {
+						if( _pool.length ) {
+//							Log.traceText( "=== Get from Pool : " + JDUtils.getFormatString( jd ) );
+							dateGrad = _pool.pop();
+							dateGrad.width = _width;
+							dateGrad.jd = jd;
+						} else {
+//							Log.traceText( "+++ Create new : " + JDUtils.getFormatString( jd ) );
+							dateGrad = new DateGraduation( jd, _width ).init();
+						}
+
+						if( !contains( dateGrad ) ) {
+							addChild( dateGrad );
+						}
+
+						_displayed[jd] = dateGrad;
 					}
 
-					if( !contains( dateGrad ) ) {
-						addChild( dateGrad );
-					}
-
-					_displayed[jd] = dateGrad;
+					dateGrad.y = yy;
 				} else {
-					if ( (yy <= minY ) || ( yy >= maxY ) ) {
-						Log.traceText( "--- Remove : " + JDUtils.getFormatString( jd ) );
+					if ( dateGrad ) {
+//						Log.traceText( "--- Remove : " + JDUtils.getFormatString( jd ) );
 
 						_pool.push( dateGrad );
 						removeChild( dateGrad );
 						delete _displayed[jd];
-					} else {
-						dateGrad.y = yy;
 					}
 				}
-
-
-//				if ( (yy > (_yCenter - 10)) && ( yy < ( _yCenter + 10 ) ) ) {
-//					dateGrad.kill();
-//				} else {
-//					addChild( dateGrad );
-//					dateGrad.y = yy;
-//				}
-
-
 			}
+
+			// Чистим не отображаемые
+//			var nm:String;
+//			for ( nm in _displayed ) {
+//				dateGrad = _displayed[nm];
+//
+//				if ( !contains( dateGrad ) ) {
+//					_pool.push( dateGrad );
+//					removeChild( dateGrad );
+//					delete _displayed[jd];
+//				}
+//			}
 
 			if ( Math.abs( _offsetJD ) >= _stepJD ) {
 				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
@@ -221,9 +188,20 @@ package display.gui {
 
 			_yCenter = _height / 2;
 
-			draw();
+			updateScale();
 		}
 
+
+		override public function kill():void {
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChange );
+
+			_pool.length = 0;
+			_displayed = null;
+
+			super.kill();
+		}
 	}
 
 }
