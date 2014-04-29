@@ -6,7 +6,6 @@ package display.gui {
 	import events.TimelineEvent;
 
 	import ru.arslanov.core.utils.Calc;
-
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
@@ -18,8 +17,8 @@ package display.gui {
 	public class GridScale extends ASprite {
 
 		static private var _pool:Array = [];
-		static private var _displayed:Object = {};
-		
+		static private var _displayed:Object = {}; // jd = DateGraduation
+
 		private var _oldBaseJD:Number = NaN; // Предыдущее значение MoTimeline.me.baseJD
 		private var _offsetJD:Number = 0; // Величина изменнения MoTimeline.me.baseJD
 		private var _offsetY:Number = 0; //
@@ -51,13 +50,13 @@ package display.gui {
 			_stepJD = 0;
 			_offsetJD = 0;
 			_div = 0;
-			
+
 			updateScale();
 			draw();
 		}
 
 		private function onDateChange( ev:TimelineEvent ):void {
-			Log.traceText( "*execute* GridScale.onDateChange" );
+//			Log.traceText( "*execute* GridScale.onDateChange" );
 
 			var dJD:Number = MoTimeline.me.baseJD - _oldBaseJD;
 			var dPx:Number = dJD * MoTimeline.me.scale;
@@ -65,9 +64,9 @@ package display.gui {
 			_offsetJD += dJD;
 			_offsetY += dPx;
 
-			Log.traceText( "    Delta JD = px : " + dJD + " = " + dPx );
-			Log.traceText( "        Offset JD = px : " + _offsetJD + " = " + _offsetY );
-			Log.traceText( "        Step JD : " + _stepJD );
+//			Log.traceText( "    Delta JD = px : " + dJD + " = " + dPx );
+//			Log.traceText( "        Offset JD = px : " + _offsetJD + " = " + _offsetY );
+//			Log.traceText( "        Step JD : " + _stepJD );
 
 			_oldBaseJD = MoTimeline.me.baseJD;
 
@@ -79,8 +78,8 @@ package display.gui {
 		}
 
 		private function updateScale():void {
-			Log.traceText( "*execute* GridScale.updateScale" );
-			Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
+//			Log.traceText( "*execute* GridScale.updateScale" );
+//			Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
 
 //			var totalDur:Number = MoTimeline.me.duration;
 //			var totalYears:Number = totalDur / JDUtils.DAYS_PER_YEAR;
@@ -90,9 +89,9 @@ package display.gui {
 			var heightJD:Number = _height / MoTimeline.me.scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
 			//Log.traceText( "heightJD : " + heightJD );
-			Log.traceText( "Years/height : " + heightYears );
+//			Log.traceText( "Years/height : " + heightYears );
 
-			var oldStep:Number = _stepJD;
+//			var oldStep:Number = _stepJD;
 
 			if ( heightYears <= 1 ) {
 				_stepJD = JDUtils.DAYS_PER_YEAR / 12;
@@ -110,8 +109,8 @@ package display.gui {
 				_stepJD = 1000 * JDUtils.DAYS_PER_YEAR;
 			}
 
-			Log.traceText( "Step years : " + (_stepJD / JDUtils.DAYS_PER_YEAR) );
-			Log.traceText( "Step JD : " + _stepJD );
+//			Log.traceText( "Step years : " + (_stepJD / JDUtils.DAYS_PER_YEAR) );
+//			Log.traceText( "Step JD : " + _stepJD );
 
 
 			//_div = heightJD / _stepJD;
@@ -121,7 +120,7 @@ package display.gui {
 //			_div = MoTimeline.me.duration / _stepJD;
 //			Log.traceText( "Total divide : " + _div );
 			_div = heightJD / _stepJD;
-			Log.traceText( "Height divide : " + _div );
+//			Log.traceText( "Height divide : " + _div );
 
 //			var baseDiv:Number = (MoTimeline.me.baseJD - MoTimeline.me.beginJD) / _stepJD;
 //			Log.traceText( "Divide before baseJD : " + baseDiv );
@@ -134,74 +133,72 @@ package display.gui {
 		 }*/
 
 		private function draw():void {
-			var jdPerHeight:Number = _height / MoTimeline.me.scale;
-			var minJD:Number = MoTimeline.me.baseJD - jdPerHeight / 2;
-			var deltaHeightJD:Number = jdPerHeight / 2;
-
-			Log.traceText( "jdPerHeight : " + jdPerHeight );
-			Log.traceText( "deltaHeightJD : " + deltaHeightJD );
-
-			Log.traceText( "*execute* GridScale.draw" );
-//			Log.traceText( "    MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
-//			Log.traceText( "    MoTimeline.me.baseJD : " + MoTimeline.me.baseJD );
-
-			killChildren();
+//			Log.traceText( "*execute* GridScale.draw" );
+//			killChildren();
 //			removeChildren();
 
 			var dateGrad:DateGraduation;
-			
-			if( Math.abs( _offsetJD ) >= _stepJD ){
-				Log.traceText( "------------------------------------------------" );
-				Log.traceText( "1 _offsetJD : " + _offsetJD );
-				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
-				Log.traceText( "2 _offsetJD : " + _offsetJD );
-				Log.traceText( "------------------------------------------------" );
-			}
-
 			var len:uint = _div + 1;
-			
+
+//			Log.traceText( "_offsetJD > _stepJD : " + _offsetJD + " > " + _stepJD + " = " + (_offsetJD > _stepJD) );
+//			Log.traceText( "_offsetJD : " + _offsetJD );
+//			Log.traceText( "_stepJD : " + _stepJD );
+
+//			if ( Math.abs( _offsetJD ) >= _stepJD ) {
+//				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
+//			}
+
+			var minY:Number = _yCenter - MoTimeline.me.scale * int( len / 2 ) * _stepJD;
+			var maxY:Number = _yCenter + MoTimeline.me.scale * int( len / 2 ) * _stepJD;
+//			Log.traceText( "    minY, maxY : " + minY + ", " + maxY );
+
 			for ( var i:int = 0; i <= len; i++ ) {
-//				var jd:Number = minJD + i * _stepJD - _offsetJD;
-//				var jd:Number = minJD + i * _stepJD;
-				var jdi:Number = i * _stepJD - _offsetJD;
+				var jdi:Number = ( -int( len / 2 ) + i ) * _stepJD - _offsetJD;
+				var yy:Number = _yCenter + MoTimeline.me.scale * ( jdi );
+				var jd:Number = MoTimeline.me.baseJD + jdi;
 
-//				Log.traceText( "    jdi : " + jdi );
+				dateGrad = _displayed[jd];
 
-//				dateGrad = _displayed[jd];
-				
-//				if( !dateGrad ) {
-//					dateGrad = new DateGraduation( MoTimeline.me.baseJD + (jd - minJD) - jdPerHeight / 2, _width ).init();
-//					dateGrad = new DateGraduation( MoTimeline.me.baseJD + (jdi - minJD) /*- jdPerHeight / 2*/, _width ).init();
-					dateGrad = new DateGraduation( MoTimeline.me.baseJD + /*deltaHeightJD + */jdi, _width ).init();
-//					dateGrad = new DateGraduation( MoTimeline.me.baseJD + jdi - (MoTimeline.me.baseJD - minJD), _width ).init();
-//					dateGrad = new DateGraduation( MoTimeline.me.baseJD + (jd - minJD) - _offsetJD, _width ).init();
-					addChild( dateGrad );
+				if( !dateGrad ) {
+					if( _pool.length ) {
+						Log.traceText( "=== Get from Pool : " + JDUtils.getFormatString( jd ) );
+						dateGrad = _pool.pop();
+						dateGrad.jd = jd;
+					} else {
+						Log.traceText( "+++ Create new : " + JDUtils.getFormatString( jd ) );
+						dateGrad = new DateGraduation( jd, _width ).init();
+					}
 
-//					_displayed[jd] = dateGrad;
+					if( !contains( dateGrad ) ) {
+						addChild( dateGrad );
+					}
+
+					_displayed[jd] = dateGrad;
+				} else {
+					if ( (yy <= minY ) || ( yy >= maxY ) ) {
+						Log.traceText( "--- Remove : " + JDUtils.getFormatString( jd ) );
+
+						_pool.push( dateGrad );
+						removeChild( dateGrad );
+						delete _displayed[jd];
+					} else {
+						dateGrad.y = yy;
+					}
+				}
+
+
+//				if ( (yy > (_yCenter - 10)) && ( yy < ( _yCenter + 10 ) ) ) {
+//					dateGrad.kill();
+//				} else {
+//					addChild( dateGrad );
+//					dateGrad.y = yy;
 //				}
 
-//				var yy:Number = _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD /*+ jdPerHeight/2*/ );
-//				var yy:Number = MoTimeline.me.scale * ( MoTimeline.me.baseJD + (jd - MoTimeline.me.baseJD) /*+ jdPerHeight/2*/ );
 
-//				var a:Number = 3;
-//				var s:Number = -a + (a+i)/2;
-//				Log.traceText( "i: " + i + ", a: " + a + ", s: " + s );
+			}
 
-				var d:Number = MoTimeline.me.baseJD - MoTimeline.me.beginJD;
-				Log.traceText( "    d = baseJD - beginJD = " + MoTimeline.me.baseJD + " - " + MoTimeline.me.beginJD + " = " + d );
-				var s:Number = d + jdi;
-				Log.traceText( "        s = d + jdi : " + d + " + " + jdi + " = " + s );
-				var r:Number = s/2;
-				Log.traceText( "            r = a / 2 = " + r );
-				var v:Number = -d + r;
-				Log.traceText( "                v = -d + r = " + (-d) + " + " + r + " = " + v );
-
-				var yy:Number = _yCenter + MoTimeline.me.scale * ( MoTimeline.me.beginJD - MoTimeline.me.baseJD + (MoTimeline.me.baseJD + jdi) / 2 );
-//				var yy:Number = _yCenter + MoTimeline.me.scale * ( v );
-//				Log.traceText( "        yy : " + yy );
-
-				dateGrad.y = yy;
-				
+			if ( Math.abs( _offsetJD ) >= _stepJD ) {
+				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
 			}
 		}
 
