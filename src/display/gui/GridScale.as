@@ -99,7 +99,32 @@ package display.gui {
 		 draw();
 		 }*/
 
+
 		private function draw():void {
+			killChildren();
+
+			var dateGrad:DateGraduation;
+
+			var len:uint = _div + 1;
+			var lenHalf:Number = int( len / 2 );
+
+			for ( var i:int = 0; i <= len; i++ ) {
+				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetJD;
+				var yy:Number = _yCenter + MoTimeline.me.scale * ( jdi );
+				var jd:Number = MoTimeline.me.baseJD + jdi;
+
+				dateGrad = new DateGraduation( jd, _width, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
+				addChild( dateGrad );
+
+
+				dateGrad.y = yy;
+			}
+			if ( Math.abs( _offsetJD ) >= _stepJD ) {
+				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
+			}
+		}
+
+		/*private function draw():void {
 //			Log.traceText( "*execute* GridScale.draw" );
 
 			var dateGrad:DateGraduation;
@@ -164,7 +189,7 @@ package display.gui {
 			if ( Math.abs( _offsetJD ) >= _stepJD ) {
 				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
 			}
-		}
+		}*/
 
 		override public function get width():Number {
 			return _width;

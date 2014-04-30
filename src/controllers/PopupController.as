@@ -50,28 +50,49 @@ package controllers {
 			//_rgBegin = MoTimeline.me.rangeBegin;
 			//_rgEnd = MoTimeline.me.rangeEnd;
 
-			updateBoundsJD();
+//			updateBoundsJD();
 			
 			_host.eventManager.addEventListener( MouseEvent.CLICK, onClickFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OVER, onOverFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OUT, onOutFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
-			
+			Display.stageAddEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
+			Display.stageAddEventListener( MouseEvent.MOUSE_UP, onMouseUpStage );
+
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 		}
 		
 		private function onMouseDown( ev:MouseEvent ):void {
-			_host.eventManager.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+//			_host.eventManager.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			Display.stageAddEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 		}
 		
 		private function onMouseMove( ev:MouseEvent ):void {
+			updatePosition( _curMoFact );
 			_isDragged = true;
 		}
 		
 		private function onMouseUp( ev:MouseEvent ):void {
-			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+//			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+
+			if ( !_isDragged && _lockedMoFact ) {
+				removePopup( _lockedMoFact );
+				_lockedMoFact = null;
+			}
+
+			_isDragged = false;
+		}
+
+		private function onMouseUpStage( ev:MouseEvent ):void {
+			if ( !_isDragged && _lockedMoFact ) {
+				removePopup( _lockedMoFact );
+				_lockedMoFact = null;
+			}
+
+			_isDragged = false;
 		}
 		
 		private function onOverFact( ev:MouseEvent ):void {
@@ -105,8 +126,11 @@ package controllers {
 		}
 		
 		private function onClickFact( ev:MouseEvent ):void {
+			Log.traceText( "*execute* PopupController.onClickFact" );
 			//if ( !( ev.target.parent is Fact ) ) return;
-			
+
+			Log.traceText( "_isDragged : " + _isDragged );
+
 			if ( _isDragged ) {
 				_isDragged = false;
 				return;
@@ -136,7 +160,7 @@ package controllers {
 		}
 		
 		private function onChangedScale( ev:TimelineEvent ):void {
-			updateBoundsJD();
+//			updateBoundsJD();
 
 			if ( !_lockedMoFact ) return;
 
@@ -144,7 +168,7 @@ package controllers {
 		}
 		
 		private function onChangedBase( ev:TimelineEvent ):void {
-			updateBoundsJD();
+//			updateBoundsJD();
 
 			if ( !_lockedMoFact ) return;
 
@@ -152,17 +176,9 @@ package controllers {
 		}
 
 		private function updateBoundsJD():void {
-			Log.traceText( "*execute* PopupController.updateBoundsJD" );
-
-			var halfJD:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / 2 / MoTimeline.me.scale;
-
-			Log.traceText( "MoTimeline.me.baseJD : " + MoTimeline.me.baseJD );
-			Log.traceText( "halfJD : " + halfJD );
-
+			var halfJD:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) * 0.5 / MoTimeline.me.scale;
 			_minJD = MoTimeline.me.baseJD - halfJD;
 			_maxJD = MoTimeline.me.baseJD + halfJD;
-
-			Log.traceText( "_minJD - _maxJD : " + _minJD + " - " + _maxJD );
 		}
 		
 		private function updatePosition( moFact:MoFact ):void {
@@ -170,7 +186,7 @@ package controllers {
 		}
 		
 		private function displayPopup( moFact:MoFact ):void {
-			Log.traceText( "*execute* PopupController.displayPopup" );
+//			Log.traceText( "*execute* PopupController.displayPopup" );
 			var popup:PopupInfo = _popups[ moFact.id ];
 			
 			if ( !popup ) {
@@ -183,12 +199,13 @@ package controllers {
 		}
 		
 		private function updatePopup( moFact:MoFact ):void {
-			Log.traceText( "*execute* PopupController.updatePopup" );
+			if( !moFact ) return;
+
 			var popup:PopupInfo = _popups[ moFact.id ];
 
 			updateBoundsJD();
 
-			Log.traceText( "moFact.period.middle : " + moFact.period.middle );
+//			Log.traceText( "moFact.period.middle : " + moFact.period.middle );
 
 
 			if ( ( moFact.period.middle < _minJD ) || ( moFact.period.middle > _maxJD ) ) {
@@ -204,7 +221,7 @@ package controllers {
 			popup.x = moFact == _lockedMoFact ? _ptLock.x : _ptPopup.x;
 			popup.y = moFact == _lockedMoFact ? dateToY( moFact.period.middle ) : _ptPopup.y;
 
-			Log.traceText( "popup.x, y : " + popup.x + ", " + popup.y );
+//			Log.traceText( "popup.x, y : " + popup.x + ", " + popup.y );
 
 			if ( !_host.contains( popup ) ) {
 				_host.addChild( popup );
@@ -231,9 +248,11 @@ package controllers {
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OVER, onOverFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OUT, onOutFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_UP, onMouseUpStage );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 			
 			_lockedMoFact = null;
 			_curMoFact = null;

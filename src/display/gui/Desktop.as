@@ -41,7 +41,7 @@ package display.gui {
 			
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
-			_curDateMarker = new DateGraduation( MoTimeline.me.baseJD, Display.stageWidth, 0xFF8000, 0xFF8000 ).init();
+			_curDateMarker = new DateGraduation( MoTimeline.me.baseJD, Display.stageWidth, Settings.BASE_TEXT_COLOR, Settings.BASE_LINE_COLOR, Settings.BASE_BACKGROUND_COLOR ).init();
 			_curDateMarker.y = int( _height / 2 );
 			
 			addChild( _gridScale );

@@ -90,6 +90,17 @@ package  {
 		// Навигационная панель
 		//=======================================================================================================
 		static public const NAVBAR_WIDTH:uint = 46;
+
+		// Масштабная сетка
+		//=======================================================================================================
+		public static const GRID_TEXT_COLOR:uint = 0x9F9F9F;
+		public static const GRID_LINE_COLOR:uint = 0x9F9F9F;
+
+		// Метка базовой даты
+		//=======================================================================================================
+		public static const BASE_BACKGROUND_COLOR:uint = 0xFFFFFF;
+		public static const BASE_TEXT_COLOR:uint = 0xFF8000;
+		public static const BASE_LINE_COLOR:uint = 0xFF8000;
 	}
 
 }

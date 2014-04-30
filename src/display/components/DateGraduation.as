@@ -26,12 +26,14 @@ package display.components {
 		private var _changeDate:Boolean = true;
 		private var _colorLine:uint;
 		private var _colorText:uint;
+		private var _colorBackground:Object;
 		
-		public function DateGraduation( julianDate:Number = 0, width:uint = 100, colorLine:uint = 0x0, colorText:uint = 0x0 ) {
+		public function DateGraduation( julianDate:Number, width:uint, colorLine:uint = 0x0, colorText:uint = 0x0, colorBackground:Object = null ) {
 			_jd = julianDate;
 			_width = width;
 			_colorLine = colorLine;
 			_colorText = colorText;
+			_colorBackground = colorBackground;
 			
 			super();
 		}
@@ -84,6 +86,9 @@ package display.components {
 			
 			if ( !_label ) {
 				_label = new TextApp( "", TextFormats.DEFAULT ).init();
+				if ( _colorBackground ) {
+					_label.setBackground( true, uint( _colorBackground ) );
+				}
 				_label.textColor = _colorText;
 				addChild( _label );
 			}
