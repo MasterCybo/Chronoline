@@ -1,7 +1,6 @@
 package display.gui {
 	import collections.EntityManager;
 
-	import display.base.ToggleApp;
 	import display.components.RangeEditor;
 	import display.gui.buttons.BtnIcon;
 	import display.gui.buttons.ToggleIcon;
@@ -40,16 +39,16 @@ package display.gui {
 			_slots = new HBox( 5 ).init();
 			_rangeEditor = new RangeEditor().init();
 
-			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
-			var btnSave:BtnIcon = new BtnIcon( PngBtnSavePreset ).init();
-			var btnLegend:BtnIcon = new BtnIcon( PngBtnLegend ).init();
 			var btnGuide:ToggleIcon = new ToggleIcon( PngBtnGuidlineOff, null, PngBtnGuidlineOn ).init();
-			
+			var btnSave:BtnIcon = new BtnIcon( PngBtnSavePreset ).init();
+			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
+			var btnLegend:ToggleIcon = new ToggleIcon( PngBtnLegendOff, null, PngBtnLegendOn ).init();
+
 			btnGuide.onRelease = onDisplayGuideLine;
 			btnSave.onRelease = hrClickSave;
-			btnLegend.onRelease = hrClickLegend;
 			btnSnapshot.onRelease = onClickSnapshot;
-			
+			btnLegend.onRelease = hrClickLegend;
+
 			_slots.addChildAndUpdate( btnGuide );
 			_slots.addChildAndUpdate( btnSave );
 			_slots.addChildAndUpdate( btnSnapshot );
@@ -85,7 +84,7 @@ package display.gui {
 			App.httpManager.addRequest( new ReqSavePreset( App.currentType, ids ) );
 		}
 		
-		private function hrClickLegend( btn:ToggleApp ):void {
+		private function hrClickLegend( btn:ToggleIcon ):void {
 			if ( btn.checked ) {
 				AWindowsManager.me.displayWindow( new WinLegend( -1, Display.stageHeight - _body.height ).init() );
 			} else {
