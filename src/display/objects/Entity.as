@@ -61,7 +61,7 @@ package display.objects {
 			addChild( _body );
 			addChild( _hostFacts );
 
-			Log.traceText( "_moEntity : " + _moEntity );
+//			Log.traceText( "_moEntity : " + _moEntity );
 			//Log.traceText( "_moEntity.beginPeriod : " + _moEntity.beginPeriod );
 			//Log.traceText( "_moEntity.endPeriod : " + _moEntity.endPeriod );
 

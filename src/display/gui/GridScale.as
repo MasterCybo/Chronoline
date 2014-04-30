@@ -5,11 +5,8 @@ package display.gui {
 
 	import events.TimelineEvent;
 
-	import flash.sampler.getMemberNames;
-
 	import ru.arslanov.core.utils.Calc;
 	import ru.arslanov.core.utils.JDUtils;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 
 	/**
