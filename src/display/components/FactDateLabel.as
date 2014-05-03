@@ -81,7 +81,7 @@ package display.components {
 			
 			_tfLabel.setXY( PADDING, -h05 + PADDING + _offsetY );
 			
-			_bmp = ABitmap.fromDisplayObject( _canvas ).init();
+			_bmp = ABitmap.fromDisplayObject( _canvas, { transparent:true } ).init();
 			
 			if ( _offsetY < 0 ) {
 				_bmp.y = -_bmp.height;

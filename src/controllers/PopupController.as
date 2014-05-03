@@ -2,7 +2,7 @@ package controllers {
 	import data.MoFact;
 	import data.MoTimeline;
 
-	import display.components.PopupInfo;
+	import display.components.FactInfoPopup;
 	import display.objects.Fact;
 
 	import events.TimelineEvent;
@@ -117,7 +117,7 @@ package controllers {
 			var fact:Fact = ev.target.parent as Fact;
 			
 			if ( fact.moFact != _lockedMoFact ) {
-				var popup:PopupInfo =  _popups[ _curMoFact.id ];
+				var popup:FactInfoPopup =  _popups[ _curMoFact.id ];
 				if ( popup ) {
 					removePopup( _curMoFact );
 					_curMoFact = null;
@@ -187,10 +187,10 @@ package controllers {
 		
 		private function displayPopup( moFact:MoFact ):void {
 //			Log.traceText( "*execute* PopupController.displayPopup" );
-			var popup:PopupInfo = _popups[ moFact.id ];
+			var popup:FactInfoPopup = _popups[ moFact.id ];
 			
 			if ( !popup ) {
-				popup = new PopupInfo( moFact ).init();
+				popup = new FactInfoPopup( moFact ).init();
 				
 				_popups[ moFact.id ] = popup;
 			}
@@ -201,7 +201,7 @@ package controllers {
 		private function updatePopup( moFact:MoFact ):void {
 			if( !moFact ) return;
 
-			var popup:PopupInfo = _popups[ moFact.id ];
+			var popup:FactInfoPopup = _popups[ moFact.id ];
 
 			updateBoundsJD();
 
@@ -229,7 +229,7 @@ package controllers {
 		}
 		
 		private function removePopup( moFact:MoFact ):void {
-			var popup:PopupInfo = _popups[ moFact.id ];
+			var popup:FactInfoPopup = _popups[ moFact.id ];
 			
 			if ( !popup ) return;
 			

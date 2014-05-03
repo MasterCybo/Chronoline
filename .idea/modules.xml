@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Chronoline.iml" filepath="$PROJECT_DIR$/Chronoline.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../fw2cybo/fw2cybo.iml" filepath="$PROJECT_DIR$/../../fw2cybo/fw2cybo.iml" />
     </modules>
   </component>
 </project>

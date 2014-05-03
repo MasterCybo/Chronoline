@@ -50,21 +50,21 @@ package controllers {
 			
 			AHintManager.me.removeHint();
 		}
-		
+
+		/**
+		 * Двойной клик по сущности, отображает её во всю высоту экрана, изменяя масштаб и базовую дату.
+		 * @param ev
+		 */
 		private function hrDoubleClick( ev:MouseEvent ):void {
 			var ent:Entity = ev.target.parent as Entity;
 			if ( !ent ) return;
 			
-			if ( ent.moEntity.duration == 0 )
-				return;
-			
-			//MoTimeline.me.setRange( ent.moEntity.beginPeriod.dateBegin.jd, ent.moEntity.endPeriod.dateEnd.jd );
+			if ( ent.moEntity.duration == 0 ) return;
 			
 			var scale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / ent.moEntity.duration;
 			
-			MoTimeline.me.baseJD = (ent.moEntity.beginPeriod.beginJD + ent.moEntity.endPeriod.endJD) / 2;
+			MoTimeline.me.baseJD = ( ent.moEntity.beginPeriod.beginJD + ent.moEntity.endPeriod.endJD ) / 2;
 			MoTimeline.me.scale = scale;
-			//MoTimeline.me.setRange( ent.moEntity.beginPeriod.dateBegin.jd, ent.moEntity.endPeriod.dateEnd.jd );
 		}
 		
 		public function dispose():void {

@@ -2,7 +2,7 @@ package {
 	public final class Version {
 		public static const major:int = 0;
 		public static const minor:int = 3;
-		public static const build:int = 583;
-		public static const timestamp:String = "30.04.2014 - 19:00";
+		public static const build:int = 612;
+		public static const timestamp:String = "03.05.2014 - 19:40";
 	}
 }
