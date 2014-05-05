@@ -19,7 +19,7 @@ package display.windows {
 		
 		override public function init():* {
 			var winBody:ASprite = new ASprite().init();
-			winBody.graphics.beginFill( 0x534a30, 0.5 );
+			winBody.graphics.beginFill( Settings.GUI_COLOR, 1 );
 			winBody.graphics.drawRect( 0, 0, _width > 0 ? _width : 200, _height > 0 ? _height : 167 );
 			winBody.graphics.endFill();
 			

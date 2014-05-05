@@ -10,6 +10,7 @@ package  {
 		static public const URL_ICONS:String = "images/";
 		static public const GUI_COLOR:uint = 0xDDDDDD;
 		static public const SIDEBAR_COLOR:uint = 0xDDDDDD;// 0xB7B7B7;
+		public static const LEGEND_MIN_SIZE:Number = 32;
 		
 		// Настройки ГЛАВНОЙ временной шкалы
 		//=======================================================================================================
@@ -101,6 +102,7 @@ package  {
 		public static const BASE_BACKGROUND_COLOR:uint = 0xFFFFFF;
 		public static const BASE_TEXT_COLOR:uint = 0xFF8000;
 		public static const BASE_LINE_COLOR:uint = 0xFF8000;
+
 	}
 
 }
