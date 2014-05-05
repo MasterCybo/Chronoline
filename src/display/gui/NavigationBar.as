@@ -16,7 +16,7 @@ package display.gui {
 	 */
 	public class NavigationBar extends VBox {
 		private var _zoSlider:ZoomSlider;
-		private var _zoStep:ZoomStepper;
+		private var _zoStepper:ZoomStepper;
 		private var _minScale:Number;
 		private var _maxScale:Number;
 		
@@ -26,16 +26,16 @@ package display.gui {
 		
 		override public function init():* {
 			_zoSlider = new ZoomSlider().init();
-			_zoStep = new ZoomStepper().init();
+			_zoStepper = new ZoomStepper().init();
 			
 			_zoSlider.onChange = onSliderChange;
 			_zoSlider.onPress = onSliderPress;
 			_zoSlider.onRelease = onSliderRelease;
 			
-			_zoStep.onChange = onStepperChange;
+			_zoStepper.onChange = onStepperChange;
 			
 			addChildAndUpdate( _zoSlider );
-			addChildAndUpdate( _zoStep );
+			addChildAndUpdate( _zoStepper );
 			
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			
@@ -43,7 +43,7 @@ package display.gui {
 			onSliderRelease();
 			
 			_zoSlider.position = 0;
-			_zoStep.position = 0;
+			_zoStepper.position = 0;
 			
 			return super.init();
 		}
@@ -58,23 +58,47 @@ package display.gui {
 		
 		private function onTimelineRescale( ev:TimelineEvent ):void {
 			Log.traceText( "*execute* NavigationBar.onTimelineRescale" );
-			_zoSlider.position = _zoStep.position = ( MoTimeline.me.scale - _minScale ) / (_maxScale - _minScale);
+			_zoSlider.position = _zoStepper.position = ( MoTimeline.me.scale - _minScale ) / (_maxScale - _minScale);
 		}
 		
 		private function onSliderChange():void {
-			_zoStep.position = _zoSlider.position;
+//			_zoStepper.position = _zoSlider.position;
 			
-			//Log.traceText( "_zoSlider.position : " + _zoSlider.position );
 			
-			MoTimeline.me.scale = _minScale + _zoSlider.position * (_maxScale - _minScale);
+			var pos:Number = _zoSlider.position;
+			var deltaScale:Number = _maxScale - _minScale;
+			var newScale:Number = Math.pow( deltaScale, pos );
+
+			var sc1:Number = _minScale + newScale;
+			var sc2:Number = _minScale * newScale;
+
+//			Log.traceText( deltaScale + " ^ " + pos + " = " + newScale );
+			Log.traceText( "    " + _minScale + " + " + newScale + " = " + sc1 );
+//			Log.traceText( "        " + _minScale + " * " + newScale  + " = " + sc2 );
+
+			MoTimeline.me.scale = sc1;
+			
+//			MoTimeline.me.scale = _minScale + _zoSlider.position * (_maxScale - _minScale);
 			//Log.traceText( "_zoSlider.position : " + _zoSlider.position );
 			//Log.traceText( "MoTimeline.me.scale : " + MoTimeline.me.scale );
 		}
 		
 		private function onStepperChange():void {
-			_zoSlider.position = _zoStep.position;
+//			_zoSlider.position = _zoStepper.position;
+
+			var pos:Number = _zoStepper.position;
+			var deltaScale:Number = _maxScale - _minScale;
+			var newScale:Number = Math.pow( deltaScale, pos );
 			
-			MoTimeline.me.scale = _minScale + _zoStep.position * (_maxScale - _minScale);
+			var sc1:Number = _minScale + newScale;
+			var sc2:Number = _minScale * newScale;
+			
+			Log.traceText( deltaScale + " ^ " + pos + " = " + newScale );
+//			Log.traceText( "    " + _minScale + " + " + newScale + " = " + sc1 );
+//			Log.traceText( "        " + _minScale + " * " + newScale  + " = " + sc2 );
+			
+//			MoTimeline.me.scale = _minScale + _zoStepper.position * (_maxScale - _minScale);
+			MoTimeline.me.scale = sc1;
 		}
 		
 		private function onInitTimeline( ev:TimelineEvent = null ):void {
@@ -85,10 +109,11 @@ package display.gui {
 			
 			//Log.traceText( "_minScale : " + _minScale );
 			//Log.traceText( "_maxScale : " + _maxScale );
+
+//			_zoStepper.step = 1 / MoTimeline.me.duration;
 			
-			//_zoStep.step = _zoSlider.heightTrack / MoTimeline.me.duration;
-			_zoStep.step = 1 / MoTimeline.me.duration;
-			//Log.traceText( "_zoStep.step : " + _zoStep.step );
+			//_zoStepper.step = _zoSlider.heightTrack / MoTimeline.me.duration;
+			//Log.traceText( "_zoStepper.step : " + _zoStepper.step );
 			//_zoSlider.position = _zoSlider.heightTrack / MoTimeline.me.duration;
 		}
 		
