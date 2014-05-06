@@ -38,7 +38,9 @@ package display.gui {
 		
 		override public function init():* {
 			super.init();
-			
+
+			drawBody();
+
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
 			_curDateMarker = new DateGraduation( MoTimeline.me.baseJD, Display.stageWidth, Settings.BASE_TEXT_COLOR, Settings.BASE_LINE_COLOR, Settings.BASE_BACKGROUND_COLOR ).init();
@@ -87,6 +89,8 @@ package display.gui {
 			_width = value;
 			_gridScale.width = _width;
 			_curDateMarker.width = _width;
+
+			drawBody();
 		}
 		
 		override public function get height():Number {
@@ -97,8 +101,18 @@ package display.gui {
 			_height = value;
 			_gridScale.height = _height;
 			_curDateMarker.y = int( _height / 2 );
+
+			drawBody();
 		}
-		
+
+		private function drawBody():void
+		{
+			graphics.clear();
+			graphics.beginFill( 0xFF0000, 0 );
+			graphics.drawRect(0,0,_width,_height);
+			graphics.endFill();
+		}
+
 		//} endregion
 		
 		override public function kill():void {

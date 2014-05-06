@@ -126,10 +126,10 @@ package controllers {
 		}
 		
 		private function onClickFact( ev:MouseEvent ):void {
-			Log.traceText( "*execute* PopupController.onClickFact" );
+//			Log.traceText( "*execute* PopupController.onClickFact" );
 			//if ( !( ev.target.parent is Fact ) ) return;
 
-			Log.traceText( "_isDragged : " + _isDragged );
+//			Log.traceText( "_isDragged : " + _isDragged );
 
 			if ( _isDragged ) {
 				_isDragged = false;
@@ -202,6 +202,8 @@ package controllers {
 			if( !moFact ) return;
 
 			var popup:FactInfoPopup = _popups[ moFact.id ];
+
+			if(!popup) return;
 
 			updateBoundsJD();
 
