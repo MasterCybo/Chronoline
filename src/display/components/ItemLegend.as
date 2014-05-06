@@ -7,6 +7,8 @@ package display.components
 
 	import display.base.ExternalPicture;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.gui.ALabel;
 
 	public class ItemLegend extends ALabel
@@ -30,7 +32,8 @@ package display.components
 
 		override public function init():*
 		{
-			_extPic = new ExternalPicture( Settings.URL_ICONS + encodeURI( _etag.imageURL ), onDrawComplete ).init();
+			_extPic = new ExternalPicture( Settings.URL_ICONS + encodeURI( _etag.imageURL ), onDrawComplete );
+			_extPic.init();
 
 			return super.init();
 		}
@@ -63,8 +66,9 @@ package display.components
 
 		override public function kill():void
 		{
-			_extPic.kill();
 			_handlerDrawComplete = null;
+			_extPic.kill();
+			_extPic = null;
 			_etag = null;
 
 			super.kill();
