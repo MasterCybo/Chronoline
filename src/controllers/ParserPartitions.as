@@ -1,6 +1,6 @@
 package controllers {
 	import data.MoListPartition;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

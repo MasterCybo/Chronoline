@@ -1,7 +1,8 @@
 package display.gui.buttons {
 	import display.base.ButtonApp;
+
 	import ru.arslanov.flash.display.ABitmap;
-	
+
 	/**
 	 * ...
 	 * @author ...

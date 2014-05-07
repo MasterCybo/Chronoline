@@ -1,15 +1,17 @@
 package display.gui {
-	
+
 	import display.base.ButtonApp;
 	import display.skins.ThumbDownSkin;
 	import display.skins.ThumbSkin;
 	import display.skins.ThumbTopSkin;
+
 	import flash.events.MouseEvent;
+
 	import ru.arslanov.core.controllers.MouseController;
 	import ru.arslanov.core.utils.Calc;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

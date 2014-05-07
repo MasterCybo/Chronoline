@@ -1,22 +1,16 @@
 package events {
 	import flash.events.Event;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
 	public class TimelineEvent extends Event {
 		
-		// Старые события
-		static public const RANGE_CHANGED:String = "rangeChanged";
-		static public const RANGE_CHANGED_TOP:String = "rangeChangedTop";
-		static public const RANGE_CHANGED_DOWN:String = "rangeChangedDown";
-		static public const SPAN_CHANGED:String = "boundChanged";
-		
 		// Новые события
-		static public const TIMELINE_RESIZE :String = "timelineResize"; // Изменение границ временной шкалы
-		static public const RANGE_MOVE :String = "rangeMove"; // Смещение наблюдаемого диапазона
-		static public const RANGE_RESIZE :String = "rangeResize"; // Изменнеие границ диапазона
+		static public const SCALE_CHANGED		:String = "scaleChanged"; // Изменение временного масштаба
+		static public const BASE_CHANGED		:String = "baseChanged"; // Измененине текущей даты
+		static public const INITED				:String = "inited"; // Событие окончания инициализации временной шкалы
 		
 		//public var deltaBegin:Number;
 		//public var deltaEnd:Number;

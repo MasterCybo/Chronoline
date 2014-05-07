@@ -1,23 +1,29 @@
 package display.components {
-	import collections.BondsManager;
 	import collections.tree.ItemOfList;
 	import collections.tree.TreeList;
+
 	import constants.LocaleString;
 	import constants.TextFormats;
+
 	import controllers.EntitiesDataFactory;
 	import controllers.ParserEntities;
 	import controllers.ParserPartitions;
+
 	import data.MoListEntity;
 	import data.MoListPartition;
+
 	import display.base.TextApp;
 	import display.gui.buttons.ButtonText;
+
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
+
 	import net.ReqPartEntities;
 	import net.ReqPartitions;
+
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

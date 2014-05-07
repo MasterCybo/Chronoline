@@ -1,11 +1,13 @@
 package display.components {
 	import constants.LocaleString;
 	import constants.TextFormats;
-	import data.MoDate;
+
 	import display.base.TextApp;
+
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author ...
@@ -14,14 +16,14 @@ package display.components {
 		
 		static public const PADDING:Number = 3;
 		
-		private var _moDate:MoDate;
+		private var _jd:Number;
 		private var _offsetY:int;
 		private var _bmp:ABitmap;
 		private var _canvas:ASprite;
 		private var _tfLabel:TextApp;
 		
-		public function FactDateLabel( moDate:MoDate, offsetY:int = 0 ) {
-			_moDate = moDate;
+		public function FactDateLabel( jd:Number, offsetY:int = 0 ) {
+			_jd = jd;
 			_offsetY = offsetY;
 			super();
 		}
@@ -33,8 +35,7 @@ package display.components {
 			
 			_canvas = new ASprite().init();
 			
-			//var text:String = _moDate.getFormatString( LocaleString.DATE_FORMAT );
-			var text:String = _moDate.getFormatFullString( LocaleString.DATE_FULL_FORMAT );
+			var text:String = JDUtils.getFormatString( _jd, LocaleString.DATE_FULL_FORMAT );
 			
 			_tfLabel = new TextApp( text, TextFormats.DATE_LABEL ).init();
 			_canvas.addChild( _tfLabel );
@@ -80,7 +81,7 @@ package display.components {
 			
 			_tfLabel.setXY( PADDING, -h05 + PADDING + _offsetY );
 			
-			_bmp = ABitmap.fromDisplayObject( _canvas ).init();
+			_bmp = ABitmap.fromDisplayObject( _canvas, { transparent:true } ).init();
 			
 			if ( _offsetY < 0 ) {
 				_bmp.y = -_bmp.height;
@@ -92,12 +93,6 @@ package display.components {
 			
 			//_bmp.y = _offsetY < 0 ? -_bmp.height : 0;
 			addChild( _bmp );
-		}
-		
-		override public function kill():void {
-			_moDate = null;
-			
-			super.kill();
 		}
 	}
 

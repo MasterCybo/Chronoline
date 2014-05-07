@@ -1,5 +1,8 @@
 package data {
 	import flash.utils.getQualifiedClassName;
+
+	import ru.arslanov.core.utils.JDUtils;
+
 	/**
 	 * Объект исторического периода, содержащий даты начала и конца периода.
 	 * @author Artem Arslanov
@@ -7,38 +10,34 @@ package data {
 	public class MoPeriod extends ModelBase {
 		
 		// Дата может быть определена не точно
-		public var dateBegin:MoDate;
-		public var dateEnd:MoDate;
+		public var beginJD:Number;
+		public var endJD:Number;
 		
-		public function MoPeriod( begin:MoDate = null, end:MoDate = null ) {
-			this.dateBegin = begin ? begin : new MoDate();
-			this.dateEnd = end ? ( begin.equals( end ) ? begin.clone() : end ) : new MoDate();
+		public function MoPeriod( beginJD:Number = 0, endJD:Number = 0 ) {
+			this.beginJD = beginJD;
+			this.endJD = endJD;
 			
 			super();
 		}
 		
 		public function get duration():Number {
-			return dateEnd.jd - dateBegin.jd;
+			return endJD - beginJD;
 		}
 		
 		public function get middle():Number {
-			return dateBegin.jd + duration * 0.5;
+			return beginJD + duration * 0.5;
 		}
 		
 		public function get isFixed():Boolean {
-			return dateBegin.equals( dateEnd );
-		}
-		
-		public function get string():String {
-			return isFixed ? dateBegin.getFormatedDate() : dateBegin.getFormatedDate() + " - " + dateEnd.getFormatedDate();
+			return beginJD == endJD;
 		}
 		
 		public function clone():MoPeriod {
-			return new MoPeriod( dateBegin.clone(), dateEnd.clone() );
+			return new MoPeriod( beginJD, endJD );
 		}
 		
 		override public function toString():String {
-			return "[" + getQualifiedClassName( this ) + ", " + dateBegin + " - " + dateEnd + "]"
+			return "[" + getQualifiedClassName( this ) + ", " + JDUtils.getFormatString( beginJD ) + " - " + JDUtils.getFormatString( endJD ) + "]"
 		}
 	}
 

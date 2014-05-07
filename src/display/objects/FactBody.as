@@ -1,14 +1,15 @@
 package display.objects {
-	
+
 	import flash.display.BitmapData;
 	import flash.display.CapsStyle;
 	import flash.display.LineScaleMode;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.AShape;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.GraphicsUtils;
-	
+
 	/**
 	 * Изображение события на сущности
 	 * @author Artem Arslanov

@@ -1,11 +1,13 @@
 package display.base {
 	import flash.display.BitmapData;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.events.LoaderEvent;
 	import ru.arslanov.core.load.DisplayLoader;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -35,10 +37,10 @@ package display.base {
 				var loader:DisplayLoader = _loaders[ _url ];
 				
 				if ( loader ) {// Если загрузчик этого ресурса уже добавлен в очередь, тогда просто подписываемся на его событие и ждём, пока загрузится
-					//Log.traceText( this + " жду, пока загрузиться " + _url );
+//					Log.traceText( this + " жду, пока загрузиться " + _url );
 					loader.addEventListener( LoaderEvent.COMPLETE, onLoadComplete );
 				} else {
-					//Log.traceText( this + " Загружаю " + _url );
+//					Log.traceText( this + " Загружаю " + _url );
 					loader = new DisplayLoader( _url );
 					_loaders[ _url ] = loader;
 					loader.addEventListener( LoaderEvent.COMPLETE, onLoadComplete );
@@ -46,7 +48,7 @@ package display.base {
 				}
 			} else {
 				// Если ресурс был ранее загружен, достаём его из кэша
-				//Log.traceText( this + " беру из кэша " + _url );
+//				Log.traceText( this + " беру из кэша " + _url );
 				drawAndComplete( bd );
 			}
 			
@@ -60,8 +62,8 @@ package display.base {
 			var bd:BitmapData = _cache[ _url ];
 			
 			if ( !bd ) {
-				//Log.traceText( this + " Помещаю ресурс в кэш " + _url );
-				// Ресурс отсутствует в кэше - помещаем его в кэш
+//				Log.traceText( this + " Помещаю ресурс в кэш " + _url );
+//				Ресурс отсутствует в кэше - помещаем его в кэш
 				bd = loader.getBitmapData();
 				
 				delete _loaders[ _url ];
@@ -80,10 +82,10 @@ package display.base {
 			addChild( _bitmap );
 			
 			if ( _drawCompleteHandler != null ) {
-				if ( _drawCompleteHandler.length == 0 ) {
-					_drawCompleteHandler();
-				} else {
+				if ( _drawCompleteHandler.length ) {
 					_drawCompleteHandler( this );
+				} else {
+					_drawCompleteHandler();
 				}
 			}
 		}

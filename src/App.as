@@ -1,21 +1,26 @@
 package {
+	import constants.LocaleString;
 	import constants.TextFormats;
-	import data.MoTimeline;
+
 	import display.base.TextApp;
 	import display.components.LockScreenProcess;
 	import display.components.MessageFullScreen;
 	import display.scenes.ChronolinePage;
+
 	import events.BondDisplayNotice;
 	import events.BondRemoveNotice;
 	import events.GetPositionNotice;
 	import events.ProcessFinishNotice;
 	import events.ProcessStartNotice;
 	import events.SysMessageDisplayNotice;
+
 	import flash.events.Event;
 	import flash.system.Capabilities;
+
 	import ru.arslanov.core.events.EventManager;
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.http.HTTPManager;
+	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.Stats;
 	import ru.arslanov.flash.display.ASprite;
@@ -24,7 +29,7 @@ package {
 	import ru.arslanov.flash.text.ATextField;
 	import ru.arslanov.flash.utils.Display;
 	import ru.arslanov.flash.utils.Logger;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -54,6 +59,9 @@ package {
 			Log.customTracer = Logger.traceMessage;
 			//Logger.show();
 			
+			// Устанавливаем локализацию месяцев
+			JDUtils.monthsLocale = LocaleString.MONTHS;
+			
 			//AWindowsManager.me.init( this );
 			AHintManager.me.init( this, 15 );
 			//ATextField.defaultEmbedFonts = true;
@@ -63,7 +71,7 @@ package {
 			Notification.unlog( BondRemoveNotice.NAME );
 			Notification.unlog( GetPositionNotice.NAME );
 			
-			MoTimeline.me.init(); // Инициализация временной шкалы
+			//MoTimeline.me.init(); // Инициализация временной шкалы
 			
 			var sceneContainer:ASprite = new ASprite().init();
 			addChild( sceneContainer );
@@ -83,7 +91,7 @@ package {
 				addChild( _stats );
 			}
 			
-			_tfVersion = new TextApp( "v." + Version.Major + "." + Version.Minor + "." + Version.Build + " - " + Version.Timestamp, TextFormats.VERSION ).init();
+			_tfVersion = new TextApp( "v." + Version.major + "." + Version.minor + "." + Version.build + " - " + Version.timestamp, TextFormats.VERSION ).init();
 			_tfVersion.mouseEnabled = false;
 			addChild( _tfVersion );
 			

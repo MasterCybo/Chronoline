@@ -1,8 +1,8 @@
 package data {
 	import events.TimelineEvent;
-	import flash.events.EventDispatcher;
+
 	import ru.arslanov.core.events.EventManager;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -27,86 +27,80 @@ package data {
 		//} endregion
 		
 		
-		private var _timeline:MoPeriod;
-		private var _range:MoPeriod;
+		private var _timeline:MoPeriod = new MoPeriod();
+		private var _range:MoPeriod = new MoPeriod();
+		private var _scale:Number = 1;
+		private var _baseJD:Number = 0;
 		
-		private var _eventManager:EventManager;
+		private var _eventManager:EventManager = new EventManager();
 		
-		public function init( moBegin:MoDate = null, moEnd:MoDate = null ):void {
-			if ( !moBegin ) moBegin = new MoDate();
-			if ( !moEnd ) moEnd = new MoDate();
+		public function init( beginJD:Number, endJD:Number, baseJD:Number, scale:Number = 1 ):void {
+			_timeline.beginJD = beginJD
+			_timeline.endJD = endJD;
+			//_range = new MoPeriod( new MoDate( beginJD ), new MoDate( endJD ) );
+			_baseJD = baseJD;
+			_scale = scale;
 			
-			_timeline = new MoPeriod( moBegin, moEnd );
-			
-			_range = new MoPeriod( moBegin.clone(), moEnd.clone() );
-			
-			_eventManager = new EventManager( new EventDispatcher() );
+			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.INITED ) );
 		}
 		
 		
 		/***************************************************************************
 		Временная шкала
 		***************************************************************************/
-		public function setTimePeriod( beginJD:Number, endJD:Number ):void {
-			//Log.traceText( "*execute* MoTimeline.setMeantime" );
-			_timeline.dateBegin.jd = beginJD;
-			_timeline.dateEnd.jd = endJD;
-			
-			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.TIMELINE_RESIZE ) );
+		public function get beginJD():Number {
+			return _timeline.beginJD;
 		}
 		
-		public function get beginDate():MoDate {
-			return _timeline.dateBegin;
+		//public function set beginJD( value:Number ):void {
+			//if ( _timeline.beginJD == value ) return;
+			//
+			//_timeline.beginJD = value;
+		//}
+		
+		public function get endJD():Number {
+			return _timeline.endJD;
 		}
 		
-		public function set beginDate( moDate:MoDate ):void {
-			if ( _timeline.dateBegin.equals( moDate ) ) return;
-			
-			_timeline.dateBegin = moDate;
-		}
-		
-		public function get endDate():MoDate {
-			return _timeline.dateEnd;
-		}
-		
-		public function set endDate( moDate:MoDate ):void {
-			if ( _timeline.dateEnd.equals( moDate ) ) return;
-			
-			_timeline.dateEnd = moDate;
-		}
+		//public function set endJD( value:Number ):void {
+			//if ( _timeline.endJD == value ) return;
+			//
+			//_timeline.endJD = value;
+		//}
 		
 		public function get duration():Number {
 			return _timeline.duration;
 		}
 		
+		public function get scale():Number {
+			return _scale;
+		}
+		
+		public function set scale( value:Number ):void {
+			if ( value == _scale ) return;
+			
+			_scale = value;
+			
+			//Log.traceText( "*execute* MoTimeline.scale : " + _scale );
+			
+			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.SCALE_CHANGED ) );
+		}
+		
 		/***************************************************************************
-		Выделенный диапазон
+		Текущая дата
 		***************************************************************************/
-		
-		public function get rangeBegin():MoDate {
-			return _range.dateBegin;
+		public function get baseJD():Number {
+			return _baseJD;
 		}
 		
-		public function get rangeEnd():MoDate {
-			return _range.dateEnd;
-		}
-		
-		/**
-		 * Изменение границ диапазона
-		 * @param	beginJD
-		 * @param	endJD
-		 */
-		public function setRange( beginJD:Number, endJD:Number ):void {
-			var oldDur:Number = _range.duration;
+		public function set baseJD( value:Number ):void {
+			if (value == _baseJD) return;
 			
-			_range.dateBegin.jd = beginJD;
-			_range.dateEnd.jd = endJD;
+			_baseJD = value;
 			
-			if ( oldDur == _range.duration ) { // Если длина диапазона не изменилась - это смещение
-				_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.RANGE_MOVE ) );
-			} else {
-				_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.RANGE_RESIZE ) );
-			}
+			//Log.traceText( "*execute* MoTimeline._baseJD : " + _baseJD );
+			
+			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.BASE_CHANGED ) );
 		}
 		
 		public function get eventManager():EventManager {

@@ -1,11 +1,14 @@
 package display.objects {
 	import data.MoFact;
+
 	import display.components.FactDateLabel;
 	import display.components.IconsPile;
+
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -64,8 +67,8 @@ package display.objects {
 			if ( !_iPile )
 				return;
 			
-			_iPile.y = ( _body.height - _iPile.height ) * 0.5;
 			_iPile.x = _body.x + _body.width;
+			_iPile.y = ( _body.height - _iPile.height ) * 0.5;
 		}
 		
 		private function onMouseOver( ev:MouseEvent ):void {
@@ -78,11 +81,11 @@ package display.objects {
 			_body.stateOver = true;
 			
 			if ( !_labelBegin ) {
-				_labelBegin = new FactDateLabel( moFact.period.dateBegin ).init();
+				_labelBegin = new FactDateLabel( moFact.period.beginJD ).init();
 			}
 			
 			if ( !_labelEnd ) {
-				_labelEnd = new FactDateLabel( moFact.period.dateEnd ).init();
+				_labelEnd = new FactDateLabel( moFact.period.endJD ).init();
 			}
 			
 			//var labHeight:Number = _labelEnd.getHeightLabel() + _labelBegin.getHeightLabel();
@@ -110,7 +113,7 @@ package display.objects {
 			// Возвращаем на предыдущую глубину
 			
 			if ( parent ) {
-				parent.setChildIndex( this, _depth );
+				parent.setChildIndex( this, Math.max( parent.numChildren - 1, _depth ) );
 			}
 			
 			
@@ -138,7 +141,7 @@ package display.objects {
 		}
 		
 		public function get pivotPoint():Point {
-			return new Point( _iPile.x + _iPile.height / 2, _iPile.y );
+			return new Point( _iPile.x + _iPile.height * 0.5, _iPile.y + _iPile.height * 0.5 );
 		}
 		
 		/**

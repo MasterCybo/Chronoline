@@ -1,15 +1,18 @@
 package display.gui {
 	import com.greensock.TweenLite;
-	import display.base.ButtonApp;
+
 	import display.components.DisplayMenuSettings;
 	import display.gui.buttons.TogglerSidebar;
+
 	import events.ServerDataCompleteNotice;
+
 	import flash.display.BitmapData;
+
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

@@ -1,78 +1,75 @@
 package controllers {
 	import data.MoTimeline;
+
 	import display.base.ButtonApp;
+	import display.gui.Desktop;
+
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
+
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
-	import ru.arslanov.core.controllers.MouseController;
+
+	import ru.arslanov.core.controllers.SimpleDragController;
+	import ru.arslanov.core.events.MouseControllerEvent;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
-	
+	import ru.arslanov.flash.utils.Display;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
 	public class DesktopController {
 		
-		private var _mouseTarget:ASprite;
-		private var _mouse:MouseController;
-		private var _offset:Number = 0;
-		
-		public function DesktopController( mouseTarget:ASprite ) {
-			_mouseTarget = mouseTarget;
+		private var _movement:Point = new Point();
+		private var _target:Desktop;
+
+		public function DesktopController( target:Desktop ) {
+			_target = target;
 		}
 		
 		public function init():void {
-			_mouse = new MouseController( _mouseTarget );
-			_mouse.handlerDown = onStageDown;
-			_mouse.handlerUp = onStageUp;
-			_mouse.handlerDrag = onDragMouse;
-			_mouse.handlerWheel = onDragMouse;
+			_target.eventManager.addEventListener(MouseEvent.MOUSE_DOWN, onStageDown);
+			_target.eventManager.addEventListener(MouseEvent.MOUSE_WHEEL, onStageMove);
 		}
-		
+
 		private function onStageDown( ev:MouseEvent ):void {
-			_offset = 0;
-			
-			if ( ev.target is ButtonApp ) return;
-			
+			_movement.setTo( ev.stageX, ev.stageY );
+
 			Mouse.cursor = MouseCursor.HAND;
+
+			Display.stageAddEventListener(MouseEvent.MOUSE_MOVE, onStageMove);
+			Display.stageAddEventListener(MouseEvent.MOUSE_UP, onStageUp);
 		}
 		
 		private function onStageUp( ev:MouseEvent ):void {
+			Display.stageRemoveEventListener(MouseEvent.MOUSE_MOVE, onStageMove);
+			Display.stageRemoveEventListener(MouseEvent.MOUSE_UP, onStageUp);
+
 			Mouse.cursor = MouseCursor.AUTO;
-			
-			if ( ev.target is ButtonApp ) return;
-			
-			if ( Math.abs( _offset ) > 10 ) return;
 		}
 		
-		private function onDragMouse( ev:MouseEvent ):void {
-			var delta:Number = 0;
-			
+		private function onStageMove( ev:MouseEvent ):void {
+			var dx:Number = ev.stageX - _movement.x;
+			var dy:Number = ev.stageY - _movement.y;
+
 			if ( ev.delta != 0 ) {
-				delta = 10 * ev.delta; // Если зафиксировали вращение колеса
-			} else {
-				delta = _mouse.movement.y; // Если мышой драгаем
+				dy = 10 * ev.delta; // Если вращаем колесо, тогда берём шаг колеса
 			}
 			
-			var rDur:Number = MoTimeline.me.rangeEnd.jd - MoTimeline.me.rangeBegin.jd;
-			
-			var dy:Number = delta * ( rDur / _mouseTarget.height );
-			
-			_offset += delta;
-			
-			var nbJD:Number = MoTimeline.me.rangeBegin.jd - dy;
-			var neJD:Number = MoTimeline.me.rangeEnd.jd - dy;
-			
-			if ( nbJD < MoTimeline.me.beginDate.jd ) return;
-			if ( neJD > MoTimeline.me.endDate.jd ) return;
-			
-			MoTimeline.me.setRange( nbJD, neJD );
+			MoTimeline.me.baseJD -= dy / MoTimeline.me.scale;
+
+			_movement.offset( dx, dy );
 		}
 		
 		public function dispose():void {
-			_mouse.dispose();
-			
-			_mouseTarget = null;
+			_target.eventManager.addEventListener(MouseEvent.MOUSE_DOWN, onStageDown);
+			_target.eventManager.addEventListener(MouseEvent.MOUSE_WHEEL, onStageMove);
+			Display.stageRemoveEventListener(MouseEvent.MOUSE_MOVE, onStageMove);
+			Display.stageRemoveEventListener(MouseEvent.MOUSE_UP, onStageUp);
+
+			_target = null;
 		}
 	}
 

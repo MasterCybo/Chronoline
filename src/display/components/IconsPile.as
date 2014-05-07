@@ -1,13 +1,17 @@
 package display.components {
 	import com.greensock.TweenMax;
+
 	import data.MoFact;
 	import data.MoPicture;
+
 	import display.base.TextApp;
+
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * Стопка иконок, пакет, кипа
 	 * @author Artem Arslanov

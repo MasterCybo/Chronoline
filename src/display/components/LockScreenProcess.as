@@ -1,14 +1,14 @@
 package display.components {
 	import constants.LocaleString;
 	import constants.TextFormats;
+
 	import display.base.TextApp;
+
 	import events.ProcessUpdateNotice;
-	import flash.display.BitmapData;
+
 	import ru.arslanov.core.events.Notification;
-	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	import ru.arslanov.flash.utils.Display;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

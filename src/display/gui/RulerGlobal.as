@@ -1,11 +1,13 @@
 package display.gui {
-	import data.MoDate;
 	import data.MoTimeline;
+
 	import events.TimelineEvent;
+
 	import flash.display.BitmapData;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

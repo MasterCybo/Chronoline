@@ -1,8 +1,8 @@
 package net {
 	import flash.net.URLVariables;
+
 	import ru.arslanov.core.http.HTTPRequest;
-	import ru.arslanov.core.utils.Log;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
