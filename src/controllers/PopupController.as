@@ -55,16 +55,17 @@ package controllers {
 			_host.eventManager.addEventListener( MouseEvent.CLICK, onClickFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OVER, onOverFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OUT, onOutFact );
-			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
+			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onDownStage );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
-			Display.stageAddEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
-			Display.stageAddEventListener( MouseEvent.MOUSE_UP, onMouseUpStage );
+			Display.stageAddEventListener( MouseEvent.MOUSE_DOWN, onDownStage );
+			Display.stageAddEventListener( MouseEvent.MOUSE_UP, onUpStage );
 
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 		}
 		
-		private function onMouseDown( ev:MouseEvent ):void {
+		private function onDownStage( ev:MouseEvent ):void {
+//			Log.traceText( "*execute* PopupController.onDownStage" );
 //			_host.eventManager.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			Display.stageAddEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 		}
@@ -86,7 +87,7 @@ package controllers {
 			_isDragged = false;
 		}
 
-		private function onMouseUpStage( ev:MouseEvent ):void {
+		private function onUpStage( ev:MouseEvent ):void {
 			if ( !_isDragged && _lockedMoFact ) {
 				removePopup( _lockedMoFact );
 				_lockedMoFact = null;
@@ -250,7 +251,7 @@ package controllers {
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OVER, onOverFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OUT, onOutFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
-			Display.stageRemoveEventListener( MouseEvent.MOUSE_UP, onMouseUpStage );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_UP, onUpStage );
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
