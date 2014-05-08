@@ -1,22 +1,22 @@
 package display.components {
 	import data.MoFact;
+
 	import display.base.TextApp;
-	import flash.filters.DropShadowFilter;
-	import flash.geom.Point;
+
+	import ru.arslanov.core.utils.JDUtils;
+
 	import ru.arslanov.flash.display.AShape;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class PopupInfo extends ASprite {
+	public class FactInfoPopup extends ASprite {
 		
 		public var moFact:MoFact;
 		
-		private var _tf:TextApp;
-		
-		public function PopupInfo( moFact:MoFact ) {
+		public function FactInfoPopup( moFact:MoFact ) {
 			this.moFact = moFact;
 			super();
 		}
@@ -24,26 +24,26 @@ package display.components {
 		override public function init():* {
 			super.init();
 			
-			var text:String = moFact.period.string + "\n" + moFact.title;
+			var text:String = JDUtils.getFormatString( moFact.period.beginJD ) + " — " + JDUtils.getFormatString( moFact.period.endJD ) + "\n" + moFact.title;
+
+			var tf:TextApp = new TextApp( text ? text : "" ).init();
+			tf.setBorder( true, Settings.FACT_CLR );
+			tf.setBackground( true, 0xFFFFA8 );
+			tf.setWidth( Settings.HINT_WIDTH );
 			
-			_tf = new TextApp( text ? text : "" ).init();
-			_tf.setBorder( true, Settings.FACT_CLR );
-			_tf.setBackground( true, 0xFFFFA8 );
-			_tf.setWidth( Settings.HINT_WIDTH );
-			
-			while ( _tf.height > Settings.HINT_WIDTH ) {
-				_tf.setWidth( _tf.width * 1.5 );
+			while ( tf.height > Settings.HINT_WIDTH ) {
+				tf.setWidth( tf.width * 1.5 );
 			}
 			
 			var tail:AShape = new AShape().init();
 			tail.graphics.lineStyle( 1, Settings.FACT_CLR );
 			tail.graphics.lineTo( 40, 30 );
 			
-			_tf.x = tail.width - 2;
-			_tf.y = tail.height - 2;
+			tf.x = tail.width - 2;
+			tf.y = tail.height - 2;
 			
 			addChild( tail );
-			addChild( _tf );
+			addChild( tf );
 			
 			mouseChildren = false;
 			

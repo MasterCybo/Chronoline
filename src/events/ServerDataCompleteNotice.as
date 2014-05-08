@@ -1,6 +1,6 @@
 package events {
 	import ru.arslanov.core.events.ANotice;
-	
+
 	/**
 	 * Событие окончания загрузки данных
 	 * @author Artem Arslanov

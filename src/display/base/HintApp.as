@@ -1,8 +1,8 @@
 package display.base {
-	import display.base.TextApp;
-	import flash.events.Event;
+	import flash.text.TextFieldAutoSize;
+
 	import ru.arslanov.flash.gui.hints.AHint;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -20,10 +20,14 @@ package display.base {
 			_tf = new TextApp( _data ? _data.text : "" ).init();
 			_tf.setBorder( true, 0X808000 );
 			_tf.setBackground( true, 0XFFFFA8 );
-			_tf.setWidth( _data.width );
+			_tf.autoSize = TextFieldAutoSize.LEFT;
+			
+			if ( _data && _data.width ) {
+				_tf.setWidth( _data.width );
+			}
 			
 			while ( _tf.height > _data.width ) {
-				_tf.setWidth( _tf.width * 1.5 );
+				_tf.setWidth( _tf.width * 1.1 );
 			}
 			
 			addChild( _tf );

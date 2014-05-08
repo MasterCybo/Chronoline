@@ -1,15 +1,21 @@
 package controllers {
-	import data.MoDate;
 	import data.MoFact;
 	import data.MoTimeline;
-	import display.components.PopupInfo;
+
+	import display.components.FactInfoPopup;
 	import display.objects.Fact;
+
 	import events.TimelineEvent;
+
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+	import ru.arslanov.flash.utils.Display;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -24,13 +30,15 @@ package controllers {
 		private var _width:Number;
 		private var _height:Number;
 		private var _scale:Number;
-		private var _popupX:Number;
-		private var _popupLockX:Number;
+		private var _ptLock:Point;
+		private var _ptPopup:Point;
 		
-		private var _rgBegin:MoDate;
-		private var _rgEnd:MoDate;
+		//private var _rgBegin:MoDate;
+		//private var _rgEnd:MoDate;
 		
 		private var _isDragged:Boolean;
+		private var _minJD:Number;
+		private var _maxJD:Number;
 		
 		public function PopupController( host:ASprite, width:Number, height:Number ) {
 			_host = host;
@@ -39,44 +47,67 @@ package controllers {
 		}
 		
 		public function init():void {
-			_rgBegin = MoTimeline.me.rangeBegin;
-			_rgEnd = MoTimeline.me.rangeEnd;
+			//_rgBegin = MoTimeline.me.rangeBegin;
+			//_rgEnd = MoTimeline.me.rangeEnd;
+
+//			updateBoundsJD();
 			
 			_host.eventManager.addEventListener( MouseEvent.CLICK, onClickFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OVER, onOverFact );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OUT, onOutFact );
-			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onMouseDown );
+			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onDownStage );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_UP, onMouseUp );
-			
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			Display.stageAddEventListener( MouseEvent.MOUSE_DOWN, onDownStage );
+			Display.stageAddEventListener( MouseEvent.MOUSE_UP, onUpStage );
+
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 		}
 		
-		private function onMouseDown( ev:MouseEvent ):void {
-			_host.eventManager.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+		private function onDownStage( ev:MouseEvent ):void {
+//			Log.traceText( "*execute* PopupController.onDownStage" );
+//			_host.eventManager.addEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			Display.stageAddEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 		}
 		
 		private function onMouseMove( ev:MouseEvent ):void {
+			updatePosition( _curMoFact );
 			_isDragged = true;
 		}
 		
 		private function onMouseUp( ev:MouseEvent ):void {
-			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+//			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+
+			if ( !_isDragged && _lockedMoFact ) {
+				removePopup( _lockedMoFact );
+				_lockedMoFact = null;
+			}
+
+			_isDragged = false;
+		}
+
+		private function onUpStage( ev:MouseEvent ):void {
+			if ( !_isDragged && _lockedMoFact ) {
+				removePopup( _lockedMoFact );
+				_lockedMoFact = null;
+			}
+
+			_isDragged = false;
 		}
 		
 		private function onOverFact( ev:MouseEvent ):void {
 			if ( !( ev.target.parent is Fact ) ) return;
-			
+
+			Log.traceText( "*execute* PopupController.onOverFact" );
+
 			var fact:Fact = ev.target.parent as Fact;
 			
 			if ( fact.moFact == _lockedMoFact ) return;
 			
 			_curMoFact = fact.moFact;
 			
-			_popupX = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) ).x;
-			
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
-			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
+			_ptPopup = _host.globalToLocal( fact.localToGlobal( fact.pivotPoint ) );
 			
 			displayPopup( _curMoFact );
 		}
@@ -87,7 +118,7 @@ package controllers {
 			var fact:Fact = ev.target.parent as Fact;
 			
 			if ( fact.moFact != _lockedMoFact ) {
-				var popup:PopupInfo =  _popups[ _curMoFact.id ];
+				var popup:FactInfoPopup =  _popups[ _curMoFact.id ];
 				if ( popup ) {
 					removePopup( _curMoFact );
 					_curMoFact = null;
@@ -96,8 +127,11 @@ package controllers {
 		}
 		
 		private function onClickFact( ev:MouseEvent ):void {
+//			Log.traceText( "*execute* PopupController.onClickFact" );
 			//if ( !( ev.target.parent is Fact ) ) return;
-			
+
+//			Log.traceText( "_isDragged : " + _isDragged );
+
 			if ( _isDragged ) {
 				_isDragged = false;
 				return;
@@ -122,51 +156,42 @@ package controllers {
 			}
 			
 			_lockedMoFact = fact.moFact;
-			_popupLockX = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) ).x;
+			//_ptLock = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) );
+			_ptLock = _ptPopup.clone();
 		}
 		
-		private function onResizeRange( ev:TimelineEvent ):void {
+		private function onChangedScale( ev:TimelineEvent ):void {
+//			updateBoundsJD();
+
 			if ( !_lockedMoFact ) return;
-			
+
 			updatePosition( _lockedMoFact );
 		}
 		
-		private function onMoveRange( ev:TimelineEvent ):void {
+		private function onChangedBase( ev:TimelineEvent ):void {
+//			updateBoundsJD();
+
 			if ( !_lockedMoFact ) return;
-			
+
 			updatePosition( _lockedMoFact );
+		}
+
+		private function updateBoundsJD():void {
+			var halfJD:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) * 0.5 / MoTimeline.me.scale;
+			_minJD = MoTimeline.me.baseJD - halfJD;
+			_maxJD = MoTimeline.me.baseJD + halfJD;
 		}
 		
 		private function updatePosition( moFact:MoFact ):void {
 			updatePopup( moFact );
 		}
 		
-		private function updatePopup( moFact:MoFact ):void {
-			var popup:PopupInfo = _popups[ moFact.id ];
-			
-			if ( ( moFact.period.middle < _rgBegin.jd ) || ( moFact.period.middle > _rgEnd.jd ) ) {
-				if ( _host.contains( popup ) ) {
-					_host.removeChild( popup );
-				}
-				return;
-			}
-			
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
-			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
-			
-			popup.x = moFact == _lockedMoFact ? _popupLockX : _popupX;
-			popup.y = dateToY( moFact.period.dateBegin.jd );
-			
-			if ( !_host.contains( popup ) ) {
-				_host.addChild( popup );
-			}
-		}
-		
 		private function displayPopup( moFact:MoFact ):void {
-			var popup:PopupInfo = _popups[ moFact.id ];
+//			Log.traceText( "*execute* PopupController.displayPopup" );
+			var popup:FactInfoPopup = _popups[ moFact.id ];
 			
 			if ( !popup ) {
-				popup = new PopupInfo( moFact ).init();
+				popup = new FactInfoPopup( moFact ).init();
 				
 				_popups[ moFact.id ] = popup;
 			}
@@ -174,8 +199,40 @@ package controllers {
 			updatePopup( moFact );
 		}
 		
+		private function updatePopup( moFact:MoFact ):void {
+			if( !moFact ) return;
+
+			var popup:FactInfoPopup = _popups[ moFact.id ];
+
+			if(!popup) return;
+
+			updateBoundsJD();
+
+//			Log.traceText( "moFact.period.middle : " + moFact.period.middle );
+
+
+			if ( ( moFact.period.middle < _minJD ) || ( moFact.period.middle > _maxJD ) ) {
+				if ( _host.contains( popup ) ) {
+					_host.removeChild( popup );
+				}
+				return;
+			}
+			
+			var newDuration:Number = _maxJD - _minJD;
+			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
+			
+			popup.x = moFact == _lockedMoFact ? _ptLock.x : _ptPopup.x;
+			popup.y = moFact == _lockedMoFact ? dateToY( moFact.period.middle ) : _ptPopup.y;
+
+//			Log.traceText( "popup.x, y : " + popup.x + ", " + popup.y );
+
+			if ( !_host.contains( popup ) ) {
+				_host.addChild( popup );
+			}
+		}
+		
 		private function removePopup( moFact:MoFact ):void {
-			var popup:PopupInfo = _popups[ moFact.id ];
+			var popup:FactInfoPopup = _popups[ moFact.id ];
 			
 			if ( !popup ) return;
 			
@@ -186,7 +243,7 @@ package controllers {
 		}
 
 		private function dateToY( date:Number ):Number {
-			return _scale * ( date - _rgBegin.jd );
+			return _scale * ( date - _minJD );
 		}
 		
 		public function dispose():void {
@@ -194,15 +251,19 @@ package controllers {
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OVER, onOverFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OUT, onOutFact );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_UP, onUpStage );
+			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onMouseMove );
 			
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangedBase );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 			
 			_lockedMoFact = null;
 			_curMoFact = null;
 			
 			_host = null;
 			_popups = null;
+			_ptLock = null;
+			_ptPopup = null;
 		}
 	}
 

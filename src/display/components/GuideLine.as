@@ -1,9 +1,11 @@
 package display.components {
 	import display.base.TextApp;
+
 	import flash.display.BitmapData;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * Направляющая линия, ориентир, указатель (Indicator)
 	 * @author Artem Arslanov

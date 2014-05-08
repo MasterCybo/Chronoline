@@ -1,8 +1,8 @@
 package display.gui {
 	import display.base.TextApp;
+
 	import flash.text.TextFormat;
-	import ru.arslanov.core.utils.Log;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

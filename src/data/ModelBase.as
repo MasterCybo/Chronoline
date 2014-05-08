@@ -1,5 +1,6 @@
 package data {
 	import flash.utils.getQualifiedClassName;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

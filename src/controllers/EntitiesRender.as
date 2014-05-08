@@ -1,150 +1,164 @@
 package controllers {
 	import collections.EntityManager;
-	import data.MoDate;
+
 	import data.MoEntity;
 	import data.MoTimeline;
+
+	import display.components.TitleEntity;
 	import display.objects.Entity;
-	import flash.geom.Rectangle;
+
+	import events.TimelineEvent;
+
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
 	public class EntitiesRender {
 		
-		public var onRenderComplete:Function;
-		
 		private var _host:ASprite;
+		
+		private var _listMoEntities:Vector.<MoEntity>;
+		private var _mapEntities:Dictionary /*Entity*/; // MoEntity.id = Entity
+		private var _mapTitles:Dictionary /*TitleEntity*/; // MoEntity.id = TitleEntity
+		
 		private var _width:Number = 0;
 		private var _height:Number = 0;
-		
-		private var _rgBegin:MoDate;
-		private var _rgEnd:MoDate;
-		
-		private var _mapEntities:Dictionary/*Entity*/; // MoEntity.id = Entity
-		private var _mapDisplayEntities:Dictionary/*MoEntity*/; // MoEntity.id = MoEntity
-		private var _mapTitles:Dictionary/*TitleEntity*/; // MoEntity.id = TitleEntity
-		
-		private var _scale:Number = 1;
 		private var _space:Number = 0;
-		private var _oldDuration:Number = 0;
-		private var _isResize:Boolean;
+		private var _yCenter:Number;
 		
-		public function EntitiesRender( host:ASprite, bounds:Rectangle ) {
+		public function EntitiesRender( host:ASprite, width:Number, height:Number ) {
 			_host = host;
-			_width = bounds.width;
-			_height = bounds.height;
+			_width = width;
+			_height = height;
+			_yCenter = height / 2;
 		}
 		
-		public function start():void {
-			_mapDisplayEntities = new Dictionary( true );
+		public function init():void {
+			_listMoEntities = new Vector.<MoEntity>();
+			
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
+		}
+		
+		private function onInitTimeline( ev:TimelineEvent ):void {
+			update();
+		}
+		
+		private function onScaleChanged( ev:TimelineEvent ):void {
+			updateSizeAndPositions();
+		}
+		
+		private function onDateChanged( ev:TimelineEvent ):void {
+			updateSizeAndPositions();
+		}
+		
+		public function update():void {
+			updateListMoEntities();
+			updateSizeAndPositions();
+		}
+		
+		/**
+		 * Обновляем список отображаемых сущностей
+		 * Обновляется при инициализации и по событию изменения MoTimeline
+		 */
+		private function updateListMoEntities():void {
+			_listMoEntities = Vector.<MoEntity>( EntityManager.getArrayEntities() );
+			
 			_mapEntities = new Dictionary( true );
 			_mapTitles = new Dictionary( true );
-		}
-		
-		public function render():void {
-			_rgBegin = MoTimeline.me.rangeBegin;
-			_rgEnd = MoTimeline.me.rangeEnd;
-			
-			var newDuration:Number = _rgEnd.jd - _rgBegin.jd;
-			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
-			_isResize = ( _oldDuration != newDuration );
-			_oldDuration = newDuration;
-			
-			_space = _width / ( EntityManager.length + 1 );
-			
 			
 			var moEnt:MoEntity;
 			var ent:Entity;
+			var title:TitleEntity;
+			var len:uint = _listMoEntities.length;
 			
-			// Удаляем видимые, но отсутствующие в списке моделей
-			for each ( ent in _mapEntities ) {
-				moEnt = ent.moEntity;
+			for ( var i:int = 0; i < len; i++ ) {
+				moEnt = _listMoEntities[ i ];
 				
-				if ( !EntityManager.hasItem( moEnt.id ) ) {
-					//Log.traceText( "xxx Kill entity : " + moEnt.id );
-					
-					delete _mapEntities[ moEnt.id ];
-					ent.kill();
-				}
+				ent = new Entity( moEnt ).init();
+				title = new TitleEntity( moEnt.title ).init();
+				
+				_mapEntities[ moEnt.id ] = ent;
+				_mapTitles[ moEnt.id ] = title;
+				
+				//Log.traceText( "ent.name : " + ent.name );
 			}
 			
-			// Отображаем новые, из списка моделей
-			for each ( moEnt in EntityManager.mapMoEntities ) {
-				if ( !_mapEntities[ moEnt.id ] ) {
-					//Log.traceText( "+++ Add new entity : " + moEnt.id );
-					ent = new Entity( moEnt ).init();
-					_mapEntities[ moEnt.id ] = ent;
-				}
-			}
+			_space = _width / ( len + 1 );
+		}
+		
+		/**
+		 * Обновляем положение и размеры
+		 */
+		private function updateSizeAndPositions():void {
+			var len:uint = _listMoEntities.length;
+			var moEnt:MoEntity;
+			var ent:Entity;
+			var title:TitleEntity;
 			
-			var count:uint; // Счётчик сущностей
+			//Perf.start();
 			
-			// Позиционируем и отображаем
-			for each ( ent in _mapEntities ) {
-				moEnt = ent.moEntity;
+			for ( var i:int = 0; i < len; i++ ) {
+				moEnt = _listMoEntities[ i ];
+				ent = _mapEntities[ moEnt.id ];
+				title = _mapTitles[ moEnt.id ];
 				
-				if ( ( moEnt.endPeriod.dateBegin.jd > _rgBegin.jd ) && ( moEnt.beginPeriod.dateEnd.jd < _rgEnd.jd ) ) {
-					ent.y = dateToY( moEnt.beginPeriod.dateBegin.jd );
-					if ( _isResize ) ent.height = moEnt.duration * _scale;
+				ent.y = dateToY( moEnt.beginPeriod.beginJD );
 				
-					if ( !_host.contains( ent ) ) {
-						//Log.traceText( "*** Display entity : " + moEnt.id );
-						
-						_mapDisplayEntities[ moEnt.id ] = moEnt;
-						
-						ent.x = calcX( count );
-						_host.addChild( ent );
-					}
-				} else {
-					if ( _host.contains( ent ) ) {
-						//Log.traceText( "--- Remove entity : " + moEnt.id );
-						
-						delete _mapDisplayEntities[ moEnt.id ];
-						
+				ent.height = moEnt.duration * MoTimeline.me.scale;
+				
+				if ( _host.contains( ent ) ) {
+					if ( (ent.y > _height) || ( (ent.y + ent.height) < 0 ) ) {
 						_host.removeChild( ent );
+						_host.removeChild( title );
 					}
+				} else {
+					//Log.traceText( "++++++++++ addChild" );
+					
+					ent.x = calcX( i );
+					ent.height = moEnt.duration * MoTimeline.me.scale;
+					
+					_host.addChild( title );
+					_host.addChild( ent );
 				}
 				
-				count++;
-			}
-			
-			
-			if ( onRenderComplete != null ) {
-				if ( onRenderComplete.length ) {
-					onRenderComplete( {} );
-				} else {
-					onRenderComplete();
+				ent.updateDisplayFacts();
+				
+				if ( _host.contains( title ) ) {
+					title.x = ent.x + ent.body.width;
+					title.y = Math.max( ent.y, ent.y + ent.height - ( ent.height + ent.y ) );
 				}
+				
 			}
+			
+			//Log.traceText( "Entities draw complete" );
+			
+			//Log.traceText( "Perf.stop() : " + Perf.stop() );
 		}
 		
-		private function calcX( num:uint ):Number {
-			return _space + num * _space;
+		private function calcX( ordinal:uint ):Number {
+			return _space + ordinal * _space;
 		}
 		
-		private function dateToY( date:Number ):Number {
-			return _scale * ( date - _rgBegin.jd );
-		}
-		
-		public function getDisplayedMoEntities():Dictionary/*MoEntity*/ {
-			return _mapDisplayEntities;
+		private function dateToY( jd:Number ):Number {
+			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
 		}
 		
 		public function dispose():void {
-			onRenderComplete = null;
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 			
 			_host = null;
-			_mapDisplayEntities = null;
+			_listMoEntities = null;
 			_mapEntities = null;
 			_mapTitles = null;
-			
-			_rgBegin = null;
-			_rgEnd = null;
 		}
-		
 	}
 
 }

@@ -1,6 +1,8 @@
 package net {
+	import flash.net.URLVariables;
+
 	import ru.arslanov.core.http.HTTPRequest;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -8,7 +10,9 @@ package net {
 	public class ReqGetPresetList extends HTTPRequest {
 		
 		public function ReqGetPresetList() {
-			super("preset.php", "list");
+			var vars:URLVariables = new URLVariables();
+			vars.count = "list";
+			super("preset.php", vars);
 		}
 		
 	}

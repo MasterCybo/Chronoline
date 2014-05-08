@@ -1,9 +1,10 @@
 package display.objects {
-	
+
 	import flash.display.BitmapData;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * Сущность хроноленты
 	 * @author Artem Arslanov

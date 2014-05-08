@@ -1,12 +1,16 @@
 package display.objects {
 
 	import collections.EntityColor;
-	import data.MoDate;
+
 	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
+
 	import flash.utils.Dictionary;
+
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
+	import ru.arslanov.flash.utils.Display;
 
 	/**
 	 * Сущность хроноленты
@@ -25,8 +29,11 @@ package display.objects {
 		private var _hostFacts:ASprite;
 		private var _body:EntityView;
 		private var _scale:Number;
-		private var _rangeBegin:MoDate;
-		private var _rangeEnd:MoDate;
+		//private var _rangeBegin:MoDate;
+		//private var _rangeEnd:MoDate;
+		
+		private var _minJD:Number;
+		private var _maxJD:Number;
 
 		private var _isUpdating:Boolean;
 		private var _stepDate:Number;
@@ -42,8 +49,11 @@ package display.objects {
 		override public function init():* {
 			super.init();
 			
-			_rangeBegin = MoTimeline.me.rangeBegin;
-			_rangeEnd = MoTimeline.me.rangeEnd;
+			//_rangeBegin = MoTimeline.me.rangeBegin;
+			//_rangeEnd = MoTimeline.me.rangeEnd;
+			
+			_minJD = MoTimeline.me.beginJD;
+			_maxJD = MoTimeline.me.endJD;
 
 			_body = new EntityView( 1, EntityColor.getColor() ).init();
 			_hostFacts = new ASprite().init();
@@ -51,7 +61,9 @@ package display.objects {
 			addChild( _body );
 			addChild( _hostFacts );
 
-
+//			Log.traceText( "_moEntity : " + _moEntity );
+			//Log.traceText( "_moEntity.beginPeriod : " + _moEntity.beginPeriod );
+			//Log.traceText( "_moEntity.endPeriod : " + _moEntity.endPeriod );
 
 			var firstFact:MoFact = _moEntity.facts[ 0 ];
 			_mapVisibleMoFacts[ firstFact.id ] = firstFact;
@@ -85,16 +97,30 @@ package display.objects {
 			//Log.traceText( "_moEntity.duration : " + _moEntity.duration );
 			//Log.traceText( "div : " + div );
 			//Log.traceText( "_stepDate : " + _stepDate );
-
+			
+//			return;
+			
 			_isUpdating = true;
+			
+			
+			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
+			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
+			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
+			
+			
+			//if ( _stepDate >= 0.5 ) {
+				_num = 0;
 
-			_num = 0;
-
-			//getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+				//_visibleMoFacts.length = 0;
+				//_visibleMoFacts.push( _moEntity.facts[ 0 ] );
+				//_visibleMoFacts.push( _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+				getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+			//}
 
 			//Log.traceText( "_num : " + _num );
 
-			//updateDisplayFacts();
+			//updateVisibleMoFacts();
+			updateDisplayFacts();
 
 			_isUpdating = false;
 		}
@@ -172,7 +198,7 @@ package display.objects {
 				//getMiddleValue( midFact, item2 );
 			//}
 
-			if ( ( item2.period.middle < _rangeBegin.jd ) || ( item1.period.middle > _rangeEnd.jd ) ) {
+			if ( ( item2.period.middle < _minJD ) || ( item1.period.middle > _maxJD ) ) {
 				return;
 			}
 
@@ -186,6 +212,8 @@ package display.objects {
 		}
 
 		public function updateDisplayFacts():void {
+//			return;
+			
 			var fact:Fact;
 			var moFact:MoFact;
 			var factY:Number;
@@ -206,11 +234,11 @@ package display.objects {
 			for each ( moFact in _mapVisibleMoFacts ) {
 				// Если событие не входит в диапазон...
 				//if (( moFact.period.dateBegin.jd > _rangeBegin.jd ) && ( moFact.period.dateEnd.jd < _rangeEnd.jd ) ) {
-				if (( moFact.period.middle > _rangeBegin.jd ) && ( moFact.period.middle < _rangeEnd.jd ) ) {
+				if (( moFact.period.middle > _minJD ) && ( moFact.period.middle < _maxJD ) ) {
 					fact = getDisplayFact( moFact );
 
 					factHeight = Math.max( 1, moFact.period.duration * _scale );
-					factY = dateToY( moFact.period.dateBegin.jd );
+					factY = dateToY( moFact.period.beginJD );
 
 					if ( !_hostFacts.contains( fact ) ) {
 						fact.initialize( moFact, factHeight );
@@ -280,7 +308,7 @@ package display.objects {
 		}
 
 		private function dateToY( value:Number ):Number {
-			return ( value - moEntity.beginPeriod.dateBegin.jd ) * _scale;
+			return ( value - moEntity.beginPeriod.beginJD ) * _scale;
 		}
 
 		override public function kill():void {
@@ -291,8 +319,8 @@ package display.objects {
 			_mapVisibleMoFacts = null;
 			_removeMoFacts.length = 0;
 
-			_rangeBegin = null;
-			_rangeEnd = null;
+			//_rangeBegin = null;
+			//_rangeEnd = null;
 			_moEntity = null;
 		}
 	}

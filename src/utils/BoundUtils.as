@@ -1,5 +1,6 @@
 package utils {
 	import data.MoPeriod;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

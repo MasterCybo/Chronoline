@@ -1,50 +1,64 @@
 package controllers {
 	import collections.BondsManager;
+
+	import com.adobe.utils.DictionaryUtil;
+
 	import data.MoBond;
-	import data.MoDate;
 	import data.MoFact;
 	import data.MoTimeline;
+
 	import display.objects.Bond;
 	import display.objects.Entity;
 	import display.objects.Fact;
+
+	import events.TimelineEvent;
+
 	import flash.events.Event;
-	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+	import ru.arslanov.flash.utils.Display;
+
 	/**
 	 * ...
 	 * @author ...
 	 */
 	public class BondsRender {
-		public var onRenderComplete:Function;
+		
+		private var _visibleBonds:Dictionary /*Bond*/; // MoBond = Bond;
+		private var _cacheBonds:Dictionary /*Bond*/; // MoBond = Bond;
+		
+		private var _mapVisibleBonds:Dictionary /*Dictionary*/; // MoFact.id = { MoBond = Bond };
 		
 		private var _host:ASprite;
 		private var _width:Number;
 		private var _height:Number;
-		
-		private var _mapVisibleBonds:Dictionary /*Dictionary*/; // MoFact.id = { MoBond = Bond };
-		private var _visibleBonds:Dictionary /*Bond*/; // MoBond = Bond;
-		private var _cacheBonds:Dictionary /*Bond*/; // MoBond = Bond;
-		
-		private var _rgBeginJD:Number;
-		private var _rgEndJD:Number;
 		private var _scale:Number;
 		private var _isResize:Boolean;
 		private var _oldDuration:Number;
 		
-		public function BondsRender( host:ASprite, bounds:Rectangle ) {
+		//private var _rgBegin:MoDate;
+		//private var _rgEnd:MoDate;
+		private var _minJD:Number;
+		private var _maxJD:Number;
+		
+		public function BondsRender( host:ASprite, width:Number, height:Number ) {
 			_host = host;
-			_width = bounds.width;
-			_height = bounds.height;
+			_width = width;
+			_height = height;
 		}
 		
-		public function start():void {
+		public function init():void {
 			_visibleBonds = new Dictionary( true );
 			_cacheBonds = new Dictionary( true );
 			_mapVisibleBonds = new Dictionary( true );
 			
+			//_rgBegin = MoTimeline.me.rangeBegin;
+			//_rgEnd = MoTimeline.me.rangeEnd;
 			
+			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
+			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
+			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
 			
 			//updateScale();
 			//updateVisibleBonds();
@@ -52,36 +66,48 @@ package controllers {
 			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
 			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
 			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
-		}
-		
-		public function render():void {
-			_rgBeginJD = MoTimeline.me.rangeBegin.jd;
-			_rgEndJD = MoTimeline.me.rangeEnd.jd;
-			
-			updateScale();
-			updateVisibleBonds();
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 		}
 		
 		private function onResizeTimeline( ev:Event ):void {
 			//Log.traceText( "*execute* BondsRender.onResizeTimeline" );
 			
+			update();
+		}
+		
+		public function update():void {
+			var len1:uint = DictionaryUtil.getKeys( _visibleBonds ).length;
+			var len2:uint = DictionaryUtil.getKeys( _cacheBonds ).length;
+			var len3:uint = DictionaryUtil.getKeys( _mapVisibleBonds ).length;
+			
+			_visibleBonds = new Dictionary( true );
+			_cacheBonds = new Dictionary( true );
+			_mapVisibleBonds = new Dictionary( true );
+			
 			updateScale();
 			updateVisibleBonds();
+			
+			len1 = DictionaryUtil.getKeys( _visibleBonds ).length;
+			len2 = DictionaryUtil.getKeys( _cacheBonds ).length;
+			len3 = DictionaryUtil.getKeys( _mapVisibleBonds ).length;
 		}
 		
 		private function onResizeRange( ev:Event ):void {
 			//Log.traceText( "*execute* BondsRender.onResizeRange" );
+			
 			updateScale();
 			updateVisibleBonds();
 		}
 		
 		private function onMoveRange( ev:Event ):void {
 			//Log.traceText( "*execute* BondsRender.onMoveRange" );
+			
 			updateVisibleBonds();
 		}
 		
 		private function updateScale():void {
-			var newDuration:Number = _rgEndJD - _rgBeginJD;
+			var newDuration:Number = _maxJD - _minJD;
 			
 			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
 			
@@ -116,6 +142,7 @@ package controllers {
 					listVisibleMoFacts = ent.getVisibleMapFacts();
 					
 					for each ( bond in _visibleBonds ) {
+						//isRemove = listVisibleMoFacts[moFact.id] == undefined;
 						var isRemove:Boolean = listVisibleMoFacts[bond.moBond.id] == undefined;
 						
 						if ( isRemove ) {
@@ -160,7 +187,7 @@ package controllers {
 							}
 							
 							bond.x = ent1.x + Settings.ENT_WIDTH;
-							bond.y = dateToY( moFact.period.dateBegin.jd );
+							bond.y = dateToY( moFact.period.beginJD );
 							
 							if ( !_host.contains( bond ) ) {
 								_host.addChildAt( bond, 0 );
@@ -198,22 +225,28 @@ package controllers {
 					
 				} // if end
 			} // while end
-			
-			if ( onRenderComplete != null ) {
-				if ( onRenderComplete.length ) {
-					onRenderComplete( {} );
-				} else {
-					onRenderComplete();
-				}
-			}
 		}
 		
 		private function dateToY( date:Number ):Number {
-			return _scale * ( date - _rgBeginJD );
+			return _scale * ( date - _minJD );
 		}
 		
 		public function dispose():void {
-			onRenderComplete = null;
+			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
+			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
+			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+			
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
+			
+			_visibleBonds = null;
+			_mapVisibleBonds = null;
+			_cacheBonds = null;
+			
+			_host = null;
+			
+			//_rgBegin = null;
+			//_rgEnd = null;
 		}
 	}
 

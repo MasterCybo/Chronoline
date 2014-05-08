@@ -1,14 +1,18 @@
 package display.objects {
 	import collections.EntityManager;
+
 	import data.MoBond;
 	import data.MoEntity;
 	import data.MoFact;
+
 	import display.base.HintApp;
+
 	import flash.events.MouseEvent;
+
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.hints.AHintManager;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -80,7 +84,7 @@ package display.objects {
 			title = StringUtils.substitute( title, ent1.title, ent2.title );
 			
 			
-			AHintManager.me.displayHint( HintApp, { text:ent1.beginPeriod.string + "\n" + title, width:200 } );
+			AHintManager.me.displayHint( HintApp, { text:ent1.beginPeriod + "\n" + title, width:200 } );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {

@@ -10,6 +10,7 @@ package  {
 		static public const URL_ICONS:String = "images/";
 		static public const GUI_COLOR:uint = 0xDDDDDD;
 		static public const SIDEBAR_COLOR:uint = 0xDDDDDD;// 0xB7B7B7;
+		public static const LEGEND_MIN_SIZE:Number = 32;
 		
 		// Настройки ГЛАВНОЙ временной шкалы
 		//=======================================================================================================
@@ -86,6 +87,22 @@ package  {
 		// Верхняя панель с кнопками
 		//=======================================================================================================
 		static public const TOOLBAR_HEIGHT:uint = 40;
+		
+		// Навигационная панель
+		//=======================================================================================================
+		static public const NAVBAR_WIDTH:uint = 46;
+
+		// Масштабная сетка
+		//=======================================================================================================
+		public static const GRID_TEXT_COLOR:uint = 0x9F9F9F;
+		public static const GRID_LINE_COLOR:uint = 0x9F9F9F;
+
+		// Метка базовой даты
+		//=======================================================================================================
+		public static const BASE_BACKGROUND_COLOR:uint = 0xFFFFFF;
+		public static const BASE_TEXT_COLOR:uint = 0xFF8000;
+		public static const BASE_LINE_COLOR:uint = 0xFF8000;
+
 	}
 
 }

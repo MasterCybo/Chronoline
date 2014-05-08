@@ -1,0 +1,117 @@
+<!--
+
+AutoVersion - ant-сценарий, для локальной нумерации билдов (версий) Flash-проектов.
+  Результатом выполнения сценария, является статический класс Version.as в корне проекта.
+  Класс содержит следующие поля:
+  	Version.major : int - мажорная версия сборки. Не имеет максимального ограничения.
+  	Version.minor : int - минорный счётчик. Максимальное значение - 99, после этого сбрасывается в 0, а МАЖОРНЫЙ счётчик увеличивается на 1.
+  	Version.build : int - счётчик билдов. Максимальное значение - 999, после этого сбрасывается в 0, а МИНОРНЫЙ счётчик увеличивается на 1
+  	Version.timestamp : String - время и дата компиляции проекта в формате ДД.ММ.ГГГГ - ЧЧ:ММ
+
+	ПРИМЕЧАНИЕ:
+	При выполнении, в папке с файлом сценария создаётся дополнительный файл auto-version.properties.
+	В нём хранятся значения счётчиков.
+	Если удалить этот файл - он будет создан заново при очередной компиляции, а все счётчики обнулятся.
+
+	Как подключить ant-сценарий к проекту в Intellij Idea?
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	В директории проекта создаём папку, и копируем в неё файл auto-version.xml:
+		MyMegaProject/ant/auto-version.xml
+
+	1. Открываем панель Ant Build и нажимаем кнопку +.
+	2. В появившемся окне выбираем нужный файл сценария и тыцаем ОК.
+	3. Открываем окно редактирования конфигураций текущего проекта Run/Debug Configurations:
+		Run -> Edit Configurations...
+	4. Слева, в разделе Flash App выбираем конфигурацию.
+	5. Справа, в нижней части окна, отображается список с заголовком "Before launch: ...".
+	6. В этом списке нажимаем +.
+	7. В списке Add New Configuration выбираем Run Ant target.
+	8. В списке Choose Ant Target to Execute выбираем цель init и нажимаем ОК.
+	9. Появившийся новый пункт перемещаем на первое место, перед элементом Make.
+	10. Enjoy!
+
+-->
+<project name="AutoVersion" default="init">
+
+	<target name="init">
+		<property name="fileName" value="auto-version.properties"/>
+		<property name="fileComment" value="AutoVersion properties"/>
+		<property name="maxBuild" value="9999"/>
+		<property name="maxMinor" value="999"/>
+
+		<condition property="hasProps">
+			<available file="${fileName}"/>
+		</condition>
+
+		<antcall target="present_false"/>
+		<antcall target="validate_version"/>
+
+		<tstamp>
+			<format property="TODAY" pattern="dd.MM.yyyy - kk:mm" locale="en,ru"/>
+		</tstamp>
+		<propertyfile file="${fileName}" comment="${fileComment}">
+			<entry  key="timestamp" value="${TODAY}"/>
+		</propertyfile>
+
+		<loadproperties srcFile="${fileName}" />
+
+		<echo file="../src/Version.as">package {
+	public final class Version {
+		public static const major:int = ${major};
+		public static const minor:int = ${minor};
+		public static const build:int = ${build};
+		public static const timestamp:String = "${TODAY}";
+	}
+}</echo>
+	</target>
+
+	<target name="present_false" unless="hasProps">
+		<!--echo message="- present FALSE"/-->
+		<propertyfile file="${fileName}" comment="${fileComment}">
+			<entry  key="major" type="int" value="0" />
+			<entry  key="minor" type="int" value="0" />
+			<entry  key="build" type="int" value="0" />
+		</propertyfile>
+	</target>
+
+	<target name="validate_version">
+		<!--echo message="Validate version"/-->
+
+		<propertyfile file="${fileName}" comment="${fileComment}">
+			<entry  key="build" type="int" default="0" operation="+" />
+		</propertyfile>
+
+		<loadproperties srcFile="${fileName}" />
+
+		<condition property="incMinor">
+			<equals arg1="${build}" arg2="${maxBuild}"/>
+		</condition>
+
+		<antcall target="inc_minor"/>
+
+		<loadproperties srcFile="${fileName}" />
+
+		<condition property="incMajor">
+			<equals arg1="${minor}" arg2="${maxMinor}"/>
+		</condition>
+
+		<antcall target="inc_major"/>
+	</target>
+
+	<target name="inc_minor" if="incMinor">
+		<!--echo message="= Increse MINOR"/-->
+		<propertyfile file="${fileName}" comment="${fileComment}">
+			<entry  key="minor" type="int" default="0" operation="+" />
+			<entry  key="build" type="int" value="0" />
+		</propertyfile>
+	</target>
+
+	<target name="inc_major" if="incMajor">
+		<!--echo message="= Increse MAJOR"/-->
+		<propertyfile file="${fileName}" comment="${fileComment}">
+			<entry  key="major" type="int" default="0" operation="+" />
+			<entry  key="minor" type="int" value="0" />
+			<entry  key="build" type="int" value="0" />
+		</propertyfile>
+	</target>
+</project>

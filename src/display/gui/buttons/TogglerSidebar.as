@@ -1,6 +1,6 @@
 package display.gui.buttons {
 	import ru.arslanov.flash.display.ABitmap;
-	
+
 	/**
 	 * ...
 	 * @author ...

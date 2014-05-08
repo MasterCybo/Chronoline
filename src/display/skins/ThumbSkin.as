@@ -1,8 +1,7 @@
 package display.skins {
-	
-	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
-	
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

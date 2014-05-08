@@ -1,5 +1,6 @@
 package constants {
 	import flash.text.TextFormat;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov

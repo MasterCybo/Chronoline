@@ -1,7 +1,6 @@
 package data {
 	import flash.utils.getQualifiedClassName;
-	import ru.arslanov.core.utils.Calc;
-	
+
 	/**
 	 * Событие, веха сущности Fact
 	 * @author Artem Arslanov
@@ -25,7 +24,7 @@ package data {
 		
 		override public function toString():String {
 			//return "[" + getQualifiedClassName( this ) + " " + uidStr + ", " + id + ", title=" + title.substr( 0, 15 ) + "... " + period.dateBegin.getValue() + " - " + period.dateEnd.getValue() + "]";
-			return "[" + getQualifiedClassName( this ) + " " + id + ", "+ period.dateBegin + " - " + period.dateEnd + "]";
+			return "[" + getQualifiedClassName( this ) + " " + id + ", "+ period + "]";
 		}
 		
 		/**
@@ -34,7 +33,7 @@ package data {
 		 * @return
 		 */
 		static public function fromJSON( id:String, json:Object ):MoFact {
-			var newPeriod:MoPeriod = new MoPeriod( MoDate.parse( json.bjd ), MoDate.parse( json.ejd ) );
+			var newPeriod:MoPeriod = new MoPeriod( Number( json.bjd ), Number( json.ejd ) );
 			
 			// TODO: Удалить. Искусственное увеличение продолжительности события
 			//newPeriod.dateEnd.setValue( newPeriod.dateEnd.getValue() + uint( Math.random() * 5 ) );

@@ -1,7 +1,9 @@
 package data {
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
+
 	import ru.arslanov.core.utils.Log;
+
 	/**
 	 * Историческая сущность
 	 * @author Artem Arslanov
@@ -32,7 +34,7 @@ package data {
 			if ( !_firstMoFact ) {
 				_firstMoFact = moFact;
 			} else {
-				if ( moFact.period.dateBegin.jd < _firstMoFact.period.dateBegin.jd ) {
+				if ( moFact.period.beginJD < _firstMoFact.period.beginJD ) {
 					_firstMoFact = moFact;
 				}
 			}
@@ -40,12 +42,12 @@ package data {
 			if ( !_lastMoFact ) {
 				_lastMoFact = moFact;
 			} else {
-				if ( moFact.period.dateEnd.jd > _lastMoFact.period.dateEnd.jd ) {
+				if ( moFact.period.endJD > _lastMoFact.period.endJD ) {
 					_lastMoFact = moFact;
 				}
 			}
 			
-			_duration = _lastMoFact.period.dateEnd.jd - _firstMoFact.period.dateBegin.jd;
+			_duration = _lastMoFact.period.endJD - _firstMoFact.period.beginJD;
 		}
 		
 		public function sortFacts():void {
@@ -53,8 +55,8 @@ package data {
 		}
 		
 		private function compareByDateBegin( fact1:MoFact, fact2:MoFact ):Number {
-			if ( fact1.period.dateBegin.jd > fact2.period.dateBegin.jd ) return 1;
-			if ( fact1.period.dateBegin.jd < fact2.period.dateBegin.jd ) return -1;
+			if ( fact1.period.beginJD > fact2.period.beginJD ) return 1;
+			if ( fact1.period.beginJD < fact2.period.beginJD ) return -1;
 			return 0;
 		}
 		
@@ -81,7 +83,7 @@ package data {
 		}
 		
 		override public function toString():String {
-			return "[" + getQualifiedClassName( this ) + " " + uidStr + ", id=" + id + ", title=" + title.substr( 0, 15 ) + "... " + beginPeriod.dateBegin.getFormatedDate() + " - " + endPeriod.dateEnd.getFormatedDate() + " = " + duration + ", facts=" + facts.length + "]";
+			return "[" + getQualifiedClassName( this ) + " " + uidStr + ", id=" + id + ", title=" + title.substr( 0, 15 ) + "... " + beginPeriod + " - " + endPeriod + " = " + duration + ", facts=" + facts.length + "]";
 		}
 		
 		public function dispose():void {

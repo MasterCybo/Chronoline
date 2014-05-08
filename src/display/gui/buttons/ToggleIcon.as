@@ -1,8 +1,8 @@
 package display.gui.buttons {
 	import display.base.ToggleApp;
+
 	import ru.arslanov.flash.display.ABitmap;
-	import ru.arslanov.flash.interfaces.IKillable;
-	
+
 	/**
 	 * ...
 	 * @author ...
