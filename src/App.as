@@ -37,8 +37,7 @@ package {
 	public class App extends ASprite {
 		
 		static public var httpManager:HTTPManager;
-		static public var currentType:String;
-		
+
 		private var _stats:Stats;
 		private var _tfVersion:TextApp;
 		private var _messFullScreen:ASprite;
