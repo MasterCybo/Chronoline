@@ -188,7 +188,7 @@ package display.components {
 		Обработчик нажатия кнопки
 		***************************************************************************/
 		private function onClickItem( ev:MouseEvent ):void {
-			Log.traceText( "*execute* ViewTreeList.onClickItem" );
+//			Log.traceText( "*execute* ViewTreeList.onClickItem" );
 			
 			var btn:BtnPartItem = ev.target as BtnPartItem;
 			
@@ -197,7 +197,7 @@ package display.components {
 			var iView:ItemTreeList = ev.currentTarget as ItemTreeList;
 			var idx:int = _vbox.getChildIndex( iView );
 			
-			Log.traceText( "idx : " + idx );
+//			Log.traceText( "idx : " + idx );
 			
 			var item:ItemOfList = _displayItems[ iView ];
 			item.checked = !item.checked;

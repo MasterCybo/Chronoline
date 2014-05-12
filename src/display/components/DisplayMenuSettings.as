@@ -101,7 +101,7 @@ package display.components
 		/***************************************************************************
 		 Формирование списка РАЗДЕЛОВ
 		 ***************************************************************************/
-			//{ region Получение с сервера списка разделов и парсинг
+		//{ region Получение с сервера списка разделов и парсинг
 		private function sendPartsRequest():void
 		{
 			if ( !_vectItems ) {
@@ -204,9 +204,7 @@ package display.components
 		{
 			var itemView:ItemTreeList = ev.target as ItemTreeList;
 
-			if ( !itemView ) {
-				return;
-			}
+			if ( !itemView ) return;
 
 			var item:ItemOfList = ( itemView.customData as ItemOfList ).clone();
 
