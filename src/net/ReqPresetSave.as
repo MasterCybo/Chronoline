@@ -3,6 +3,7 @@ package net
 	import flash.net.URLVariables;
 
 	import ru.arslanov.core.http.HTTPRequest;
+	import ru.arslanov.core.utils.Log;
 
 	/**
 	 * ...
@@ -15,10 +16,8 @@ package net
 		{
 			var vars:URLVariables = new URLVariables();
 			vars.save = "";
-
-			for ( var i:int = 0; i < ids.length; i++ ) {
-				vars[ "entityId[" + (i + 1) + "]" ] = ids[i];
-			}
+			vars.entityId = ids.join(",");
+			vars.name = "test_preset";
 
 			super( "preset.php", vars );
 		}
