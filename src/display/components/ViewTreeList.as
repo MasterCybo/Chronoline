@@ -39,6 +39,8 @@ package display.components {
 		
 		override public function init():* {
 			_treeList = new TreeList();
+//			_treeList.onUpdate = update;
+			
 			_poolViews = new Dictionary( true );
 			_displayItems = new Dictionary( true );
 			
@@ -120,14 +122,14 @@ package display.components {
 					
 					if (!_vbox.contains( view ) ) {
 						//Log.traceText( "... но НЕ отображается - добавляем!" );
-						_displayItems[ view ] = item;
+						_displayItems[ view ] = item
+						
 						_vbox.addChildAt( view, idx + i );
 					}
 					
-					if ( item.checked && ( item.countChildren ) ) {
-						//Log.traceText( "... и открыт - отображаем детей!" );
-						
+					if ( item.checked && item.countChildren ) {
 						redraw( getSortedVector( item.children ), idx + i + 1, level + 1 );
+						idx += item.countChildren;
 					}
 				}
 			}
@@ -188,17 +190,12 @@ package display.components {
 		Обработчик нажатия кнопки
 		***************************************************************************/
 		private function onClickItem( ev:MouseEvent ):void {
-			Log.traceText( "*execute* ViewTreeList.onClickItem" );
-			
 			var btn:BtnPartItem = ev.target as BtnPartItem;
 			
 			if ( !btn ) return;
 			
 			var iView:ItemTreeList = ev.currentTarget as ItemTreeList;
 			var idx:int = _vbox.getChildIndex( iView );
-			
-			Log.traceText( "idx : " + idx );
-			
 			var item:ItemOfList = _displayItems[ iView ];
 			item.checked = !item.checked;
 			
@@ -208,7 +205,6 @@ package display.components {
 		private function getSortedVector( dict:Dictionary ):Vector.<ItemOfList> {
 			return Vector.<ItemOfList>( DictionaryUtil.getValues( dict ) ).sort( compareByKeyName );
 		}
-		
 		
 		override public function get width():Number {
 			return _width;
