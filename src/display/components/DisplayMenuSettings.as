@@ -75,7 +75,6 @@ package display.components {
 			addChild( _targetView );
 			addChild( _tfOrigin );
 			addChild( _tfTarget );
-			//addChild( _btnReady );
 			
 			sendPartsRequest();
 			
@@ -169,7 +168,11 @@ package display.components {
 		}
 		
 		//} endregion
-		
+
+		/**
+		 * Обработка клика в базовом списке
+		 * @param ev
+		 */
 		private function onClickOriginal( ev:MouseEvent ):void {
 			var itemView:ItemTreeList = ev.target as ItemTreeList;
 			
@@ -183,7 +186,11 @@ package display.components {
 			
 			updateReadyState();
 		}
-		
+
+		/**
+		 * Обработка клика в целевом списке
+		 * @param ev
+		 */
 		private function onClickTarget( ev:MouseEvent ):void {
 			var itemView:ItemTreeList = ev.target as ItemTreeList;
 			
