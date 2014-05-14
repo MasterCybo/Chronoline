@@ -6,6 +6,7 @@ package display.gui
 	import display.gui.buttons.BtnIcon;
 	import display.gui.buttons.ToggleIcon;
 	import display.windows.WinLegend;
+	import display.windows.WinSavePreset;
 
 	import events.GuideLineNotice;
 	import events.SnapshotNotice;
@@ -99,7 +100,10 @@ package display.gui
 
 			Log.traceText( "    ids : " + ids );
 
-			App.httpManager.addRequest( new ReqPresetSave( ids ) );
+
+			AWindowsManager.me.displayWindow( new WinSavePreset().init() );
+
+//			App.httpManager.addRequest( new ReqPresetSave( ids ) );
 		}
 
 		/**

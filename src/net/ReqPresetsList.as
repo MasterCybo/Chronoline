@@ -6,10 +6,10 @@ package net
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class ReqPresetsGet extends HTTPRequest
+	public class ReqPresetsList extends HTTPRequest
 	{
 
-		public function ReqPresetsGet()
+		public function ReqPresetsList()
 		{
 			super( "preset.php?list" );
 		}

@@ -11,14 +11,12 @@ package net
 	public class ReqPresetSave extends HTTPRequest
 	{
 
-		public function ReqPresetSave( ids:Array )
+		public function ReqPresetSave( ids:Array, name:String = "untitled_preset" )
 		{
 			var vars:URLVariables = new URLVariables();
 			vars.save = "";
-
-			for ( var i:int = 0; i < ids.length; i++ ) {
-				vars[ "entityId[" + (i + 1) + "]" ] = ids[i];
-			}
+			vars.entityId = ids.join(",");
+			vars.name = name;
 
 			super( "preset.php", vars );
 		}

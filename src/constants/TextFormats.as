@@ -12,23 +12,24 @@ package constants {
 		static public const INPUT_HELP:TextFormat = new TextFormat( "Verdana", 12, 0X8F8F8F );
 		static public const LIST_HEADER:TextFormat = new TextFormat( "Verdana", 18, 0X868686 );
 		static public const WHITE_20:TextFormat = new TextFormat( "Arial", 20, 0xffffff, false, null, null, null, null, "center" );
-		
+
 		/***************************************************************************
 		Стили глобальной временной шкалы
 		***************************************************************************/
 		static public const TL_MAJOR_LABEL:TextFormat = new TextFormat( "Arial", 13, 0x46402f );
-		
+
 		/***************************************************************************
 		Стили вспомогательной временной шкалы
 		***************************************************************************/
 		static public const TR_MAJOR_LABEL:TextFormat = new TextFormat( "Arial", 12, 0x474130 );
-		
+
 		/***************************************************************************
 		Стили Интерфейса
 		***************************************************************************/
 		//static public const RANGE_EDIT:TextFormat = new TextFormat( "Arial", 30, 0x0, true );
 		static public const RANGE_EDIT:TextFormat = new TextFormat( "Arial", 18, 0x0, true, null, null, null, null, "center" );
-		
+		static public const RANGE_EDIT_HELPER:TextFormat = new TextFormat( "Arial", 18, 0X8F8F8F );
+
 		/***************************************************************************
 		Стили Сущностей
 		***************************************************************************/
