@@ -6,6 +6,7 @@ package display.gui
 	import display.gui.buttons.BtnIcon;
 	import display.gui.buttons.ToggleIcon;
 	import display.windows.WinLegend;
+	import display.windows.WinSavePreset;
 
 	import events.GuideLineNotice;
 	import events.SnapshotNotice;
@@ -87,7 +88,16 @@ package display.gui
 		 */
 		private function hrClickSave():void
 		{
-			Log.traceText( "*execute* ToolBar.hrClickSave" );
+			AWindowsManager.me.displayWindow( new WinSavePreset( onPressOk, onPressCancel ).init() );
+		}
+
+		private function onPressCancel():void
+		{
+			AWindowsManager.me.removeWindow( WinSavePreset.WINDOW_NAME );
+		}
+
+		private function onPressOk( presetName:String ):void
+		{
 			var ids:Array = [];
 
 			var ents:Array = EntityManager.getArrayEntities();
@@ -99,7 +109,9 @@ package display.gui
 
 			Log.traceText( "    ids : " + ids );
 
-			App.httpManager.addRequest( new ReqPresetSave( ids ) );
+			App.httpManager.addRequest( new ReqPresetSave( ids, presetName ) );
+
+			AWindowsManager.me.removeWindow( WinSavePreset.WINDOW_NAME );
 		}
 
 		/**

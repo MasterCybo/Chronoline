@@ -16,7 +16,8 @@ package collections.tree {
 		public var isRootList:Boolean;
 		public var dataObject:Object;
 		public var viewed:Boolean;
-		
+		public var homeName:String = "";
+
 		private var _checked:Boolean;
 		
 		public function ItemOfList( displayName:String, keyName:String, dataObject:Object = null, isRootList:Boolean = false ) {
@@ -53,11 +54,13 @@ package collections.tree {
 		
 		public function clone():ItemOfList {
 			var item:ItemOfList = new ItemOfList( displayName, keyName, dataObject, isRootList );
+
 			cloneParents( item );
 			cloneChildren( item );
 			
 			item.checked = checked;
 			item.viewed = viewed;
+			item.homeName = homeName;
 			
 			return item;
 		}
@@ -69,6 +72,7 @@ package collections.tree {
 			while ( curPar ) {
 				if ( !curPar.isRootList ) {
 					newPar = new ItemOfList( curPar.displayName, curPar.keyName, curPar.dataObject, curPar.isRootList );
+					newPar.homeName = curPar.homeName;
 					newPar.viewed = curPar.viewed;
 					newPar.checked = curPar.checked;
 					newPar.pushChild( target );
@@ -88,6 +92,7 @@ package collections.tree {
 			
 			for each ( child in children ) {
 				newItem = new ItemOfList( child.displayName, child.keyName, child.dataObject, child.isRootList );
+				newItem.homeName = child.homeName;
 				target.pushChild( newItem );
 				
 				child.cloneChildren( newItem );

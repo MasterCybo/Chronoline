@@ -61,9 +61,9 @@ package collections.tree
 
 		private function addRecursive( path:Array /*ItemOfList*/, parentItem:ItemOfList ):void
 		{
-			Log.traceText( "*execute* TreeList.addRecursive" );
-			Log.traceText( "path : " + path );
-			Log.traceText( "parentItem : " + parentItem );
+//			Log.traceText( "*execute* TreeList.addRecursive" );
+//			Log.traceText( "path : " + path );
+//			Log.traceText( "parentItem : " + parentItem );
 
 
 			var pathItem:ItemOfList = path.shift();

@@ -12,6 +12,7 @@ package display.components
 
 	import data.MoListEntity;
 	import data.MoListPartition;
+	import data.MoPresetItemList;
 
 	import display.base.TextApp;
 	import display.gui.buttons.ButtonText;
@@ -21,7 +22,7 @@ package display.components
 
 	import net.ReqPartEntities;
 	import net.ReqPartitions;
-	import net.ReqPresetsGet;
+	import net.ReqPresetsList;
 
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
@@ -39,6 +40,7 @@ package display.components
 
 		private var _tfOrigin:TextApp;
 		private var _tfTarget:TextApp;
+		private var _tfPresets:TextApp;
 		private var _originView:ViewTreeList;
 		private var _targetView:ViewTreeList;
 		private var _presetsView:ViewTreeList;
@@ -66,6 +68,7 @@ package display.components
 			// Заголовки списков
 			_tfOrigin = new TextApp( LocaleString.TITLE_ORIGIN, TextFormats.LIST_HEADER ).init();
 			_tfTarget = new TextApp( LocaleString.TITLE_TARGET, TextFormats.LIST_HEADER ).init();
+			_tfPresets = new TextApp( LocaleString.TITLE_PRESETS, TextFormats.LIST_HEADER ).init();
 
 			// Список каталога сущностей
 			_originView = new ViewTreeList( _width, _height / 2 - 5 ).init();
@@ -73,7 +76,6 @@ package display.components
 
 			// Список пресетов
 			_presetsView = new ViewTreeList( _width, _height / 2 - 5 ).init();
-			_presetsView.y = _originView.y + 10;
 			_presetsView.eventManager.addEventListener( MouseEvent.CLICK, onClickPreset );
 
 			// Список выбранных сущностей
@@ -91,7 +93,7 @@ package display.components
 			addChild( _presetsView );
 			addChild( _tfOrigin );
 			addChild( _tfTarget );
-			//addChild( _btnReady );
+			addChild( _tfPresets );
 
 			sendPartsRequest();
 
@@ -101,20 +103,44 @@ package display.components
 		/***************************************************************************
 		 Формирование списка РАЗДЕЛОВ
 		 ***************************************************************************/
-		//{ region Получение с сервера списка разделов и парсинг
 		private function sendPartsRequest():void
 		{
 			if ( !_vectItems ) {
-				App.httpManager.addRequest( new ReqPresetsGet(), parsePresets ); // Запрашиваем пресеты
+				App.httpManager.addRequest( new ReqPresetsList(), parsePresets ); // Запрашиваем пресеты
 				App.httpManager.addRequest( new ReqPartitions(), parsePartitions ); // Запрашиваем разделы
 			} else {
 				setupList();
 			}
 		}
 
-		private function parsePresets( req:ReqPresetsGet ):void
+		private function parsePresets( req:ReqPresetsList ):void
 		{
-			Log.traceText( "ReqPresetsGet.responseData : " + req.responseData );
+			Log.traceText( "ReqPresetsList.responseData : " + req.responseData );
+
+			var listObjects:Array = JSON.parse( String( req.responseData ) ) as Array;
+			var listPresets:Vector.<MoPresetItemList> = new Vector.<MoPresetItemList>();
+
+			var i:int;
+
+			for ( i = 0; i < listObjects.length; i++ ) {
+				var object:Object = listObjects[i];
+				listPresets.push( MoPresetItemList.parse( object ) );
+			}
+
+//			Log.traceText( "listPresets : " + listPresets );
+
+			for ( i = 0; i < listPresets.length; i++ ) {
+				var itemPreset:MoPresetItemList = listPresets[i];
+
+				var itemList:ItemOfList = new ItemOfList( itemPreset.title, itemPreset.title, itemPreset );
+//				itemList.homeName = "presetsList";
+				itemList.homeName = _presetsList.rootItem.keyName;
+				itemList.viewed = true;
+				_presetsList.addItem( itemList );
+//				_targetList.addItem( itemList );
+
+				Log.traceText( itemList + " : " + itemPreset.title + ", " + itemPreset.listIDs );
+			}
 		}
 
 		private function parsePartitions( req:ReqPartitions ):void
@@ -132,6 +158,8 @@ package display.components
 
 				if ( part.count > 0 ) { // Добавляем разделы, которые содержат сущности
 					item = new ItemOfList( part.name + " (" + part.count + ")", part.name, part );
+//					item.homeName = "originTree";
+					item.homeName = _originList.rootItem.keyName;
 					item.viewed = true;
 					_vectItems.push( item );
 
@@ -143,8 +171,6 @@ package display.components
 
 			procSendEntitiesRequest();
 		}
-
-		//} endregion
 
 		/***************************************************************************
 		 Формирование и отображение списка СУЩНОСТЕЙ
@@ -189,6 +215,8 @@ package display.components
 
 				if ( ent.count > 0 ) { // Добавляем сущности, которые содержат события
 					itemEnt = new ItemOfList( numCounter + ". " + ent.name + " ~" + ent.count, ent.name, ent );
+//					itemEnt.homeName = "originTree";
+					itemEnt.homeName = _originList.rootItem.keyName;
 					curItemPart.pushChild( itemEnt );
 
 					numCounter++;
@@ -227,7 +255,12 @@ package display.components
 			// BUG: Если во второй список перекинуть один дочерний элемент, потом свернуть родителя и затем перенести его в свётнутом виде,
 			// то повторив перенос, состояние кнопки элемента будет закрытое (кнопка будет как-будто свёрнута).
 
-			_originList.addItem( item );
+			if ( item.homeName == _presetsList.rootItem.keyName ) {
+				_presetsList.addItem( item );
+			} else {
+				_originList.addItem( item );
+			}
+
 			_targetList.removeItem( item.clone() );
 
 			updateReadyState();
@@ -235,7 +268,16 @@ package display.components
 
 		private function onClickPreset( event:MouseEvent ):void
 		{
+			var itemView:ItemTreeList = event.target as ItemTreeList;
 
+			if ( !itemView ) return;
+
+			var item:ItemOfList = ( itemView.customData as ItemOfList ).clone();
+
+			_targetList.addItem( item );
+			_presetsList.removeItem( item.clone() );
+
+			updateReadyState();
 		}
 
 		private function setupList():void
@@ -250,6 +292,7 @@ package display.components
 
 			_originView.setupList( _originList );
 			_targetView.setupList( _targetList );
+			_presetsView.setupList( _presetsList );
 
 			updateReadyState();
 		}
@@ -271,7 +314,28 @@ package display.components
 		{
 			//Notification.send( UpdateChronolineNotice.NAME, new UpdateChronolineNotice() );
 
-			var vect:Vector.<MoListEntity> = Vector.<MoListEntity>( _targetList.getFlatArrayData() );
+			var arr:Array = _targetList.getFlatArrayData();
+
+			Log.traceText( "arr : " + arr );
+
+			var vect:Vector.<MoListEntity> = new Vector.<MoListEntity>();
+
+			for ( var i:int = 0; i < arr.length; i++ ) {
+				var item:* = arr[i];
+				if ( item is MoPresetItemList ) {
+					var presetItem:MoPresetItemList = item as MoPresetItemList;
+					var listIDs:Array = presetItem.listIDs;
+					for ( var j:int = 0; j < listIDs.length; j++ ) {
+						var id:String = listIDs[j];
+						var moListEnt:MoListEntity = new MoListEntity(id, "", 1 );
+						vect.push( moListEnt );
+					}
+				} else {
+					vect.push( item );
+				}
+			}
+
+//			var vect:Vector.<MoListEntity> = Vector.<MoListEntity>( _targetList.getFlatArrayData() );
 
 			//Log.traceText( "vect : " + vect );
 
@@ -314,12 +378,14 @@ package display.components
 			_targetView.x = _originView.width + 30;
 
 			_originView.height = hh / 2 - 5;
-			_presetsView.height = hh / 2 - 5;
+			_presetsView.height = hh / 2 - _tfPresets.height - 5;
 			_targetView.height = hh;
 			_originView.y = _targetView.y = _tfOrigin.height + 5;
-			_presetsView.y = _originView.y + _originView.height + 10;
+			_presetsView.y = _originView.y + _originView.height + _tfPresets.height + 10;
 
 			_tfTarget.x = _targetView.x;
+			_tfPresets.x = _presetsView.x;
+			_tfPresets.y = _originView.y + _originView.height + 5;
 		}
 	}
 
