@@ -22,6 +22,8 @@ package constants {
 
 		//{ region КНОПКИ
 		static public const DISPLAY_SELECTED:String = "Показать";
+		static public const SAVE_PRESET:String = "Сохранить набор";
+		static public const CANCEL:String = "Отменить";
 		static public const SCREENSHOT:String = "Снимок экрана";
 		static public const PRESET_SAVE:String = "Сохранить набор";
 		static public const BACK_MAIN_PAGE:String = "На главную";

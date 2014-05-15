@@ -327,7 +327,7 @@ package display.components
 					var listIDs:Array = presetItem.listIDs;
 					for ( var j:int = 0; j < listIDs.length; j++ ) {
 						var id:String = listIDs[j];
-						var moListEnt:MoListEntity = new MoListEntity(id, "", 10000 );
+						var moListEnt:MoListEntity = new MoListEntity(id, "", 1 );
 						vect.push( moListEnt );
 					}
 				} else {
