@@ -28,7 +28,7 @@ package controllers {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class EntitiesDataFactory {
+	public class EntitiesDataWebService {
 		
 		static public const DEF_LENGTH:uint = 1000;
 		
@@ -38,7 +38,8 @@ package controllers {
 		static private var _offsetIdx:uint;
 		static private var _total:uint;
 		static private var _progress:uint;
-		
+		static private var _isPreset:Boolean = false;
+
 		
 		static public function start( listEntityData:Vector.<MoListEntity> ):void {
 			_listEntityData = listEntityData;
@@ -62,13 +63,20 @@ package controllers {
 				if ( !moEnt ) {
 					_entityIDs.push( item.id );
 					_total+=item.count;
-//					_total += item.count ? item.count : 1;
-//					_total++;
 				}
 				
 				// Создаём список запроса для связей
 				_bindingEntityIDs.push( item.id );
 			}
+
+
+			if ( _total == 0 ) {
+				_total = _listEntityData.length;
+				_isPreset = true;
+			}
+
+			Log.traceText( "_listEntityData.length : " + _listEntityData.length );
+			Log.traceText( "_total : " + _total );
 
 			// Удаляем из менеджера сущностей те, которые отсутствуют
 			var mapMoEnts:Dictionary = EntityManager.mapMoEntities;
@@ -137,27 +145,33 @@ package controllers {
 			for ( name in json ) {
 				//Log.traceText( "Parse entity : " + name );
 				numData += parseEntity( json[ name ] );
-//				numData++;
+				numData++;
 			}
 			
 //			Log.traceText( "numData : " + numData );
-			_progress += numData;
-//			_progress ++;
+			if ( _isPreset ) {
+				_progress ++;
+			} else {
+				_progress += numData;
+			}
 
-			Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
-			
+			Log.traceText( "_progress : " + _progress );
+
+//				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
+
 			// Если количество обработанных данных
 			if ( numData < DEF_LENGTH ) {
+				_isPreset = false;
+
 				// ... меньше величины шага - переходим к связям
 				EntityManager.updateBounds();
-				
+
 				_offsetIdx = 0;
 				sendReqBindings();
 			} else {
 				// ... равно величине шага - делаем ещё запрос
-//				_progress ++;
-//
-//				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
+
+				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
 
 				_offsetIdx += DEF_LENGTH; // Увеличиваем смещение
 				sendReqEntityData();
@@ -202,7 +216,7 @@ package controllers {
 		}
 		
 		static private function parseBonds( req:ReqBindingsData ):void {
-			//Log.traceText( "*execute* EntitiesDataFactory.parseBonds" );
+			//Log.traceText( "*execute* EntitiesDataWebService.parseBonds" );
 			var json:Object = JSON.parse( String( req.responseData ) );
 			
 			//Log.traceText( "data : " + data );

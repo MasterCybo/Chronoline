@@ -6,7 +6,7 @@ package display.components
 	import constants.LocaleString;
 	import constants.TextFormats;
 
-	import controllers.EntitiesDataFactory;
+	import controllers.EntitiesDataWebService;
 	import controllers.ParserEntities;
 	import controllers.ParserPartitions;
 
@@ -166,7 +166,6 @@ package display.components
 
 				if ( part.count > 0 ) { // Добавляем разделы, которые содержат сущности
 					item = new ItemOfList( part.name + " (" + part.count + ")", part.name, part );
-//					item.homeName = "originTree";
 					item.homeName = _originList.rootItem.keyName;
 					item.viewed = true;
 					_vectItems.push( item );
@@ -223,7 +222,6 @@ package display.components
 
 				if ( ent.count > 0 ) { // Добавляем сущности, которые содержат события
 					itemEnt = new ItemOfList( numCounter + ". " + ent.name + " ~" + ent.count, ent.name, ent );
-//					itemEnt.homeName = "originTree";
 					itemEnt.homeName = _originList.rootItem.keyName;
 					curItemPart.pushChild( itemEnt );
 
@@ -324,7 +322,7 @@ package display.components
 
 			var arr:Array = _targetList.getFlatArrayData();
 
-			Log.traceText( "arr : " + arr );
+//			Log.traceText( "arr : " + arr );
 
 			var vect:Vector.<MoListEntity> = new Vector.<MoListEntity>();
 
@@ -335,7 +333,7 @@ package display.components
 					var listIDs:Array = presetItem.listIDs;
 					for ( var j:int = 0; j < listIDs.length; j++ ) {
 						var id:String = listIDs[j];
-						var moListEnt:MoListEntity = new MoListEntity(id, "", 1 );
+						var moListEnt:MoListEntity = new MoListEntity(id, "", 0 );
 						vect.push( moListEnt );
 					}
 				} else {
@@ -347,7 +345,7 @@ package display.components
 
 			//Log.traceText( "vect : " + vect );
 
-			EntitiesDataFactory.start( vect );
+			EntitiesDataWebService.start( vect );
 		}
 
 		override public function get width():Number

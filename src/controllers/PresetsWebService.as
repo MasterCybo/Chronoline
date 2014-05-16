@@ -43,17 +43,14 @@ package controllers
 		private function parseListPresets( req:ReqPresetsList ):void
 		{
 			var listObjects:Array = JSON.parse( String( req.responseData ) ) as Array;
-			var listPresets:Vector.<MoPresetItemList> = new Vector.<MoPresetItemList>();
 
-			var i:int;
-			var object:Object;
+			var event:PresetsListEvent = new PresetsListEvent( new Vector.<MoPresetItemList>() );
 
-			for ( i = 0; i < listObjects.length; i++ ) {
-				object = listObjects[i];
-				listPresets.push( MoPresetItemList.parse( object ) );
+			for ( var i:int = 0; i < listObjects.length; i++ ) {
+				event.listPresets.push( MoPresetItemList.parse( listObjects[i] ) );
 			}
 
-			eventManager.dispatchEvent( new PresetsListEvent( listPresets ) );
+			eventManager.dispatchEvent( event );
 		}
 
 		/**

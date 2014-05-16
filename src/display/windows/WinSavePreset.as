@@ -21,10 +21,9 @@ package display.windows
 	public class WinSavePreset extends WindowApp
 	{
 		static public const WINDOW_NAME:String = "winSavePreset";
+
 		private var _handlerOk:Function;
 		private var _handlerCancel:Function;
-		private var _btnSave:ButtonText;
-		private var _btnCancel:ButtonText;
 		private var _inpName:InputApp;
 
 		public function WinSavePreset( handlerOk:Function = null, handlerCancel:Function = null )
@@ -56,10 +55,10 @@ package display.windows
 			_inpName.setTextHelp( LocaleString.HELP_NAME_PRESET, TextFormats.RANGE_EDIT_HELPER );
 
 
-			_btnSave = new ButtonText( LocaleString.SAVE_PRESET ).init();
+			var _btnSave:ButtonText = new ButtonText( LocaleString.SAVE_PRESET ).init();
 			_btnSave.onRelease = onClickSave;
 
-			_btnCancel = new ButtonText( LocaleString.CANCEL ).init();
+			var _btnCancel:ButtonText = new ButtonText( LocaleString.CANCEL ).init();
 			_btnCancel.onRelease = onClickCancel;
 
 
