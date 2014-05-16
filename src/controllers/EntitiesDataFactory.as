@@ -61,13 +61,15 @@ package controllers {
 				
 				if ( !moEnt ) {
 					_entityIDs.push( item.id );
-					_total += item.count;
+					_total+=item.count;
+//					_total += item.count ? item.count : 1;
+//					_total++;
 				}
 				
 				// Создаём список запроса для связей
 				_bindingEntityIDs.push( item.id );
 			}
-			
+
 			// Удаляем из менеджера сущностей те, которые отсутствуют
 			var mapMoEnts:Dictionary = EntityManager.mapMoEntities;
 			var isRemove:Boolean;
@@ -129,16 +131,19 @@ package controllers {
 			}
 			
 			// Перебираем объекты данных
-			var numData:uint;
+
+			var numData:uint = 0;
 			var name:String;
 			for ( name in json ) {
 				//Log.traceText( "Parse entity : " + name );
 				numData += parseEntity( json[ name ] );
+//				numData++;
 			}
 			
-			//Log.traceText( "numData : " + numData );
+//			Log.traceText( "numData : " + numData );
 			_progress += numData;
-			
+//			_progress ++;
+
 			Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
 			
 			// Если количество обработанных данных
@@ -150,6 +155,10 @@ package controllers {
 				sendReqBindings();
 			} else {
 				// ... равно величине шага - делаем ещё запрос
+//				_progress ++;
+//
+//				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
+
 				_offsetIdx += DEF_LENGTH; // Увеличиваем смещение
 				sendReqEntityData();
 			}

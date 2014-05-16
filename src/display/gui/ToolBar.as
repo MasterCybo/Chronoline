@@ -1,20 +1,22 @@
-package display.gui {
+package display.gui
+{
 	import collections.EntityManager;
+
+	import data.MoTimeline;
 
 	import display.components.RangeEditor;
 	import display.gui.buttons.BtnIcon;
 	import display.gui.buttons.ToggleIcon;
 	import display.windows.WinLegend;
+	import display.windows.WinSavePreset;
 
 	import events.GuideLineNotice;
 	import events.SnapshotNotice;
+	import events.TimelineEvent;
 
 	import flash.display.BitmapData;
 
-	import net.ReqSavePreset;
-
 	import ru.arslanov.core.events.Notification;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.layout.HBox;
@@ -25,82 +27,123 @@ package display.gui {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class ToolBar extends ASprite {
+	public class ToolBar extends ASprite
+	{
 		private var _body:ABitmap;
 		private var _slots:HBox;
 		private var _rangeEditor:RangeEditor;
-		
-		public function ToolBar() {
+		private var _btnSave:BtnIcon;
+
+		public function ToolBar()
+		{
 			super();
 		}
-		
-		override public function init():* {
+
+		override public function init():*
+		{
 			_body = ABitmap.fromColor( Settings.GUI_COLOR, Display.stageWidth, Settings.TOOLBAR_HEIGHT, false ).init();
 			_slots = new HBox( 5 ).init();
 			_rangeEditor = new RangeEditor().init();
 
 			var btnGuide:ToggleIcon = new ToggleIcon( PngBtnGuidlineOff, null, PngBtnGuidlineOn ).init();
-			var btnSave:BtnIcon = new BtnIcon( PngBtnSavePreset ).init();
+			_btnSave = new BtnIcon( PngBtnSavePreset ).init();
 			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
 			var btnLegend:ToggleIcon = new ToggleIcon( PngBtnLegendOff, null, PngBtnLegendOn ).init();
 
 			btnGuide.onRelease = onDisplayGuideLine;
-			btnSave.onRelease = hrClickSave;
+			_btnSave.onRelease = hrClickSave;
 			btnSnapshot.onRelease = onClickSnapshot;
 			btnLegend.onRelease = hrClickLegend;
 
 			_slots.addChildAndUpdate( btnGuide );
-			_slots.addChildAndUpdate( btnSave );
+			_slots.addChildAndUpdate( _btnSave );
 			_slots.addChildAndUpdate( btnSnapshot );
 			_slots.addChildAndUpdate( btnLegend );
-			
+
 			addChild( _body );
 			addChild( _rangeEditor );
 			addChild( _slots );
-			
+
+			checkSaveButton();
+
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, checkSaveButton );
+
 			return super.init();
 		}
-		
-		private function onClickSnapshot():void {
+
+		/**
+		 * Сделать и сохранить скриншот
+		 */
+		private function onClickSnapshot():void
+		{
 			Notification.send( SnapshotNotice.NAME );
 		}
-		
-		private function onDisplayGuideLine( btn:ToggleIcon ):void {
+
+		/**
+		 * Показать/скрыть направляющую
+		 * @param btn
+		 */
+		private function onDisplayGuideLine( btn:ToggleIcon ):void
+		{
 			Notification.send( GuideLineNotice.NAME, new GuideLineNotice( btn.checked ) );
 		}
-		
-		private function hrClickSave():void {
+
+		/**
+		 * Сохранение набора
+		 */
+		public function checkSaveButton( event:TimelineEvent = null ):void
+		{
+			var ents:Array = EntityManager.getArrayEntities();
+			_btnSave.enabled = ents.length > 0;
+		}
+		private function hrClickSave():void
+		{
+			AWindowsManager.me.displayWindow( new WinSavePreset( onPressOk, onPressCancel ).init() );
+		}
+
+		private function onPressCancel():void
+		{
+			AWindowsManager.me.removeWindow( WinSavePreset.WINDOW_NAME );
+		}
+
+		private function onPressOk( presetName:String ):void
+		{
 			var ids:Array = [];
-			
+
 			var ents:Array = EntityManager.getArrayEntities();
 			var len:uint = ents.length;
-			
+
 			for ( var i:int = 0; i < len; i++ ) {
 				ids.push( ents[ i ].id );
 			}
-			
-			Log.traceText( "ids : " + ids );
-			
-			App.httpManager.addRequest( new ReqSavePreset( App.currentType, ids ) );
+
+			App.presetsService.save( presetName, ids );
+
+			AWindowsManager.me.removeWindow( WinSavePreset.WINDOW_NAME );
 		}
-		
-		private function hrClickLegend( btn:ToggleIcon ):void {
+
+		/**
+		 * Показать/скрыть окно легенды
+		 * @param btn
+		 */
+		private function hrClickLegend( btn:ToggleIcon ):void
+		{
 			if ( btn.checked ) {
 				AWindowsManager.me.displayWindow( new WinLegend( -1, Display.stageHeight - _body.height ).init() );
 			} else {
 				AWindowsManager.me.removeWindow( WinLegend.WINDOW_NAME );
 			}
 		}
-		
-		public function updateSize():void {
+
+		public function updateSize():void
+		{
 			_body.bitmapData.dispose();
 			_body.bitmapData = new BitmapData( Display.stageWidth, Settings.TOOLBAR_HEIGHT, false, Settings.GUI_COLOR );
-			
-			_slots.x = int(( _body.width - _slots.width ) / 2 );
-			_slots.y = int(( _body.height - _slots.height ) / 2);
-			
-			_rangeEditor.y = int(( _body.height - _rangeEditor.height ) / 2);
-			_rangeEditor.x = _rangeEditor.y;
+
+			_slots.x = int( ( _body.width - _slots.width ) / 2 );
+			_slots.y = int( ( _body.height - _slots.height ) / 2 );
+
+			_rangeEditor.x = _rangeEditor.y = int( ( _body.height - _rangeEditor.height ) / 2 );
 		}
 	}
 

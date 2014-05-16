@@ -51,34 +51,43 @@ package collections.tree
 		 ***************************************************************************/
 		public function addItem( item:ItemOfList ):void
 		{
+			//trace( "*execute* TreeList.addItem" );
+			//trace( item.keyName + ", " + item.countChildren );
+
 			addRecursive( getPath( item ), rootItem );
+
 			callUpdate();
 		}
 
-		private function addRecursive( path:Array/*ItemOfList*/, parentItem:ItemOfList ):void
+		private function addRecursive( path:Array /*ItemOfList*/, parentItem:ItemOfList ):void
 		{
+//			Log.traceText( "*execute* TreeList.addRecursive" );
+//			Log.traceText( "path : " + path );
+//			Log.traceText( "parentItem : " + parentItem );
+
+
 			var pathItem:ItemOfList = path.shift();
 
-			if ( !pathItem ) return;
-			
-			// Проверяем, существует ли текущий элемент
-			var existItem:ItemOfList = parentItem.findChild( pathItem.keyName );
+			//Log.traceText( "pathItem : " + pathItem );
 
-			if ( existItem ) {
+			if ( !pathItem ) return;
+
+			var item:ItemOfList = parentItem.findChild( pathItem.keyName );
+
+			if ( item ) {
 				if ( !path.length ) {
 					var child:ItemOfList;
-					var item:ItemOfList;
+					var itm:ItemOfList;
 					for each ( child in pathItem.children ) {
-						item = existItem.findChild( child.keyName );
-						if ( !item ) {
-							existItem.pushChild( child );
+						itm = item.findChild( child.keyName );
+						if ( !itm ) {
+							item.pushChild( child );
 						}
 					}
 				} else {
-					addRecursive( path, existItem );
+					addRecursive( path, item );
 				}
 			} else {
-				// Если не существует - добавляем его в родительский элемент
 				parentItem.pushChild( pathItem );
 			}
 		}
@@ -177,11 +186,15 @@ package collections.tree
 
 		private function callUpdate():void
 		{
-			if ( onUpdate == null ) {
-				return;
-			}
+			if ( onUpdate == null ) return;
 
 			onUpdate();
+		}
+
+		public function clear():void
+		{
+			_root.removeChildren();
+			clearCacheRemovedItems();
 		}
 	}
 
