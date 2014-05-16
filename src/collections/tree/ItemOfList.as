@@ -120,6 +120,12 @@ package collections.tree {
 				item.viewed = _checked;
 			}
 		}
+
+		public function removeChildren():void
+		{
+			children = new Dictionary( true );
+			countChildren = 0;
+		}
 	}
 
 }

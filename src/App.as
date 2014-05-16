@@ -2,6 +2,8 @@ package {
 	import constants.LocaleString;
 	import constants.TextFormats;
 
+	import controllers.PresetsWebService;
+
 	import display.base.TextApp;
 	import display.components.LockScreenProcess;
 	import display.components.MessageFullScreen;
@@ -37,6 +39,7 @@ package {
 	public class App extends ASprite {
 		
 		static public var httpManager:HTTPManager;
+		static public var presetsService:PresetsWebService;
 
 		private var _stats:Stats;
 		private var _tfVersion:TextApp;
@@ -84,6 +87,7 @@ package {
 			url = url != "" ? url.substring( 0, url.lastIndexOf( "/" ) + 1 ) : "";
 			
 			httpManager = new HTTPManager( url );
+			presetsService = new PresetsWebService( httpManager );
 			
 			if ( Capabilities.isDebugger ) {
 				_stats = new Stats();

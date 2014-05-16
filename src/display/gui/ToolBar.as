@@ -2,6 +2,8 @@ package display.gui
 {
 	import collections.EntityManager;
 
+	import data.MoTimeline;
+
 	import display.components.RangeEditor;
 	import display.gui.buttons.BtnIcon;
 	import display.gui.buttons.ToggleIcon;
@@ -10,6 +12,7 @@ package display.gui
 
 	import events.GuideLineNotice;
 	import events.SnapshotNotice;
+	import events.TimelineEvent;
 
 	import flash.display.BitmapData;
 
@@ -32,6 +35,7 @@ package display.gui
 		private var _body:ABitmap;
 		private var _slots:HBox;
 		private var _rangeEditor:RangeEditor;
+		private var _btnSave:BtnIcon;
 
 		public function ToolBar()
 		{
@@ -45,23 +49,27 @@ package display.gui
 			_rangeEditor = new RangeEditor().init();
 
 			var btnGuide:ToggleIcon = new ToggleIcon( PngBtnGuidlineOff, null, PngBtnGuidlineOn ).init();
-			var btnSave:BtnIcon = new BtnIcon( PngBtnSavePreset ).init();
+			_btnSave = new BtnIcon( PngBtnSavePreset ).init();
 			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
 			var btnLegend:ToggleIcon = new ToggleIcon( PngBtnLegendOff, null, PngBtnLegendOn ).init();
 
 			btnGuide.onRelease = onDisplayGuideLine;
-			btnSave.onRelease = hrClickSave;
+			_btnSave.onRelease = hrClickSave;
 			btnSnapshot.onRelease = onClickSnapshot;
 			btnLegend.onRelease = hrClickLegend;
 
 			_slots.addChildAndUpdate( btnGuide );
-			_slots.addChildAndUpdate( btnSave );
+			_slots.addChildAndUpdate( _btnSave );
 			_slots.addChildAndUpdate( btnSnapshot );
 			_slots.addChildAndUpdate( btnLegend );
 
 			addChild( _body );
 			addChild( _rangeEditor );
 			addChild( _slots );
+
+			checkSaveButton();
+
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, checkSaveButton );
 
 			return super.init();
 		}
@@ -86,6 +94,11 @@ package display.gui
 		/**
 		 * Сохранение набора
 		 */
+		public function checkSaveButton( event:TimelineEvent = null ):void
+		{
+			var ents:Array = EntityManager.getArrayEntities();
+			_btnSave.enabled = ents.length > 0;
+		}
 		private function hrClickSave():void
 		{
 			AWindowsManager.me.displayWindow( new WinSavePreset( onPressOk, onPressCancel ).init() );
@@ -107,9 +120,7 @@ package display.gui
 				ids.push( ents[ i ].id );
 			}
 
-			Log.traceText( "    ids : " + ids );
-
-			App.httpManager.addRequest( new ReqPresetSave( ids, presetName ) );
+			App.presetsService.save( presetName, ids );
 
 			AWindowsManager.me.removeWindow( WinSavePreset.WINDOW_NAME );
 		}

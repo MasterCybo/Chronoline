@@ -186,11 +186,15 @@ package collections.tree
 
 		private function callUpdate():void
 		{
-			if ( onUpdate == null ) {
-				return;
-			}
+			if ( onUpdate == null ) return;
 
 			onUpdate();
+		}
+
+		public function clear():void
+		{
+			_root.removeChildren();
+			clearCacheRemovedItems();
 		}
 	}
 

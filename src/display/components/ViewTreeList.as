@@ -62,6 +62,10 @@ package display.components
 
 		public function setupList( treeList:TreeList ):void
 		{
+//			_vbox.killChildren();
+//			_displayItems = new Dictionary( true );
+//			_vscroller.update();
+
 			_treeList = treeList;
 			_treeList.onUpdate = update;
 

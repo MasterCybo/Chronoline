@@ -17,6 +17,10 @@ package display.components
 	import display.base.TextApp;
 	import display.gui.buttons.ButtonText;
 
+	import events.PresetSaveEvent;
+
+	import events.PresetsListEvent;
+
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
 
@@ -97,7 +101,43 @@ package display.components
 
 			sendPartsRequest();
 
+			App.presetsService.eventManager.addEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
+			App.presetsService.eventManager.addEventListener( PresetSaveEvent.COMPLETE, onPresetSaveComplete );
+
 			return super.init();
+		}
+
+		/**
+		 * Обработчик события удачного сохранения набора
+		 * @param event
+		 */
+		private function onPresetSaveComplete( event:PresetSaveEvent ):void
+		{
+			App.presetsService.getList();
+		}
+
+		/**
+		 * Обработчик события получения списка наборов
+		 * @param event
+		 */
+		private function onPresetsListComplete( event:PresetsListEvent ):void
+		{
+			_presetsList.clear();
+
+			var listPresets:Vector.<MoPresetItemList> = event.listPresets;
+
+			for ( var i:uint = 0; i < listPresets.length; i++ ) {
+				var itemPreset:MoPresetItemList = listPresets[i];
+
+				var itemList:ItemOfList = new ItemOfList( itemPreset.title, itemPreset.title, itemPreset );
+				itemList.homeName = _presetsList.rootItem.keyName;
+				itemList.viewed = true;
+				_presetsList.addItem( itemList );
+
+				Log.traceText( itemList + " : " + itemPreset.title + ", " + itemPreset.listIDs );
+			}
+
+			_presetsView.setupList( _presetsList );
 		}
 
 		/***************************************************************************
@@ -106,40 +146,10 @@ package display.components
 		private function sendPartsRequest():void
 		{
 			if ( !_vectItems ) {
-				App.httpManager.addRequest( new ReqPresetsList(), parsePresets ); // Запрашиваем пресеты
+				App.presetsService.getList();
 				App.httpManager.addRequest( new ReqPartitions(), parsePartitions ); // Запрашиваем разделы
 			} else {
 				setupList();
-			}
-		}
-
-		private function parsePresets( req:ReqPresetsList ):void
-		{
-			Log.traceText( "ReqPresetsList.responseData : " + req.responseData );
-
-			var listObjects:Array = JSON.parse( String( req.responseData ) ) as Array;
-			var listPresets:Vector.<MoPresetItemList> = new Vector.<MoPresetItemList>();
-
-			var i:int;
-
-			for ( i = 0; i < listObjects.length; i++ ) {
-				var object:Object = listObjects[i];
-				listPresets.push( MoPresetItemList.parse( object ) );
-			}
-
-//			Log.traceText( "listPresets : " + listPresets );
-
-			for ( i = 0; i < listPresets.length; i++ ) {
-				var itemPreset:MoPresetItemList = listPresets[i];
-
-				var itemList:ItemOfList = new ItemOfList( itemPreset.title, itemPreset.title, itemPreset );
-//				itemList.homeName = "presetsList";
-				itemList.homeName = _presetsList.rootItem.keyName;
-				itemList.viewed = true;
-				_presetsList.addItem( itemList );
-//				_targetList.addItem( itemList );
-
-				Log.traceText( itemList + " : " + itemPreset.title + ", " + itemPreset.listIDs );
 			}
 		}
 
@@ -386,6 +396,15 @@ package display.components
 			_tfTarget.x = _targetView.x;
 			_tfPresets.x = _presetsView.x;
 			_tfPresets.y = _originView.y + _originView.height + 5;
+		}
+
+
+		override public function kill():void
+		{
+			App.presetsService.eventManager.removeEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
+			App.presetsService.eventManager.removeEventListener( PresetSaveEvent.COMPLETE, onPresetSaveComplete );
+
+			super.kill();
 		}
 	}
 
