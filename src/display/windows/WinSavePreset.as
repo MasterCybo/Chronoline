@@ -9,8 +9,6 @@ package display.windows
 	import display.base.InputApp;
 	import display.gui.buttons.ButtonText;
 
-	import ru.arslanov.core.utils.Log;
-
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.layout.HBox;
 	import ru.arslanov.flash.gui.layout.VBox;

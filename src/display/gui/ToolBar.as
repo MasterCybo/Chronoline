@@ -16,10 +16,7 @@ package display.gui
 
 	import flash.display.BitmapData;
 
-	import net.ReqPresetSave;
-
 	import ru.arslanov.core.events.Notification;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.layout.HBox;

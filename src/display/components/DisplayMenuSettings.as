@@ -18,7 +18,6 @@ package display.components
 	import display.gui.buttons.ButtonText;
 
 	import events.PresetSaveEvent;
-
 	import events.PresetsListEvent;
 
 	import flash.events.MouseEvent;
@@ -26,7 +25,6 @@ package display.components
 
 	import net.ReqPartEntities;
 	import net.ReqPartitions;
-	import net.ReqPresetsList;
 
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
