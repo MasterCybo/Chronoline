@@ -9,6 +9,7 @@ package display.scenes {
 	import data.MoTimeline;
 
 	import display.components.GuideLine;
+	import display.gui.DateScrollBar;
 	import display.gui.Desktop;
 	import display.gui.MainGUI;
 
@@ -36,7 +37,6 @@ package display.scenes {
 	public class ChronolinePage extends AScene {
 		static public const SCENE_NAME:String = "chronolinePage";
 		
-		//private var _rulerGlobal:RulerGlobal;
 		private var _desktop:Desktop;
 		private var _deskCtrl:DesktopController;
 		private var _guideLine:GuideLine;
@@ -48,15 +48,16 @@ package display.scenes {
 		override public function init():* {
 			var gui:MainGUI = new MainGUI().init();
 			
-			//_rulerGlobal = new RulerGlobal( hh ).init();
-			//_rulerGlobal.y = gui.y + Settings.TOOLBAR_HEIGHT;
+			var dateScrollbar:DateScrollBar = new DateScrollBar( Display.stageHeight - Settings.TOOLBAR_HEIGHT ).init();
+			dateScrollbar.y = Settings.TOOLBAR_HEIGHT;
 			
-			_desktop = new Desktop( Display.stageWidth, Display.stageHeight - Settings.TOOLBAR_HEIGHT ).init();
-			//_desktop.x = Settings.DESK_OFFSET;
+			_desktop = new Desktop( Display.stageWidth - dateScrollbar.width, Display.stageHeight - Settings.TOOLBAR_HEIGHT ).init();
+			_desktop.x = dateScrollbar.width;
 			_desktop.y = Settings.TOOLBAR_HEIGHT;
 			
 			_guideLine = new GuideLine( _desktop.width ).init();
-			
+
+			addChild( dateScrollbar );
 			addChild( _desktop );
 			addChild( _guideLine );
 			//addChild( _rulerGlobal );
