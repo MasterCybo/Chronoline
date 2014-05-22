@@ -5,12 +5,16 @@ package display.gui
 {
 	import data.MoTimeline;
 
+	import display.components.TimelineMiniMap;
+
 	import display.skins.SBDateThumb;
+
 	import display.skins.ScrollbarBody;
 
 	import events.TimelineEvent;
 
 	import ru.arslanov.core.utils.Log;
+	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.gui.AScrollBar;
 	import ru.arslanov.flash.gui.events.ASliderEvent;
 
@@ -28,7 +32,8 @@ package display.gui
 		override public function init():*
 		{
 			super.wheelSteps = 100;
-			super.setBody( new ScrollbarBody( 20, super.size ).init() );
+//			super.setBody( new ScrollbarBody( 20, super.size ).init() );
+			super.setBody( new TimelineMiniMap( 20, super.size ).init() );
 			super.setThumb( new SBDateThumb( 20, 20 ).init() );
 
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
@@ -39,40 +44,63 @@ package display.gui
 
 		private function onScaleTimeline( event:TimelineEvent ):void
 		{
-			var durHeight:Number = MoTimeline.me.duration * MoTimeline.me.scale;
+			updateScrollRange();
 			
-			Log.traceText( "durHeight : " + durHeight );
+			traceParams();
 			
-			var abc:Number = super.size * MoTimeline.me.scale;
-
-//			Log.traceText( "abc : " + abc );
-
-			var maskSize:Number = abc;
-
-			Log.traceText( "maskSize : " + maskSize );
-
-			super.setMaskSize( maskSize );
+//			super.setMaskSize( maskSize );
 		}
 
 		private function onInitTimeline( event:TimelineEvent ):void
 		{
-			Log.traceText( "MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
-			Log.traceText( "MoTimeline.me.endJD : " + MoTimeline.me.endJD );
-			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
-
-			var minVal:Number = MoTimeline.me.beginJD;
-			var maxVal:Number = MoTimeline.me.endJD;
-			super.setScrollRange( minVal, maxVal );
-			super.setMaskSize( MoTimeline.me.duration );
+			updateScrollRange();
 			
-			Log.traceText( "super.getThumb().x : " + super.getThumb().x );
+			super.setMaskSize( super.size );
+
+			traceParams();
 			
 			eventManager.addEventListener( ASliderEvent.CHANGE_VALUE, onChangePosition );
 		}
 
+		private function updateScrollRange():void
+		{
+			var minVal:Number = 0;
+			var maxVal:Number = MoTimeline.me.duration * MoTimeline.me.scale;
+			super.setScrollRange( minVal, maxVal );
+		}
+
+		private function traceParams():void
+		{
+			
+			return;
+			
+			Log.traceText( "---------------------------------------------------------------------" );
+			Log.traceText( "MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
+			Log.traceText( "MoTimeline.me.endJD : " + MoTimeline.me.endJD );
+			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
+
+			var durScaled:Number = MoTimeline.me.duration * MoTimeline.me.scale;
+
+			Log.traceText( "durScaled : " + durScaled );
+
+			var minVal:Number = 0;
+			var maxVal:Number = MoTimeline.me.duration * MoTimeline.me.scale;
+
+			Log.traceText("minVal - maxVal : " + minVal + " - " + maxVal);
+			
+			Log.traceText( "size : " + super.size );
+			Log.traceText( "maskSize : " + super.maskSize );
+			
+			var thumb:ASprite = super.getThumb();
+			Log.traceText( "thumb.visible : " + thumb.visible );
+			Log.traceText( "thumb.width x height : " + thumb.width + " x " + thumb.height );
+			Log.traceText( "thumb.x, y : " + thumb.x + ", " + thumb.y );
+			
+		}
+		
 		private function onChangePosition( event:ASliderEvent ):void
 		{
-			MoTimeline.me.baseJD = MoTimeline.me.beginJD + event.value * MoTimeline.me.duration;
+			MoTimeline.me.baseJD = MoTimeline.me.beginJD + event.position * MoTimeline.me.duration;
 		}
 	}
 }

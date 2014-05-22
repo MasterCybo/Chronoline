@@ -25,35 +25,11 @@ package display.skins
 		}
 		
 		override public function init():* {
-			drawPic();
+			super.skinUp = ABitmap.fromColor( 0xACACAC, _width, _height ).init();
+			super.skinOver = ABitmap.fromColor( 0XBBBBBB, super.skinUp.width, super.skinUp.height ).init();
+			
 			return super.init();
 		}
-
-		override public function set width( value:Number ):void
-		{
-			if ( value == _width ) return;
-
-			_width = value;
-
-			drawPic();
-		}
-
-		override public function set height( value:Number ):void
-		{
-			if ( value == _height ) return;
-
-			_height = value;
-
-			drawPic();
-		}
-
-		private function drawPic():void
-		{
-			if ( super.skinUp ) super.skinUp.kill();
-			if ( super.skinOver ) super.skinOver.kill();
-
-			super.skinUp = ABitmap.fromColor( 0xACACAC, 15, 10 ).init();
-			super.skinOver = ABitmap.fromColor( 0XBBBBBB, super.skinUp.width, super.skinUp.height ).init();
-		}
 	}
+	
 }
