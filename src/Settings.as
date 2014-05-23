@@ -103,6 +103,11 @@ package  {
 		public static const BASE_TEXT_COLOR:uint = 0xFF8000;
 		public static const BASE_LINE_COLOR:uint = 0xFF8000;
 
+		// Миникарта с прокруткой
+		//=======================================================================================================
+		public static const MIN_MAP_SIZE_ENTITY:Number = 2; // Минимальный размер сущности на миникарте
+		public static const MIN_MAP_COLOR_ENT:Number = 0x000000; // Цвет сущности на миникарте
+
 	}
 
 }

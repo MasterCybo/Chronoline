@@ -117,6 +117,7 @@ package display.gui {
 		
 		override public function kill():void {
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, updateBaseDate );
 			
 			_popupController.dispose();
 			_entCtrl.dispose();

@@ -37,8 +37,6 @@ package controllers {
 		private var _isResize:Boolean;
 		private var _oldDuration:Number;
 		
-		//private var _rgBegin:MoDate;
-		//private var _rgEnd:MoDate;
 		private var _minJD:Number;
 		private var _maxJD:Number;
 		
@@ -53,19 +51,14 @@ package controllers {
 			_cacheBonds = new Dictionary( true );
 			_mapVisibleBonds = new Dictionary( true );
 			
-			//_rgBegin = MoTimeline.me.rangeBegin;
-			//_rgEnd = MoTimeline.me.rangeEnd;
-			
 			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
 			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
 			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
 			
-			//updateScale();
-			//updateVisibleBonds();
+			updateScale();
+			updateVisibleBonds();
 			
-			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
-			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			//MoTimeline.me.eventManager.addEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 		}
@@ -232,10 +225,6 @@ package controllers {
 		}
 		
 		public function dispose():void {
-			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.TIMELINE_RESIZE, onResizeTimeline );
-			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_RESIZE, onResizeRange );
-			//MoTimeline.me.eventManager.removeEventListener( TimelineEvent.RANGE_MOVE, onMoveRange );
-			
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 			
@@ -244,9 +233,6 @@ package controllers {
 			_cacheBonds = null;
 			
 			_host = null;
-			
-			//_rgBegin = null;
-			//_rgEnd = null;
 		}
 	}
 
