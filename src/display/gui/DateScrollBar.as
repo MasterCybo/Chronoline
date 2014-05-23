@@ -7,7 +7,7 @@ package display.gui
 
 	import display.components.TimelineMiniMap;
 
-	import display.skins.SBDateThumb;
+	import display.gui.buttons.SBDateThumb;
 
 	import display.skins.ScrollbarBody;
 
@@ -24,29 +24,43 @@ package display.gui
 	 */
 	public class DateScrollBar extends AScrollBar
 	{
-		public function DateScrollBar( size:Number = 100 )
+
+		private var _isMouse:Boolean = false;
+		private var _width:Number;
+
+		public function DateScrollBar( width:Number,  height:Number )
 		{
-			super( size );
+			_width = width;
+
+			super( height );
 		}
 
 		override public function init():*
 		{
 			super.wheelSteps = 100;
+			super.overhang = 0.2 * super.size * 0.5;
 //			super.setBody( new ScrollbarBody( 20, super.size ).init() );
-			super.setBody( new TimelineMiniMap( 20, super.size ).init() );
-			super.setThumb( new SBDateThumb( 20, 20 ).init() );
+			super.setBody( new TimelineMiniMap( _width, super.size ).init() );
+			super.setThumb( new SBDateThumb( _width, 20 ).init() );
+			super.setThumbAutoSize( false, 0.2 * super.size );
 
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleTimeline );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onBaseChange );
 
 			return super.init();
+		}
+
+		private function onBaseChange( event:TimelineEvent ):void
+		{
+			if ( _isMouse ) return;
+
+			super.position = ( MoTimeline.me.baseJD - MoTimeline.me.beginJD ) / MoTimeline.me.duration;
 		}
 
 		private function onScaleTimeline( event:TimelineEvent ):void
 		{
 			updateScrollRange();
-			
-			traceParams();
 			
 //			super.setMaskSize( maskSize );
 		}
@@ -57,8 +71,6 @@ package display.gui
 			
 			super.setMaskSize( super.size );
 
-			traceParams();
-			
 			eventManager.addEventListener( ASliderEvent.CHANGE_VALUE, onChangePosition );
 		}
 
@@ -69,38 +81,21 @@ package display.gui
 			super.setScrollRange( minVal, maxVal );
 		}
 
-		private function traceParams():void
-		{
-			
-			return;
-			
-			Log.traceText( "---------------------------------------------------------------------" );
-			Log.traceText( "MoTimeline.me.beginJD : " + MoTimeline.me.beginJD );
-			Log.traceText( "MoTimeline.me.endJD : " + MoTimeline.me.endJD );
-			Log.traceText( "MoTimeline.me.duration : " + MoTimeline.me.duration );
-
-			var durScaled:Number = MoTimeline.me.duration * MoTimeline.me.scale;
-
-			Log.traceText( "durScaled : " + durScaled );
-
-			var minVal:Number = 0;
-			var maxVal:Number = MoTimeline.me.duration * MoTimeline.me.scale;
-
-			Log.traceText("minVal - maxVal : " + minVal + " - " + maxVal);
-			
-			Log.traceText( "size : " + super.size );
-			Log.traceText( "maskSize : " + super.maskSize );
-			
-			var thumb:ASprite = super.getThumb();
-			Log.traceText( "thumb.visible : " + thumb.visible );
-			Log.traceText( "thumb.width x height : " + thumb.width + " x " + thumb.height );
-			Log.traceText( "thumb.x, y : " + thumb.x + ", " + thumb.y );
-			
-		}
-		
 		private function onChangePosition( event:ASliderEvent ):void
 		{
+			_isMouse = true;
 			MoTimeline.me.baseJD = MoTimeline.me.beginJD + event.position * MoTimeline.me.duration;
+			_isMouse = false;
+		}
+
+
+		override public function kill():void
+		{
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleTimeline );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onBaseChange );
+
+			super.kill();
 		}
 	}
 }
