@@ -71,6 +71,8 @@ package display.gui
 			
 			super.setMaskSize( super.size );
 
+			super.position = 0.5;
+
 			eventManager.addEventListener( ASliderEvent.CHANGE_VALUE, onChangePosition );
 		}
 
