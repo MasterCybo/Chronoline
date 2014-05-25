@@ -34,15 +34,15 @@ package controllers {
 		
 		static private var _entityIDs:Array;
 		static private var _bindingEntityIDs:Array;
-		static private var _listEntityData:Vector.<MoListEntity>;
+		static private var _listIDs:Vector.<String>;
 		static private var _offsetIdx:uint;
 		static private var _total:uint;
 		static private var _progress:uint;
 		static private var _isPreset:Boolean = false;
 
 		
-		static public function start( listEntityData:Vector.<MoListEntity> ):void {
-			_listEntityData = listEntityData;
+		static public function start( entitiesID:Vector.<String> ):void {
+			_listIDs = entitiesID;
 			_entityIDs = [];
 			_bindingEntityIDs = [];
 			
@@ -55,27 +55,21 @@ package controllers {
 			//Log.traceText( "_listEntityData : " + _listEntityData );
 			
 			// Вычёркиваем из списка, сущности, которые уже загружены
-			var item:MoListEntity;
+			var entID:String;
 			var moEnt:MoEntity;
-			for each ( item in _listEntityData ) {
-				moEnt = EntityManager.getItem( item.id );
+			for each ( entID in _listIDs ) {
+				moEnt = EntityManager.getItem( entID );
 				
 				if ( !moEnt ) {
-					_entityIDs.push( item.id );
-					_total+=item.count;
+					_entityIDs.push( entID );
+					_total++;
 				}
 				
 				// Создаём список запроса для связей
-				_bindingEntityIDs.push( item.id );
+				_bindingEntityIDs.push( entID );
 			}
-
-
-			if ( _total == 0 ) {
-				_total = _listEntityData.length;
-				_isPreset = true;
-			}
-
-			Log.traceText( "_listEntityData.length : " + _listEntityData.length );
+			
+			Log.traceText( "_listEntityData.length : " + _listIDs.length );
 			Log.traceText( "_total : " + _total );
 
 			// Удаляем из менеджера сущностей те, которые отсутствуют
@@ -84,8 +78,8 @@ package controllers {
 			
 			for each ( moEnt in mapMoEnts ) {
 				isRemove = true;
-				for each ( item in listEntityData) {
-					if ( item.id == moEnt.id ) {
+				for each ( entID in _listIDs) {
+					if ( entID == moEnt.id ) {
 						isRemove = false;
 						break;
 					}

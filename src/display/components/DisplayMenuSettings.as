@@ -324,20 +324,15 @@ package display.components
 
 //			Log.traceText( "arr : " + arr );
 
-			var vect:Vector.<MoListEntity> = new Vector.<MoListEntity>();
+			var listEntIDs:Vector.<String> = new Vector.<String>();
 
 			for ( var i:int = 0; i < arr.length; i++ ) {
 				var item:* = arr[i];
 				if ( item is MoPreset ) {
 					var presetItem:MoPreset = item as MoPreset;
-					var listIDs:Array = presetItem.listIDs;
-					for ( var j:int = 0; j < listIDs.length; j++ ) {
-						var id:String = listIDs[j];
-						var moListEnt:MoListEntity = new MoListEntity(id, "", 0 );
-						vect.push( moListEnt );
-					}
+					listEntIDs = listEntIDs.concat( presetItem.listIDs );
 				} else {
-					vect.push( item );
+					listEntIDs.push( item.id );
 				}
 			}
 
@@ -345,7 +340,7 @@ package display.components
 
 			//Log.traceText( "vect : " + vect );
 
-			EntitiesDataWebService.start( vect );
+			EntitiesDataWebService.start( listEntIDs );
 		}
 
 		override public function get width():Number

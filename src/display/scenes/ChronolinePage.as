@@ -6,6 +6,9 @@ package display.scenes
 	import collections.EntityManager;
 
 	import controllers.DesktopController;
+	import controllers.EntitiesDataWebService;
+
+	import data.MoPreset;
 
 	import data.MoTimeline;
 
@@ -80,9 +83,25 @@ package display.scenes
 
 			Display.stageAddEventListener( Event.RESIZE, hrResizeStage );
 			
-			Log.traceText( "FlashVars.getNumber('presetID', -1) : " + FlashVars.getNumber("presetID", -1) );
+			// Определяем, какой пресет загружать при инициализации приложения
+			var autoLoadPresetID:String = FlashVars.getString( "presetID", "" );
+			
+			Log.traceText( "autoLoadPresetID : " + autoLoadPresetID );
+
+			if ( autoLoadPresetID != "" ) {
+				loadPreset( autoLoadPresetID );
+			}
 			
 			return super.init();
+		}
+
+		private function loadPreset( presetID:String ):void
+		{
+			var preset:MoPreset = App.presetsService.getPreset( presetID );
+			
+			if( !preset ) return;
+			
+			EntitiesDataWebService.start( Vector.<String>( preset.listIDs ) );
 		}
 
 		private function onSnapshot():void
