@@ -2,7 +2,7 @@ package display.scenes
 {
 	import by.blooddy.crypto.image.JPEGEncoder;
 
-	import collections.EntityColor;
+	import collections.ColorPalette;
 	import collections.EntityManager;
 
 	import controllers.DesktopController;
@@ -24,7 +24,9 @@ package display.scenes
 	import flash.utils.ByteArray;
 
 	import ru.arslanov.core.events.Notification;
+	import ru.arslanov.core.external.FlashVars;
 	import ru.arslanov.core.utils.JDUtils;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.scenes.AScene;
@@ -77,7 +79,9 @@ package display.scenes
 			Notification.add( SnapshotNotice.NAME, onSnapshot );
 
 			Display.stageAddEventListener( Event.RESIZE, hrResizeStage );
-
+			
+			Log.traceText( "FlashVars.getNumber('presetID', -1) : " + FlashVars.getNumber("presetID", -1) );
+			
 			return super.init();
 		}
 
@@ -135,7 +139,7 @@ package display.scenes
 		{
 //			Log.traceText( "*execute* ChronolinePage.onUpdateChronoline" );
 
-			EntityColor.reset();
+			App.colorPalette.resetIndex();
 
 //			Log.traceText( "EntityManager.period.duration : " + EntityManager.period.duration );
 

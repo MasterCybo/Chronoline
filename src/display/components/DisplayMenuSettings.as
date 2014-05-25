@@ -12,7 +12,7 @@ package display.components
 
 	import data.MoListEntity;
 	import data.MoListPartition;
-	import data.MoPresetItemList;
+	import data.MoPreset;
 
 	import display.base.TextApp;
 	import display.gui.buttons.ButtonText;
@@ -122,10 +122,10 @@ package display.components
 		{
 			_presetsList.clear();
 
-			var listPresets:Vector.<MoPresetItemList> = event.listPresets;
+			var listPresets:Vector.<MoPreset> = event.listPresets;
 
 			for ( var i:uint = 0; i < listPresets.length; i++ ) {
-				var itemPreset:MoPresetItemList = listPresets[i];
+				var itemPreset:MoPreset = listPresets[i];
 
 				var itemList:ItemOfList = new ItemOfList( itemPreset.title, itemPreset.title, itemPreset );
 				itemList.homeName = _presetsList.rootItem.keyName;
@@ -328,8 +328,8 @@ package display.components
 
 			for ( var i:int = 0; i < arr.length; i++ ) {
 				var item:* = arr[i];
-				if ( item is MoPresetItemList ) {
-					var presetItem:MoPresetItemList = item as MoPresetItemList;
+				if ( item is MoPreset ) {
+					var presetItem:MoPreset = item as MoPreset;
 					var listIDs:Array = presetItem.listIDs;
 					for ( var j:int = 0; j < listIDs.length; j++ ) {
 						var id:String = listIDs[j];

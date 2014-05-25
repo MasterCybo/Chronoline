@@ -3,7 +3,7 @@
  */
 package events
 {
-	import data.MoPresetItemList;
+	import data.MoPreset;
 
 	import flash.events.Event;
 
@@ -15,9 +15,9 @@ package events
 	{
 		static public const COMPLETE:String = "PresetsListEvent.complete";
 
-		public var listPresets:Vector.<MoPresetItemList>;
+		public var listPresets:Vector.<MoPreset>;
 
-		public function PresetsListEvent( listPresets:Vector.<MoPresetItemList> )
+		public function PresetsListEvent( listPresets:Vector.<MoPreset> )
 		{
 			this.listPresets = listPresets;
 

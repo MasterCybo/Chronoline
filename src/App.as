@@ -1,4 +1,6 @@
 package {
+	import collections.ColorPalette;
+
 	import constants.LocaleString;
 	import constants.TextFormats;
 
@@ -21,6 +23,7 @@ package {
 
 	import ru.arslanov.core.events.EventManager;
 	import ru.arslanov.core.events.Notification;
+	import ru.arslanov.core.external.FlashVars;
 	import ru.arslanov.core.http.HTTPManager;
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
@@ -40,6 +43,7 @@ package {
 		
 		static public var httpManager:HTTPManager;
 		static public var presetsService:PresetsWebService;
+		static public var colorPalette:ColorPalette;
 
 		private var _stats:Stats;
 		private var _tfVersion:TextApp;
@@ -51,6 +55,7 @@ package {
 		}
 		
 		override public function init():* {
+			FlashVars.init( stage );
 			Display.init( stage, root );
 			
 			EventManager.tracer( null );
@@ -74,6 +79,9 @@ package {
 			Notification.unlog( GetPositionNotice.NAME );
 			
 			//MoTimeline.me.init(); // Инициализация временной шкалы
+
+			// Создаём цветовую палитру для сущностей
+			colorPalette = new ColorPalette();
 			
 			var sceneContainer:ASprite = new ASprite().init();
 			addChild( sceneContainer );

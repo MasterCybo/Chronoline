@@ -3,7 +3,7 @@
  */
 package controllers
 {
-	import data.MoPresetItemList;
+	import data.MoPreset;
 
 	import events.PresetSaveEvent;
 	import events.PresetsListEvent;
@@ -22,7 +22,7 @@ package controllers
 	 */
 	public class PresetsWebService extends EventDispatcher
 	{
-
+		private var _list:Vector.<MoPreset> = new Vector.<MoPreset>();
 		private var _eventManager:EventManager;
 		private var _httpManager:HTTPManager;
 
@@ -44,13 +44,13 @@ package controllers
 		{
 			var listObjects:Array = JSON.parse( String( req.responseData ) ) as Array;
 
-			var event:PresetsListEvent = new PresetsListEvent( new Vector.<MoPresetItemList>() );
+			_list.length = 0;
 
 			for ( var i:int = 0; i < listObjects.length; i++ ) {
-				event.listPresets.push( MoPresetItemList.parse( listObjects[i] ) );
+				_list.push( MoPreset.parse( listObjects[i] ) );
 			}
-
-			eventManager.dispatchEvent( event );
+			
+			eventManager.dispatchEvent( new PresetsListEvent( _list.concat() ) );
 		}
 
 		/**
@@ -73,6 +73,34 @@ package controllers
 			return _eventManager;
 		}
 
+		public function get list():Vector.<MoPreset>
+		{
+			return _list;
+		}
+
+		public function set list( value:Vector.<MoPreset> ):void
+		{
+			_list = value;
+		}
+
+		public function getPreset( id:String ):MoPreset
+		{
+			var preset:MoPreset;
+
+			for each ( preset in list ) {
+				if ( preset.id == id ) {
+					return preset;
+				}
+			}
+			
+			return null;
+		}
+
+		public function clearList():void
+		{
+			_list.length = 0;
+		}
+		
 		public function dispose():void
 		{
 			_httpManager = null;

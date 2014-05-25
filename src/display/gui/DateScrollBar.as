@@ -39,7 +39,6 @@ package display.gui
 		{
 			super.wheelSteps = 100;
 			super.overhang = 0.2 * super.size * 0.5;
-//			super.setBody( new ScrollbarBody( 20, super.size ).init() );
 			super.setBody( new TimelineMiniMap( _width, super.size ).init() );
 			super.setThumb( new SBDateThumb( _width, 20 ).init() );
 			super.setThumbAutoSize( false, 0.2 * super.size );
@@ -61,8 +60,6 @@ package display.gui
 		private function onScaleTimeline( event:TimelineEvent ):void
 		{
 			updateScrollRange();
-			
-//			super.setMaskSize( maskSize );
 		}
 
 		private function onInitTimeline( event:TimelineEvent ):void
