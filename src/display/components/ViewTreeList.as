@@ -145,6 +145,7 @@ package display.components
 						//Log.traceText( "... и открыт - отображаем детей!" );
 
 						redraw( getSortedVector( item.children ), idx + i + 1, level + 1 );
+						idx += item.countChildren;
 					}
 				}
 			}
