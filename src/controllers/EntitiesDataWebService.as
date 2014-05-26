@@ -38,7 +38,6 @@ package controllers {
 		static private var _offsetIdx:uint;
 		static private var _total:uint;
 		static private var _progress:uint;
-		static private var _isPreset:Boolean = false;
 
 		
 		static public function start( entitiesID:Vector.<String> ):void {
@@ -143,11 +142,7 @@ package controllers {
 			}
 			
 //			Log.traceText( "numData : " + numData );
-			if ( _isPreset ) {
-				_progress ++;
-			} else {
-				_progress += numData;
-			}
+//			_progress ++;
 
 			Log.traceText( "_progress : " + _progress );
 
@@ -155,8 +150,6 @@ package controllers {
 
 			// Если количество обработанных данных
 			if ( numData < DEF_LENGTH ) {
-				_isPreset = false;
-
 				// ... меньше величины шага - переходим к связям
 				EntityManager.updateBounds();
 
@@ -164,7 +157,7 @@ package controllers {
 				sendReqBindings();
 			} else {
 				// ... равно величине шага - делаем ещё запрос
-
+				_progress ++;
 				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
 
 				_offsetIdx += DEF_LENGTH; // Увеличиваем смещение
@@ -174,7 +167,7 @@ package controllers {
 		
 		static private function parseEntity( entityData:Object ):uint {
 			var numAdded:uint;
-			
+
 			var entNew:MoEntity = MoEntity.fromJSON( entityData );
 			var entExisting:MoEntity = EntityManager.getItem( entNew.id );
 			
@@ -196,11 +189,11 @@ package controllers {
 				
 				entNew.dispose();
 			}
-			
+
 			return numAdded;
 		}
 		//} endregion
-		
+
 		/***************************************************************************
 		Обработка СВЯЗЕЙ
 		***************************************************************************/
