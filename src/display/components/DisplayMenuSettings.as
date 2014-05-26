@@ -1,6 +1,7 @@
 package display.components
 {
 	import collections.tree.ItemOfList;
+	import collections.tree.ItemOfList;
 	import collections.tree.TreeList;
 
 	import constants.LocaleString;
@@ -19,6 +20,7 @@ package display.components
 
 	import events.PresetSaveEvent;
 	import events.PresetsListEvent;
+	import events.SelectPresetNotice;
 
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
@@ -26,6 +28,7 @@ package display.components
 	import net.ReqPartEntities;
 	import net.ReqPartitions;
 
+	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 
@@ -97,16 +100,48 @@ package display.components
 			addChild( _tfTarget );
 			addChild( _tfPresets );
 
-			sendPartsRequest();
 
 			App.presetsService.eventManager.addEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
 			App.presetsService.eventManager.addEventListener( PresetSaveEvent.COMPLETE, onPresetSaveComplete );
+
+			Notification.add( SelectPresetNotice.NAME, onSelectPreset );
+
+			sendPartsRequest();
 
 			return super.init();
 		}
 
 		/**
-		 * Обработчик события удачного сохранения набора
+		 * Добавляем пресет в целевой список по событию
+		 * @param notice
+		 */
+		private function onSelectPreset( notice:SelectPresetNotice ):void
+		{
+			var list:Dictionary = _presetsList.rootChildren;
+
+			var moPreset:MoPreset;
+			var item:ItemOfList;
+
+			for each ( item in list ) {
+				moPreset = item.dataObject as MoPreset;
+
+				if ( moPreset.id == notice.presetID ) {
+					break;
+				}
+
+				item = null;
+				moPreset = null;
+			}
+
+			if ( !item ) return;
+
+			_targetList.addItem( item );
+			_presetsList.removeItem( item.clone() );
+			updateReadyState();
+		}
+
+		/**
+		 * После удачного сохранения пресета, запрашиваем с сервера обновлёный список пресетов
 		 * @param event
 		 */
 		private function onPresetSaveComplete( event:PresetSaveEvent ):void
@@ -115,7 +150,7 @@ package display.components
 		}
 
 		/**
-		 * Обработчик события получения списка наборов
+		 * Полученный с сервера список пресетов, обрабатываем и отображаем
 		 * @param event
 		 */
 		private function onPresetsListComplete( event:PresetsListEvent ):void
@@ -132,7 +167,7 @@ package display.components
 				itemList.viewed = true;
 				_presetsList.addItem( itemList );
 
-				Log.traceText( itemList + " : " + itemPreset.title + ", " + itemPreset.listIDs );
+//				Log.traceText( itemList + " : " + itemPreset.title + ", " + itemPreset.listIDs );
 			}
 
 			_presetsView.setupList( _presetsList );
@@ -144,7 +179,6 @@ package display.components
 		private function sendPartsRequest():void
 		{
 			if ( !_vectItems ) {
-				App.presetsService.getList();
 				App.httpManager.addRequest( new ReqPartitions(), parsePartitions ); // Запрашиваем разделы
 			} else {
 				setupList();
@@ -172,7 +206,7 @@ package display.components
 
 					_originList.addItem( item );
 
-					Log.traceText( item + " : " + part.count );
+//					Log.traceText( item + " : " + part.count );
 				}
 			}
 
@@ -318,29 +352,21 @@ package display.components
 
 		private function onReleaseReady():void
 		{
-			//Notification.send( UpdateChronolineNotice.NAME, new UpdateChronolineNotice() );
-
 			var arr:Array = _targetList.getFlatArrayData();
 
-//			Log.traceText( "arr : " + arr );
-
-			var listEntIDs:Vector.<String> = new Vector.<String>();
+			var listIDs:Vector.<String> = new Vector.<String>();
 
 			for ( var i:int = 0; i < arr.length; i++ ) {
 				var item:* = arr[i];
 				if ( item is MoPreset ) {
 					var presetItem:MoPreset = item as MoPreset;
-					listEntIDs = listEntIDs.concat( presetItem.listIDs );
+					listIDs = listIDs.concat( Vector.<String>( presetItem.listIDs ) );
 				} else {
-					listEntIDs.push( item.id );
+					listIDs.push( item.id );
 				}
 			}
 
-//			var vect:Vector.<MoListEntity> = Vector.<MoListEntity>( _targetList.getFlatArrayData() );
-
-			//Log.traceText( "vect : " + vect );
-
-			EntitiesDataWebService.start( listEntIDs );
+			EntitiesDataWebService.start( listIDs );
 		}
 
 		override public function get width():Number

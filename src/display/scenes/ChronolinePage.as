@@ -18,6 +18,7 @@ package display.scenes
 	import display.gui.MainGUI;
 
 	import events.GuideLineNotice;
+	import events.SelectPresetNotice;
 	import events.ServerDataCompleteNotice;
 	import events.SnapshotNotice;
 
@@ -83,25 +84,7 @@ package display.scenes
 
 			Display.stageAddEventListener( Event.RESIZE, hrResizeStage );
 			
-			// Определяем, какой пресет загружать при инициализации приложения
-			var autoLoadPresetID:String = FlashVars.getString( "presetID", "" );
-			
-			Log.traceText( "autoLoadPresetID : " + autoLoadPresetID );
-
-			if ( autoLoadPresetID != "" ) {
-				loadPreset( autoLoadPresetID );
-			}
-			
 			return super.init();
-		}
-
-		private function loadPreset( presetID:String ):void
-		{
-			var preset:MoPreset = App.presetsService.getPreset( presetID );
-			
-			if( !preset ) return;
-			
-			EntitiesDataWebService.start( Vector.<String>( preset.listIDs ) );
 		}
 
 		private function onSnapshot():void

@@ -4,7 +4,11 @@ package {
 	import constants.LocaleString;
 	import constants.TextFormats;
 
+	import controllers.EntitiesDataWebService;
+
 	import controllers.PresetsWebService;
+
+	import data.MoPreset;
 
 	import display.base.TextApp;
 	import display.components.LockScreenProcess;
@@ -14,8 +18,10 @@ package {
 	import events.BondDisplayNotice;
 	import events.BondRemoveNotice;
 	import events.GetPositionNotice;
+	import events.PresetsListEvent;
 	import events.ProcessFinishNotice;
 	import events.ProcessStartNotice;
+	import events.SelectPresetNotice;
 	import events.SysMessageDisplayNotice;
 
 	import flash.events.Event;
@@ -61,54 +67,56 @@ package {
 			EventManager.tracer( null );
 			
 			ATextField.textFormatDefault = TextFormats.DEFAULT;
+			//ATextField.defaultEmbedFonts = true;
+			//ATextField.defaultBorder = true;
 			
 			Logger.init( this, "right" );
 			Log.customTracer = Logger.traceMessage;
-			//Logger.show();
-			
+
 			// Устанавливаем локализацию месяцев
 			JDUtils.monthsLocale = LocaleString.MONTHS;
 			
 			//AWindowsManager.me.init( this );
 			AHintManager.me.init( this, 15 );
-			//ATextField.defaultEmbedFonts = true;
-			//ATextField.defaultBorder = true;
-			
+
+			// Скрываем ненужные сообщения
 			Notification.unlog( BondDisplayNotice.NAME );
 			Notification.unlog( BondRemoveNotice.NAME );
 			Notification.unlog( GetPositionNotice.NAME );
-			
-			//MoTimeline.me.init(); // Инициализация временной шкалы
+
+
+			// Определяем адрес приложения и инициализирем HTTPManager
+			var url:String = Display.root.loaderInfo.url;
+			url = url != "" ? url.substring( 0, url.lastIndexOf( "/" ) + 1 ) : "";
+
+			// Создаём HTTP-сервис
+			httpManager = new HTTPManager( url );
+			presetsService = new PresetsWebService( httpManager );
 
 			// Создаём цветовую палитру для сущностей
 			colorPalette = new ColorPalette();
-			
+
+			// Инициализируем экраны
 			var sceneContainer:ASprite = new ASprite().init();
 			addChild( sceneContainer );
 			
 			SceneManager.me.init( sceneContainer );
-			//SceneManager.me.addScene( MainPage, MainPage.SCENE_NAME );
 			SceneManager.me.addScene( ChronolinePage, ChronolinePage.SCENE_NAME );
 			
-			// Определяем адрес приложения и инициализирем HTTPManager
-			var url:String = Display.root.loaderInfo.url;
-			url = url != "" ? url.substring( 0, url.lastIndexOf( "/" ) + 1 ) : "";
-			
-			httpManager = new HTTPManager( url );
-			presetsService = new PresetsWebService( httpManager );
-			
+
+			// Если проигрыватель дебажный, тогда отображаем статистику производительности
 			if ( Capabilities.isDebugger ) {
 				_stats = new Stats();
 				addChild( _stats );
 			}
-			
+
+			// Отображаем текущую версию сборки
 			_tfVersion = new TextApp( "v." + Version.major + "." + Version.minor + "." + Version.build + " - " + Version.timestamp, TextFormats.VERSION ).init();
 			_tfVersion.mouseEnabled = false;
 			addChild( _tfVersion );
 			
 			hrResizeStage();
 			
-			//SceneManager.me.displayScene( MainPage.SCENE_NAME );
 			SceneManager.me.displayScene( ChronolinePage.SCENE_NAME );
 			
 			Notification.add( ProcessStartNotice.NAME, onShowProcess );
@@ -116,8 +124,35 @@ package {
 			Notification.add( SysMessageDisplayNotice.NAME, onSystemMessage );
 			
 			Display.stageAddEventListener( Event.RESIZE, hrResizeStage );
-			
+
+
+			// Загружаем список пресетов. Делаем это, перед тем как определить автозагрузку дефолтного пресета
+			presetsService.eventManager.addEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
+			presetsService.getList();
+
 			return super.init();
+		}
+
+		/**
+		 * Определяем и загружаем пресет по ID, переданному из HTML.
+		 * @param event
+		 */
+		private function onPresetsListComplete( event:PresetsListEvent ):void
+		{
+			presetsService.eventManager.removeEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
+
+			// Определяем, какой пресет загружать при инициализации приложения
+			var autoLoadPresetID:String = FlashVars.getString( "presetID", "" );
+
+			if ( autoLoadPresetID != "" ) {
+				var preset:MoPreset = presetsService.getPreset( autoLoadPresetID );
+
+				if( !preset ) return;
+
+				Notification.send( SelectPresetNotice.NAME, new SelectPresetNotice( preset.id ) );
+
+				EntitiesDataWebService.start( Vector.<String>( preset.listIDs ) );
+			}
 		}
 		
 		private function onSystemMessage( notice:SysMessageDisplayNotice ):void {
