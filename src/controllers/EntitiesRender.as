@@ -1,4 +1,5 @@
-package controllers {
+package controllers
+{
 	import collections.EntityManager;
 
 	import data.MoEntity;
@@ -11,149 +12,226 @@ package controllers {
 
 	import flash.utils.Dictionary;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
 
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class EntitiesRender {
-		
+	public class EntitiesRender
+	{
+
 		private var _host:ASprite;
-		
-		private var _listMoEntities:Vector.<MoEntity>;
-		private var _mapEntities:Dictionary /*Entity*/; // MoEntity.id = Entity
-		private var _mapTitles:Dictionary /*TitleEntity*/; // MoEntity.id = TitleEntity
-		
+
 		private var _width:Number = 0;
 		private var _height:Number = 0;
-		private var _space:Number = 0;
+		private var _space:Number = 0; // расстояние между сущностями
 		private var _yCenter:Number;
-		
-		public function EntitiesRender( host:ASprite, width:Number, height:Number ) {
+
+		private var _isScaled:Boolean = false;
+		private var _isMoved:Boolean = false;
+
+		// Данные, которые берём из менеджера
+		private var _listMoEntities:Vector.<MoEntity>;
+		private var _mapMoEntities:Dictionary/*MoEntity*/; // MoEntity.id = MoEntity;
+
+		// Очерёдность отрисовки сущностей
+		private var _order:Array = []; // MoEntity.id
+
+		// Генерируемые данные
+		private var _mapEntities:Dictionary/*Entity*/ = new Dictionary( true ); // MoEntity.id = Entity
+		private var _pool:Dictionary/*Entity*/ = new Dictionary( true ); // MoEntity.id = Entity
+		private var _mapTitles:Dictionary/*TitleEntity*/ = new Dictionary( true ); // MoEntity.id = TitleEntity
+
+		public function EntitiesRender( host:ASprite, width:Number, height:Number )
+		{
 			_host = host;
 			_width = width;
 			_height = height;
 			_yCenter = height / 2;
 		}
-		
-		public function init():void {
-			_listMoEntities = new Vector.<MoEntity>();
-			
+
+		public function init():void
+		{
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 		}
-		
-		private function onInitTimeline( ev:TimelineEvent ):void {
-			update();
+
+		private function onInitTimeline( ev:TimelineEvent ):void
+		{
+			_mapMoEntities = EntityManager.mapMoEntities;
+
+			var listMoEnts:Array = EntityManager.getArrayEntities();
+			_listMoEntities = Vector.<MoEntity>( listMoEnts );
+
+			// Формирование очерёдности отрисовки сущностей
+			var order:Array = listMoEnts.concat().sort( compareByDate );
+
+			_order.length = 0;
+			var len:uint = order.length;
+			for ( var i:int = 0; i < len; i++ ) {
+				_order.push( order[i].id );
+			}
+
+//			Log.traceText( "_order : " + _order );
+
+			_space = _width / ( _listMoEntities.length + 1 );
+
+			_mapEntities = new Dictionary( true );
+			_pool = new Dictionary( true );
+
+//			update();
 		}
-		
-		private function onScaleChanged( ev:TimelineEvent ):void {
-			updateSizeAndPositions();
+
+		/**
+		 * Сравнение сущностей по начальной дате
+		 * @param a
+		 * @param b
+		 * @return
+		 */
+		private function compareByDate( a:MoEntity, b:MoEntity ):Number
+		{
+			if ( a.beginPeriod.beginJD > b.beginPeriod.beginJD ) return 1;
+			if ( a.beginPeriod.beginJD < b.beginPeriod.beginJD ) return -1;
+			return 0;
 		}
-		
-		private function onDateChanged( ev:TimelineEvent ):void {
-			updateSizeAndPositions();
+
+		/**
+		 * Сравнение сущностей по продолжительности
+		 * @param a
+		 * @param b
+		 * @return
+		 */
+		private function compareByDuration( a:MoEntity, b:MoEntity ):Number
+		{
+			if ( a.duration > b.duration ) return 1;
+			if ( a.duration < b.duration ) return -1;
+			return 0;
 		}
-		
-		public function update():void {
-			updateListMoEntities();
-			updateSizeAndPositions();
+
+		/**
+		 * Сравнение сущностей по ID
+		 * @param a
+		 * @param b
+		 * @return
+		 */
+		private function compareByID( a:MoEntity, b:MoEntity ):Number
+		{
+			if ( a.id > b.id ) return 1;
+			if ( a.id < b.id ) return -1;
+			return 0;
 		}
-		
+
+		public function update():void
+		{
+			render();
+		}
+
+		private function onScaleChanged( ev:TimelineEvent ):void
+		{
+			_isScaled = true;
+
+			render();
+		}
+
+		private function onDateChanged( ev:TimelineEvent ):void
+		{
+			_isMoved = true;
+
+			render();
+		}
+
 		/**
 		 * Обновляем список отображаемых сущностей
-		 * Обновляется при инициализации и по событию изменения MoTimeline
 		 */
-		private function updateListMoEntities():void {
-			_listMoEntities = Vector.<MoEntity>( EntityManager.getArrayEntities() );
-			
-			_mapEntities = new Dictionary( true );
-			_mapTitles = new Dictionary( true );
-			
+		private function render():void
+		{
+			var i:int;
 			var moEnt:MoEntity;
+			var moEntVis:MoEntity;
 			var ent:Entity;
 			var title:TitleEntity;
-			var len:uint = _listMoEntities.length;
-			
-			for ( var i:int = 0; i < len; i++ ) {
-				moEnt = _listMoEntities[ i ];
-				
-				ent = new Entity( moEnt ).init();
-				title = new TitleEntity( moEnt.title ).init();
-				
-				_mapEntities[ moEnt.id ] = ent;
-				_mapTitles[ moEnt.id ] = title;
-				
-				//Log.traceText( "ent.name : " + ent.name );
+
+			var listRemoved:Dictionary = new Dictionary( true );
+
+			// Проходимся по видимым - удаляем те, которых нет в списке
+			for each ( ent in _mapEntities ) {
+				moEntVis = ent.moEntity;
+
+				if ( !_mapMoEntities[ moEntVis.id ] || ( ent.y > _height ) || ( ( ent.y + ent.height ) < 0 ) ) {
+					listRemoved[ moEntVis.id ] = ent;
+
+					Log.traceText( "Remove : " + moEntVis.title );
+				}
 			}
-			
-			_space = _width / ( len + 1 );
-		}
-		
-		/**
-		 * Обновляем положение и размеры
-		 */
-		private function updateSizeAndPositions():void {
-			var len:uint = _listMoEntities.length;
-			var moEnt:MoEntity;
-			var ent:Entity;
-			var title:TitleEntity;
-			
-			//Perf.start();
-			
-			for ( var i:int = 0; i < len; i++ ) {
-				moEnt = _listMoEntities[ i ];
-				ent = _mapEntities[ moEnt.id ];
-				title = _mapTitles[ moEnt.id ];
-				
-				ent.y = dateToY( moEnt.beginPeriod.beginJD );
-				
-				ent.height = moEnt.duration * MoTimeline.me.scale;
-				
-				if ( _host.contains( ent ) ) {
-					if ( (ent.y > _height) || ( (ent.y + ent.height) < 0 ) ) {
-						_host.removeChild( ent );
-						_host.removeChild( title );
+
+			// добавляем в список отображения новые объекты
+			for each ( moEnt in _listMoEntities ) {
+				if ( !listRemoved[ moEnt.id ] ) {
+					var yy:Number = getY( moEnt.beginPeriod.beginJD );
+					var hh:Number = moEnt.duration * MoTimeline.me.scale;
+					if ( !_mapEntities[ moEnt.id ] && ( ( ( yy + hh ) >= 0 ) && ( yy < _height ) ) ) {
+						ent = _pool[ moEnt.id ];
+
+						if ( ent ) {
+							delete _pool[ moEnt.id ];
+						} else {
+							ent = new Entity( moEnt ).init();
+						}
+						_mapEntities[ moEnt.id ] = ent;
 					}
-				} else {
-					//Log.traceText( "++++++++++ addChild" );
-					
-					ent.x = calcX( i );
+				}
+			}
+
+
+			for each ( ent in listRemoved ) {
+				delete _mapEntities[ ent.moEntity.id ];
+				_host.removeChild( ent );
+				_pool[ ent.moEntity.id ] = ent;
+			}
+
+			for each ( ent in _mapEntities ) {
+				moEnt = ent.moEntity;
+
+				if ( _isMoved ) {
+					ent.y = getY( moEnt.beginPeriod.beginJD );
+				}
+
+				if ( _isScaled ) {
 					ent.height = moEnt.duration * MoTimeline.me.scale;
-					
-					_host.addChild( title );
+				}
+
+				if ( !_host.contains( ent ) ) {
+					ent.x = getX( _order.indexOf( moEnt.id ) );
+					ent.y = getY( moEnt.beginPeriod.beginJD );
+					ent.height = moEnt.duration * MoTimeline.me.scale;
 					_host.addChild( ent );
 				}
-				
-				ent.updateDisplayFacts();
-				
-				if ( _host.contains( title ) ) {
-					title.x = ent.x + ent.body.width;
-					title.y = Math.max( ent.y, ent.y + ent.height - ( ent.height + ent.y ) );
-				}
-				
 			}
-			
-			//Log.traceText( "Entities draw complete" );
-			
-			//Log.traceText( "Perf.stop() : " + Perf.stop() );
+
+			_isScaled = false;
+			_isMoved = false;
 		}
-		
-		private function calcX( ordinal:uint ):Number {
+
+		private function getX( ordinal:uint ):Number
+		{
 			return _space + ordinal * _space;
 		}
-		
-		private function dateToY( jd:Number ):Number {
+
+		private function getY( jd:Number ):Number
+		{
 			return _yCenter + MoTimeline.me.scale * ( jd - MoTimeline.me.baseJD );
 		}
-		
-		public function dispose():void {
+
+		public function dispose():void
+		{
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
-			
+
 			_host = null;
 			_listMoEntities = null;
 			_mapEntities = null;
