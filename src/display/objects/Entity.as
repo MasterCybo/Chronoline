@@ -1,4 +1,5 @@
-package display.objects {
+package display.objects
+{
 
 	import data.MoEntity;
 	import data.MoFact;
@@ -13,7 +14,8 @@ package display.objects {
 	 * Сущность хроноленты
 	 * @author Artem Arslanov
 	 */
-	public class Entity extends ASprite {
+	public class Entity extends ASprite
+	{
 
 		static private var _freeFacts:Vector.<Fact> = new Vector.<Fact>(); // Кэш вьюшек событий
 
@@ -28,14 +30,15 @@ package display.objects {
 		private var _scale:Number;
 		//private var _rangeBegin:MoDate;
 		//private var _rangeEnd:MoDate;
-		
+
 		private var _minJD:Number;
 		private var _maxJD:Number;
 
 		private var _isUpdating:Boolean;
 		private var _stepDate:Number;
 
-		public function Entity( moEntity:MoEntity ) {
+		public function Entity( moEntity:MoEntity )
+		{
 			_moEntity = moEntity;
 
 			this.name = "ent_" + moEntity.id;
@@ -43,18 +46,19 @@ package display.objects {
 			super();
 		}
 
-		override public function init():* {
+		override public function init():*
+		{
 			super.init();
-			
+
 			//_rangeBegin = MoTimeline.me.rangeBegin;
 			//_rangeEnd = MoTimeline.me.rangeEnd;
-			
+
 			_minJD = MoTimeline.me.beginJD;
 			_maxJD = MoTimeline.me.endJD;
 
 			_body = new EntityView( 1, App.colorPalette.getNextColor() ).init();
 			_hostFacts = new ASprite().init();
-			
+
 			addChild( _body );
 			addChild( _hostFacts );
 
@@ -73,81 +77,91 @@ package display.objects {
 			return this;
 		}
 
-		public function get moEntity():MoEntity {
+		public function get moEntity():MoEntity
+		{
 			return _moEntity;
 		}
 
-		override public function set height( value:Number ):void {
-			if ( value == _body.height )
-				return;
+		override public function set height( value:Number ):void
+		{
+			if ( value == _body.height ) return;
 
-			if ( _isUpdating )
-				return;
+			if ( _isUpdating ) return;
 
 			_body.height = value;
 			_scale = _body.height / _moEntity.duration;
 
-			var div:Number = int(( _body.height + Settings.ICON_SIZE ) / Settings.ICON_SIZE );
+			var div:Number = int( ( _body.height + Settings.ICON_SIZE ) / Settings.ICON_SIZE );
 			_stepDate = _moEntity.duration / div;
 
 			//Log.traceText( "----------------------------------" );
 			//Log.traceText( "_moEntity.duration : " + _moEntity.duration );
 			//Log.traceText( "div : " + div );
 			//Log.traceText( "_stepDate : " + _stepDate );
-			
+
 //			return;
-			
+
 			_isUpdating = true;
-			
-			
+
+
 			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
 			_minJD = MoTimeline.me.baseJD - dh / MoTimeline.me.scale;
 			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
-			
-			
-			//if ( _stepDate >= 0.5 ) {
-				_num = 0;
 
-				//_visibleMoFacts.length = 0;
-				//_visibleMoFacts.push( _moEntity.facts[ 0 ] );
-				//_visibleMoFacts.push( _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
-				getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+
+			//if ( _stepDate >= 0.5 ) {
+			_num = 0;
+
+			//_visibleMoFacts.length = 0;
+			//_visibleMoFacts.push( _moEntity.facts[ 0 ] );
+			//_visibleMoFacts.push( _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+
+
+			getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+
+
 			//}
 
 			//Log.traceText( "_num : " + _num );
 
 			//updateVisibleMoFacts();
+
+
+
 			updateDisplayFacts();
 
 			_isUpdating = false;
 		}
+
 		//} endregion
 
 		/***************************************************************************
-		   Обновление
+		 Обновление
 		 ***************************************************************************/
 		// Выполняем при изменении масштаба (временного диапазона)
 		// Составляем список событий, видимых в текущем масштабе
 
 		private var _num:uint;
 
-		private function getMiddleValue( item1:MoFact, item2:MoFact ):void {
+		private function getMiddleValue( item1:MoFact, item2:MoFact ):void
+		{
 			_num++;
 
 			//Log.traceText( "----------------------------------" );
 			//Log.traceText( "Iteration : " + _num );
 
 			//if ( _num > moEntity.facts.length ) {
-				//Log.traceText( "Break circle!!!!" );
-				//return;
+			//Log.traceText( "Break circle!!!!" );
+			//return;
 			//}
 
 			var idx1:int = moEntity.facts.indexOf( item1 ); // Индекс первого элемента
 			var idx2:int = moEntity.facts.indexOf( item2 ); // Индекс второго элемента
 
 			//Log.traceText( "Indexes idx1 - idx2 : " + idx1 + " - " + idx2 );
-			if (( idx2 - idx1 ) <= 1 )
+			if ( ( idx2 - idx1 ) <= 1 ) {
 				return;
+			}
 
 			//Log.traceText( "Item 1 date : " + item1.period.middle );
 			//Log.traceText( "Item 2 date : " + item2.period.middle );
@@ -158,9 +172,9 @@ package display.objects {
 
 			//if ( deltaDates < ( 2 * _stepDate ) )
 			//if ( deltaDates < _stepDate )
-				//return;
+			//return;
 
-			var midIndex:int = Math.floor(( idx1 + idx2 ) / 2 ); // Индекс элемента, максимально приближённого к середине
+			var midIndex:int = Math.floor( ( idx1 + idx2 ) / 2 ); // Индекс элемента, максимально приближённого к середине
 
 			//Log.traceText( "Middle index : " + midIndex );
 
@@ -175,7 +189,7 @@ package display.objects {
 			//Log.traceText( "deltaDate2 : " + deltaDate2 );
 
 			// Разность дат выше и ниже события больше шага, то отображаем событие
-			if (( deltaDate1 > _stepDate ) && ( deltaDate2 > _stepDate ) ) {
+			if ( ( deltaDate1 > _stepDate ) && ( deltaDate2 > _stepDate ) ) {
 				if ( !_mapVisibleMoFacts[ midFact.id ] ) {
 					_mapVisibleMoFacts[ midFact.id ] = midFact;
 					//Log.traceText( "\tAdd fact : " + midIndex + " - " + midFact );
@@ -188,11 +202,11 @@ package display.objects {
 			}
 
 			//if ( ( midFact.period.middle < _rangeEnd.jd ) && ( item1.period.middle < _rangeEnd.jd ) && ( deltaDate1 > _stepDate ) ) {
-				//getMiddleValue( item1, midFact );
+			//getMiddleValue( item1, midFact );
 			//}
 			//
 			//if ( ( midFact.period.middle > _rangeBegin.jd ) && ( item2.period.middle > _rangeBegin.jd ) && ( deltaDate2 > _stepDate ) ) {
-				//getMiddleValue( midFact, item2 );
+			//getMiddleValue( midFact, item2 );
 			//}
 
 			if ( ( item2.period.middle < _minJD ) || ( item1.period.middle > _maxJD ) ) {
@@ -208,9 +222,10 @@ package display.objects {
 			}
 		}
 
-		public function updateDisplayFacts():void {
+		public function updateDisplayFacts():void
+		{
 //			return;
-			
+
 			var fact:Fact;
 			var moFact:MoFact;
 			var factY:Number;
@@ -231,7 +246,7 @@ package display.objects {
 			for each ( moFact in _mapVisibleMoFacts ) {
 				// Если событие не входит в диапазон...
 				//if (( moFact.period.dateBegin.jd > _rangeBegin.jd ) && ( moFact.period.dateEnd.jd < _rangeEnd.jd ) ) {
-				if (( moFact.period.middle > _minJD ) && ( moFact.period.middle < _maxJD ) ) {
+				if ( ( moFact.period.middle > _minJD ) && ( moFact.period.middle < _maxJD ) ) {
 					fact = getDisplayFact( moFact );
 
 					factHeight = Math.max( 1, moFact.period.duration * _scale );
@@ -259,7 +274,8 @@ package display.objects {
 			}
 		}
 
-		private function getDisplayFact( moFact:MoFact ):Fact {
+		private function getDisplayFact( moFact:MoFact ):Fact
+		{
 			var fact:Fact = _displayedFacts[ moFact ];
 
 			if ( !fact ) {
@@ -275,7 +291,8 @@ package display.objects {
 			return fact;
 		}
 
-		private function getFreeFact( moFact:MoFact ):Fact {
+		private function getFreeFact( moFact:MoFact ):Fact
+		{
 			var fact:Fact = _displayedFacts[ moFact ];
 
 			if ( fact ) {
@@ -288,27 +305,33 @@ package display.objects {
 
 		//} endregion
 
-		public function get body():EntityView {
+		public function get body():EntityView
+		{
 			return _body;
 		}
 
-		public function getVisibleFacts():Dictionary /*Fact*/ {
+		public function getVisibleFacts():Dictionary /*Fact*/
+		{
 			return _displayedFacts;
 		}
 
-		public function getVisibleMoFacts():Vector.<MoFact> {
+		public function getVisibleMoFacts():Vector.<MoFact>
+		{
 			return _visibleMoFacts;
 		}
 
-		public function getVisibleMapFacts():Dictionary {
+		public function getVisibleMapFacts():Dictionary
+		{
 			return _mapVisibleMoFacts;
 		}
 
-		private function dateToY( value:Number ):Number {
+		private function dateToY( value:Number ):Number
+		{
 			return ( value - moEntity.beginPeriod.beginJD ) * _scale;
 		}
 
-		override public function kill():void {
+		override public function kill():void
+		{
 			super.kill();
 
 			_visibleMoFacts = null;

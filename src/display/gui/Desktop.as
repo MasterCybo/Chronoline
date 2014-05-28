@@ -56,9 +56,9 @@ package display.gui
 			).init();
 			_curDateMarker.y = int( _height / 2 );
 
-			addChild( _gridScale );
-			addChild( _curDateMarker );
-			addChild( _container );
+//			addChild( _gridScale );
+//			addChild( _curDateMarker );
+//			addChild( _container );
 
 			_entRender = new EntitiesRender( _container, _width, height );
 			_entRender.init();
@@ -80,6 +80,10 @@ package display.gui
 
 		private function onInitTimeline( ev:TimelineEvent ):void
 		{
+			if( !contains( _gridScale ) ) addChild( _gridScale );
+			if( !contains( _curDateMarker ) ) addChild( _curDateMarker );
+			if( !contains( _container ) ) addChild( _container );
+
 			updateBaseDate();
 
 			_container.killChildren();
