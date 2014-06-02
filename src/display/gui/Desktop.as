@@ -3,6 +3,7 @@ package display.gui
 	import controllers.BondsRender;
 	import controllers.EntitiesRender;
 	import controllers.EntityController;
+	import controllers.FactsRender;
 	import controllers.PopupController;
 
 	import data.MoTimeline;
@@ -30,6 +31,7 @@ package display.gui
 		private var _bondRender:BondsRender;
 		private var _entCtrl:EntityController;
 		private var _curDateMarker:DateGraduation;
+		private var _factRender:FactsRender;
 
 		public function Desktop( width:uint, height:uint )
 		{
@@ -63,6 +65,9 @@ package display.gui
 			_entRender = new EntitiesRender( _container, _width, height );
 			_entRender.init();
 
+			_factRender = new FactsRender( _container, height );
+			_factRender.init();
+
 			_bondRender = new BondsRender( _container, _width, height );
 			_bondRender.init();
 
@@ -73,7 +78,8 @@ package display.gui
 			_popupController.init();
 
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, updateBaseDate );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangeBase );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 
 			return this;
 		}
@@ -84,17 +90,27 @@ package display.gui
 			if( !contains( _curDateMarker ) ) addChild( _curDateMarker );
 			if( !contains( _container ) ) addChild( _container );
 
-			updateBaseDate();
-
 			_container.killChildren();
 
-			_entRender.update();
-			_bondRender.update();
+			onChangeBase();
+
+//			_entRender.update();
+//			_factRender.update( _entRender.visibleEntities );
+//			_bondRender.update();
 		}
 
-		private function updateBaseDate( ev:TimelineEvent = null ):void
+		private function onChangeBase( ev:TimelineEvent = null ):void
 		{
 			_curDateMarker.jd = MoTimeline.me.baseJD;
+
+			_entRender.update();
+			_factRender.update( _entRender.visibleEntities );
+		}
+
+		private function onChangedScale( event:TimelineEvent ):void
+		{
+			_entRender.update();
+			_factRender.update( _entRender.visibleEntities );
 		}
 
 		override public function get width():Number
@@ -136,7 +152,8 @@ package display.gui
 		override public function kill():void
 		{
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, updateBaseDate );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangeBase );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangedScale );
 
 			_popupController.dispose();
 			_entCtrl.dispose();

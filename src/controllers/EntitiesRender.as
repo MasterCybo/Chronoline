@@ -36,9 +36,6 @@ package controllers
 		private var _space:Number = 0; // расстояние между сущностями
 		private var _yCenter:Number;
 
-		private var _isScaled:Boolean = false;
-		private var _isMoved:Boolean = false;
-
 		// Данные, которые берём из менеджера
 		private var _listMoEntities:Vector.<MoEntity>;
 		private var _mapMoEntities:Dictionary/*MoEntity*/; // MoEntity.id = MoEntity;
@@ -62,8 +59,8 @@ package controllers
 		public function init():void
 		{
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 		}
 
 		private function onInitTimeline( ev:TimelineEvent ):void
@@ -183,7 +180,7 @@ package controllers
 							delete _pool[ moEnt.id ];
 						} else {
 							ent = new Entity( moEnt ).init();
-//							ent.filters = [ new GlowFilter( 0x0, 1, 2, 2, 3, 3, true ) ];
+							ent.filters = [ new GlowFilter( 0xff00ff, 1, 2, 2, 3, 3, true ) ];
 						}
 						_mapDisplayEntities[ moEnt.id ] = ent;
 					}
@@ -246,6 +243,7 @@ package controllers
 			_listMoEntities = null;
 			_mapMoEntities = null;
 			_mapDisplayEntities = null;
+			_pool = null;
 			_mapTitles = null;
 		}
 	}

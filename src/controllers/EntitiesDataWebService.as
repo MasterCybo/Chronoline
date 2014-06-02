@@ -136,7 +136,7 @@ package controllers {
 			var numData:uint = 0;
 			var name:String;
 			for ( name in json ) {
-				//Log.traceText( "Parse entity : " + name );
+				Log.traceText( "Parse entity : " + name );
 				numData += parseEntity( json[ name ] );
 				numData++;
 			}
@@ -166,7 +166,7 @@ package controllers {
 		}
 		
 		static private function parseEntity( entityData:Object ):uint {
-			var numAdded:uint;
+			var numFacts:uint = 0;
 
 			var entNew:MoEntity = MoEntity.fromJSON( entityData );
 			var entExisting:MoEntity = EntityManager.getItem( entNew.id );
@@ -175,14 +175,14 @@ package controllers {
 				//Log.traceText( "Add new Entity : " + entNew );
 				EntityManager.addItem( entNew );
 				entNew.sortFacts();
-				numAdded += entNew.facts.length;
+				numFacts += entNew.facts.length;
 			} else {
 				//Log.traceText( "Already exists in : " + entExisting );
 				var listMStones:Vector.<MoFact> = entNew.facts;
 				var mstone:MoFact;
 				for each (mstone in listMStones) {
 					entExisting.addFact( mstone );
-					numAdded++;
+					numFacts++;
 				}
 				
 				entExisting.sortFacts();
@@ -190,7 +190,9 @@ package controllers {
 				entNew.dispose();
 			}
 
-			return numAdded;
+			Log.traceText( "numFacts : " + numFacts );
+
+			return numFacts;
 		}
 		//} endregion
 

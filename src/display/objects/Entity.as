@@ -117,7 +117,7 @@ package display.objects
 			//_visibleMoFacts.push( _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
 
 
-			getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
+//			getMiddleValue( _moEntity.facts[ 0 ], _moEntity.facts[ Math.max( 0, _moEntity.facts.length - 1 ) ] );
 
 
 			//}
@@ -128,7 +128,7 @@ package display.objects
 
 
 
-			updateDisplayFacts();
+//			updateDisplayFacts();
 
 			_isUpdating = false;
 		}
