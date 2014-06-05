@@ -144,7 +144,7 @@ package display.objects
 					_canvas.graphics.lineTo( Settings.ENT_WIDTH, height );
 				}
 
-				Log.traceText( "_canvas.width x height : " + _canvas.width + " x " + _canvas.height );
+//				Log.traceText( "_canvas.width x height : " + _canvas.width + " x " + _canvas.height );
 
 				bd = new BitmapData( uint( _canvas.width ), uint( _canvas.height ), true, 0x00ff0000 );
 				bd.draw( _canvas );
