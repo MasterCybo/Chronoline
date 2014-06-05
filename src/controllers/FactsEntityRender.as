@@ -31,6 +31,7 @@ package controllers
 		private var _numDisplay:uint = 0;
 
 		private var _mapDisplayMoFacts:Dictionary/*Fact*/ = new Dictionary( true ); // MoFact.id = Fact
+		private var _removedMoFacts:Array/*MoFact.id*/ = [];
 		private var _spaceJD:Number;
 		private var _yCenter:Number;
 
@@ -47,8 +48,8 @@ package controllers
 		{
 			if ( !enabled ) return;
 
-			Log.traceText( "BEGIN =======================================> _moEntity.title : " + _moEntity.title );
-			Log.traceText( "    ...facts.length : " + _moEntity.facts.length );
+//			Log.traceText( "BEGIN =======================================> _moEntity.title : " + _moEntity.title );
+//			Log.traceText( "    ...facts.length : " + _moEntity.facts.length );
 
 //			var dh:Number = Display.stageHeight - Settings.TOOLBAR_HEIGHT;
 			_minJD = MoTimeline.me.baseJD - _yCenter / MoTimeline.me.scale;
@@ -57,17 +58,27 @@ package controllers
 
 			var entHeight:Number = moEntity.duration * MoTimeline.me.scale;
 			var div:Number = int( ( entHeight + Settings.ICON_SIZE ) / Settings.ICON_SIZE );
-			_spaceJD = _moEntity.duration / ( div / MoTimeline.me.scale );
-//			_spaceJD = _moEntity.duration / div;
+//			_spaceJD = _moEntity.duration / ( div / MoTimeline.me.scale );
+			_spaceJD = _moEntity.duration / div;
 
-			Log.traceText( "_spaceJD = " + _spaceJD );
+//			Log.traceText( "entHeight : " + entHeight );
+//			Log.traceText( "div : " + div );
+//			Log.traceText( "_spaceJD = " + _spaceJD );
 
 			_numDisplay = 0;
 
 			takeMiddle( _moEntity.facts, 0, _moEntity.facts.length - 1 );
 
-			Log.traceText( "_mapDisplayMoFacts number objects : " + _numDisplay );
+//			Log.traceText( "_mapDisplayMoFacts number objects : " + _numDisplay );
 
+//			Log.traceText( "Ready to remove : " + _removedMoFacts.length );
+
+			while ( _removedMoFacts.length ) {
+				var fact:Fact = _host.getChildByName( "fact_" + _removedMoFacts.pop() ) as Fact;
+				fact.kill();
+			}
+
+			var numDisplay:uint = 0;
 			for each ( var moFact:MoFact in _mapDisplayMoFacts ) {
 				var fact:Fact = _host.getChildByName( "fact_" + moFact.id ) as Fact;
 
@@ -76,22 +87,25 @@ package controllers
 					fact.name = "fact_" + moFact.id;
 					fact.x = _positionX;
 					fact.initialize( moFact );
-					fact.height = Math.max( 1, moFact.period.duration * MoTimeline.me.scale );
+					fact.height = moFact.period.duration * MoTimeline.me.scale;
 					_host.addChild( fact );
 
 //					Log.traceText( "        moFact.title : " + moFact.title );
 				}
 
 				fact.y = getY( moFact );
-				Log.traceText( "            fact.y = " + fact.y + " (" + moFact.id + ") : " + moFact.title );
+//				Log.traceText( "            fact.y = " + fact.y + " (" + moFact.id + ") : " + moFact.title );
+				numDisplay++;
 			}
 
-			Log.traceText( "END ------------------> _moEntity.title : " + _moEntity.title );
+//			Log.traceText( "Displayed : " + numDisplay );
+
+//			Log.traceText( "END ------------------> _moEntity.title : " + _moEntity.title );
 		}
 
 		private function takeMiddle( listFacts:Vector.<MoFact>, idx1:uint, idx2:uint ):void
 		{
-			Log.traceText( " " );
+//			Log.traceText( "-" );
 
 			idx1 = Math.min( idx1, idx2 ); // Индекс первого элемента
 			idx2 = Math.max( idx1, idx2 ); // Индекс второго элемента
@@ -101,75 +115,107 @@ package controllers
 			// Проверяем по условию разности индексов
 			if ( ( idx2 - idx1 ) <= 1 ) return;
 
+
+
+			// Добавляем в отображение, если это первый и последний факты.
 			var fact1:MoFact = listFacts[idx1];
 			var fact2:MoFact = listFacts[idx2];
 
-			Log.traceText( "...idx1 " + "(" + fact1.id + ") = " + idx1 );
-			Log.traceText( "...idx2 " + "(" + fact2.id + ") = " + idx2 );
-
-
-			// Проверка по условию: разница между фактами должна быть больше значения _spaceJD
-			var deltaJD21:Number = fact2.period.middle - fact1.period.middle;
-
-			Log.traceText( "...delta " + idx2 + "-" + idx1 + " = " + deltaJD21 );
-
-			if ( deltaJD21 >= _spaceJD ) {
-				if ( !_mapDisplayMoFacts[ fact1.id ] ) {
-					if ( ( fact1.period.middle > _minJD ) && ( fact1.period.middle < _maxJD ) ) {
+//			Log.traceText( "...idx1 " + "(" + fact1.id + ") = " + idx1 );
+//			Log.traceText( "...idx2 " + "(" + fact2.id + ") = " + idx2 );
+			if ( idx1 == 0 ) {
+				if ( ( fact1.period.middle > _minJD ) && ( fact1.period.middle < _maxJD ) ) {
+					if ( !_mapDisplayMoFacts[ fact1.id ] ) {
 						_mapDisplayMoFacts[ fact1.id ] = fact1;
 						_numDisplay++;
 
-						Log.traceText( "        Add fact first " + idx1 + " (" + fact1.id + ")" );
+//						Log.traceText( "        + Add fact first " + idx1 + " (" + fact1.id + ")" );
+					}
+				} else {
+					if ( _mapDisplayMoFacts[ fact1.id ] ) {
+						_removedMoFacts.push( fact1.id );
+						delete _mapDisplayMoFacts[ fact1.id ];
 					}
 				}
+			}
 
-				if ( !_mapDisplayMoFacts[ fact2.id ] ) {
-					if ( ( fact2.period.middle > _minJD ) && ( fact2.period.middle < _maxJD ) ) {
+			if ( idx2 == ( listFacts.length - 1 ) ) {
+				if ( ( fact2.period.middle > _minJD ) && ( fact2.period.middle < _maxJD ) ) {
+					if ( !_mapDisplayMoFacts[ fact2.id ] ) {
 						_mapDisplayMoFacts[ fact2.id ] = fact2;
 						_numDisplay++;
 
-						Log.traceText( "        Add fact second " + idx2 + " (" + fact2.id + ")" );
+//						Log.traceText( "        + Add fact second " + idx2 + " (" + fact2.id + ")" );
+					}
+				} else {
+					if ( _mapDisplayMoFacts[ fact2.id ] ) {
+						_removedMoFacts.push( fact2.id );
+						delete _mapDisplayMoFacts[ fact2.id ];
 					}
 				}
 			}
 
 
-			// Проверка по условию: помещается ли между фактами ещё один факт - 2*_spaceJD
+			// Если между первым и вторым фактами помещается ещё один факт ( deltaJD21 >= 2 * _spaceJD ), то определяем промежуточный факт и проверяем его на добавление
+			var deltaJD21:Number = fact2.period.middle - fact1.period.middle;
+
+//			Log.traceText( "...delta " + idx2 + "-" + idx1 + " = " + deltaJD21 );
+
+			var idx3:int = int( ( idx1 + idx2 ) / 2 );
+			var fact3:MoFact = listFacts[ idx3 ];
+
 			if ( deltaJD21 >= ( 2 * _spaceJD ) ) {
-				var idx3:int = int( ( idx1 + idx2 ) / 2 );
-				var fact3:MoFact = listFacts[ idx3 ];
 
-				Log.traceText( "...idx3 " + "(" + fact3.id + ") = " + idx3 );
+//				Log.traceText( "...idx3 " + "(" + fact3.id + ") = " + idx3 );
 
-				var deltaJD31:Number = fact3.period.middle - fact1.period.middle;
-				var deltaJD23:Number = fact2.period.middle - fact3.period.middle;
-
-				Log.traceText( "...deltaJD " + idx3 + " - " + idx1 + " = " + deltaJD31 );
-				Log.traceText( "...deltaJD " + idx2 + " - " + idx3 + " = " + deltaJD23 );
 //				Log.traceText( "...deltaJD 2-3 = " + deltaJD23 );
 //				Log.traceText( "deltaPX31 = " + (deltaJD31 * MoTimeline.me.scale), "deltaPX23 = " + (deltaJD23 * MoTimeline.me.scale) );
 
-				if ( ( deltaJD31 > _spaceJD ) && ( deltaJD23 > _spaceJD ) ) {
-					if ( !_mapDisplayMoFacts[ fact3.id ] ) {
-						if ( ( fact3.period.middle > _minJD ) && ( fact3.period.middle < _maxJD ) ) {
+				if ( ( fact3.period.middle > _minJD ) && ( fact3.period.middle < _maxJD ) ) {
+					var deltaJD31:Number = fact3.period.middle - fact1.period.middle;
+					var deltaJD23:Number = fact2.period.middle - fact3.period.middle;
+
+//					Log.traceText( "...deltaJD " + idx3 + " - " + idx1 + " = " + deltaJD31 );
+//					Log.traceText( "...deltaJD " + idx2 + " - " + idx3 + " = " + deltaJD23 );
+					if ( ( deltaJD31 >= _spaceJD ) && ( deltaJD23 >= _spaceJD ) ) {
+						if ( !_mapDisplayMoFacts[ fact3.id ] ) {
 							_mapDisplayMoFacts[ fact3.id ] = fact3;
 							_numDisplay++;
 //
-							Log.traceText( "        Add fact middle " + idx3 + " (" + fact3.id + ")" );
+//							Log.traceText( "        Add fact middle " + idx3 + " (" + fact3.id + ")" );
 						}
+
+					} else {
+						if ( _mapDisplayMoFacts[ fact3.id ] ) {
+							_removedMoFacts.push( fact3.id );
+							delete _mapDisplayMoFacts[ fact3.id ];
+						}
+					}
+				} else {
+					if ( _mapDisplayMoFacts[ fact3.id ] ) {
+						_removedMoFacts.push( fact3.id );
+						delete _mapDisplayMoFacts[ fact3.id ];
 					}
 				}
 
-				/*
-				if ( _mapDisplayMoFacts[ fact1.id ] || _mapDisplayMoFacts[ fact3.id ] ) {
-					takeMiddle( listFacts, idx1, idx3 );
-				}
-				*/
 
-				if ( _mapDisplayMoFacts[ fact3.id ] || _mapDisplayMoFacts[ fact2.id ] ) {
+				// Если один из фактов попал в список отображения, тогда рекрсивно продолжаем определять средние факты.
+//				if ( _mapDisplayMoFacts[ fact1.id ] || _mapDisplayMoFacts[ fact3.id ] ) {
+					takeMiddle( listFacts, idx1, idx3 );
+//				}
+
+//				if ( _mapDisplayMoFacts[ fact3.id ] || _mapDisplayMoFacts[ fact2.id ] ) {
 					takeMiddle( listFacts, idx3, idx2 );
+//				}
+			} else {
+				if ( _mapDisplayMoFacts[ fact3.id ] ) {
+					_removedMoFacts.push( fact3.id );
+					delete _mapDisplayMoFacts[ fact3.id ];
 				}
 			}
+
+//			takeMiddle( listFacts, idx1, idx3 );
+//			takeMiddle( listFacts, idx3, idx2 );
 		}
 
 		private function getY( moFact:MoFact ):Number

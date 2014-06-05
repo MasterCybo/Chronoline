@@ -68,7 +68,7 @@ package display.objects
 
 		private function updatePositionPile():void
 		{
-			if ( !_iPile )return;
+			if ( !_iPile ) return;
 
 			_iPile.x = _body.x + _body.width;
 			_iPile.y = ( _body.height - _iPile.height ) * 0.5;
@@ -130,9 +130,7 @@ package display.objects
 
 		override public function set height( value:Number ):void
 		{
-			if ( value == _height ) {
-				return;
-			}
+			if ( value == _height ) return;
 
 			_height = Math.max( 1, value );
 
