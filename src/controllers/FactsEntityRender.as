@@ -67,6 +67,8 @@ package controllers
 
 			_numDisplay = 0;
 
+			_mapDisplayMoFacts = new Dictionary( true );
+
 			takeMiddle( _moEntity.facts, 0, _moEntity.facts.length - 1 );
 
 			var fact:Fact;
