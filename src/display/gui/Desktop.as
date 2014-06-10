@@ -105,6 +105,7 @@ package display.gui
 
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
+			_bondRender.update( _factRender.visibleFacts );
 		}
 
 		private function onChangedScale( event:TimelineEvent ):void

@@ -59,17 +59,17 @@ package controllers {
 			updateVisibleBonds();
 			
 //			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 		}
 		
 		private function onResizeTimeline( ev:Event ):void {
 			//Log.traceText( "*execute* BondsRender.onResizeTimeline" );
 			
-			update();
+//			update();
 		}
 		
-		public function update():void {
+		public function update( visibleFacts:Dictionary ):void {
 			var len1:uint = DictionaryUtil.getKeys( _visibleBonds ).length;
 			var len2:uint = DictionaryUtil.getKeys( _cacheBonds ).length;
 			var len3:uint = DictionaryUtil.getKeys( _mapVisibleBonds ).length;
@@ -225,8 +225,8 @@ package controllers {
 		}
 		
 		public function dispose():void {
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
+//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onMoveRange );
 			
 			_visibleBonds = null;
 			_mapVisibleBonds = null;

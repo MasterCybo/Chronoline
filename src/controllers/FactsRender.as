@@ -64,6 +64,11 @@ package controllers
 			}
 		}
 
+		public function get visibleFacts():Dictionary
+		{
+			return null;
+		}
+
 		public function dispose():void
 		{
 			for each ( var fer:FactsEntityRender in _mapRenders ) {
