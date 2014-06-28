@@ -62,7 +62,7 @@ package  {
 		static public const MAX_RANK:uint = 100;
 		static public const ICON_OFFSET:uint = 4; // Смещение иконок в закрытом состоянии (на сколько иконка выглядывает из-за предыдущей)
 		static public const ICON_SPACE:uint = 1; // Расстояние между иконками в раскрытом состоянии
-		static public const ICON_SIZE:uint = 68; // px - Размер иконки по-умолчанию
+		static public const ICON_SIZE:uint = 30; // px - Размер иконки по-умолчанию (родной размер - 60 px)
 		static public const DELAY_CLOSE:uint = 100; // Пауза перед закрытием группы иконок
 		static public const TAIL_LENGTH:uint = 10; // Длина выносной линии иконки
 		

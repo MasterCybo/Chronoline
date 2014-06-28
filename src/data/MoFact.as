@@ -1,6 +1,8 @@
 package data {
 	import flash.utils.getQualifiedClassName;
 
+	import ru.arslanov.core.utils.Calc;
+
 	/**
 	 * Событие, веха сущности Fact
 	 * @author Artem Arslanov
@@ -41,7 +43,7 @@ package data {
 			//var moFact:MoFact = new MoFact( id, json.title, newPeriod, json.rank );
 			var moFact:MoFact = new MoFact( id, json.title, newPeriod ); // test
 			// TODO: Удалить. Cлучайный масштаб иконки для теста
-			//moFact.rank = Calc.randomRange( 30, 100, true );
+//			moFact.rank = Calc.randomRange( 30, 100, true );
 			
 			var arrCategory:Array = json.category;
 			
