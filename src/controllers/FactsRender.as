@@ -26,6 +26,7 @@ package controllers
 		private var _height:Number;
 
 		private var _mapRenders:Dictionary/*FactsEntityRender*/ = new Dictionary( true ); // MoEntity.id = FactsEntityRender
+		private var _visibleFacts:Dictionary/*Dictionary*/ = new Dictionary( true ); // MoEntity.id = Dictionary
 
 
 		public function FactsRender( host:ASprite, height:Number )
@@ -36,7 +37,6 @@ package controllers
 
 		public function init():void
 		{
-
 		}
 
 		public function update( visibleEntities:Dictionary/*Entity*/ ):void
@@ -46,6 +46,7 @@ package controllers
 				if ( !visibleEntities[ fer.moEntity.id ] ) {
 					Log.traceText( "- Remove facts render : " + fer.moEntity.title );
 					delete _mapRenders[ fer.moEntity.id ];
+					delete _visibleFacts[ fer.moEntity.id ];
 					fer.dispose();
 				}
 			}
@@ -58,15 +59,16 @@ package controllers
 				}
 			}
 
-
+			// Обновляем рендеры каждой сущности
 			for each ( var fer2:FactsEntityRender in _mapRenders ) {
 				fer2.update();
+				_visibleFacts[ fer2.moEntity.id ] = fer2.getVisibleFacts();
 			}
 		}
 
 		public function get visibleFacts():Dictionary
 		{
-			return null;
+			return _visibleFacts; // { MoEntity.id: { MoFact.id: Fact } }
 		}
 
 		public function dispose():void

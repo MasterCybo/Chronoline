@@ -16,6 +16,8 @@ package controllers {
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
@@ -70,6 +72,13 @@ package controllers {
 		}
 		
 		public function update( visibleFacts:Dictionary ):void {
+			// visibleFacts = { MoEntity.id: { MoFact.id: Fact } }
+			Log.traceText( "*execute* BondsRender.update" );
+
+			var len:uint = DictionaryUtil.getKeys( visibleFacts ).length;
+			
+			Log.traceText( "len : " + len );
+			
 			var len1:uint = DictionaryUtil.getKeys( _visibleBonds ).length;
 			var len2:uint = DictionaryUtil.getKeys( _cacheBonds ).length;
 			var len3:uint = DictionaryUtil.getKeys( _mapVisibleBonds ).length;

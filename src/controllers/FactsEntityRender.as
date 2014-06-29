@@ -3,6 +3,8 @@
  */
 package controllers
 {
+	import com.adobe.utils.DictionaryUtil;
+
 	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
@@ -48,6 +50,8 @@ package controllers
 
 		public function update():void
 		{
+			Log.traceText( "*execute* FactsEntityRender.update" );
+			
 			if ( !enabled ) return;
 
 			if ( _isCalculation ) {
@@ -106,6 +110,9 @@ package controllers
 				_isLastUpdate = false;
 				update();
 			}
+			
+//			var ln:uint = DictionaryUtil.getKeys(_mapDisplayFacts).length;
+//			Log.traceText( "ln : " + ln );
 		}
 
 		private function takeMiddle( listFacts:Vector.<MoFact>, idx1:uint, idx2:uint ):void
@@ -218,6 +225,11 @@ package controllers
 		public function get moEntity():MoEntity
 		{
 			return _moEntity;
+		}
+
+		public function getVisibleFacts():Dictionary
+		{
+			return _mapDisplayFacts;
 		}
 
 		public function clear():void

@@ -10,6 +10,8 @@ package data {
 	 */
 	public class MoEntity extends ModelBase {
 		
+		public var xView:int = 0;
+		
 		// События, связанные с этой сущностью
 		private var _mapMoFacts:Dictionary/*MoFact*/ = new Dictionary( true ); // MoFact.id = MoFact
 		//private var _listMoFacts:Array/*MoFact*/ = [];
