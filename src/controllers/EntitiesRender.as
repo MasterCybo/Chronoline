@@ -204,6 +204,7 @@ package controllers
 
 				if ( !_host.contains( ent ) ) {
 					ent.x = getX( _order.indexOf( moEnt.id ) );
+					Log.traceText( "ent.x : " + ent.x );
 					moEnt.xView = ent.x; 
 					_host.addChild( ent );
 				}

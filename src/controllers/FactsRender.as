@@ -1,19 +1,10 @@
 package controllers
 {
-	import data.MoEntity;
-	import data.MoFact;
-	import data.MoTimeline;
-
 	import display.objects.Entity;
-
-	import display.objects.Fact;
-
-	import events.TimelineEvent;
 
 	import flash.utils.Dictionary;
 
 	import ru.arslanov.core.utils.Log;
-
 	import ru.arslanov.flash.display.ASprite;
 
 	/**

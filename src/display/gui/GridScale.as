@@ -19,7 +19,8 @@ package display.gui {
 		static private var _displayed:Object = {}; // jd = DateGraduation
 
 		private var _oldBaseJD:Number = 0; // Предыдущее значение MoTimeline.me.baseJD
-		private var _offsetJD:Number = 0; // Величина изменнения MoTimeline.me.baseJD
+		private var _offsetJD:Number = 0; // Величина изменения MoTimeline.me.baseJD
+		private var _fitJD:Number = 0; // Величина смещения MoTimeline.me.baseJD, для отображения круглых дат 
 
 		private var _width:uint;
 		private var _height:uint;
@@ -91,6 +92,8 @@ package display.gui {
 			}
 
 			_div = heightJD / _stepJD;
+
+			_fitJD = MoTimeline.me.baseJD;
 
 			draw();
 		}

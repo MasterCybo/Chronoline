@@ -1,9 +1,11 @@
 package controllers {
 	import collections.BondsManager;
+	import collections.EntityManager;
 
 	import com.adobe.utils.DictionaryUtil;
 
 	import data.MoBond;
+	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
 
@@ -41,11 +43,13 @@ package controllers {
 		
 		private var _minJD:Number;
 		private var _maxJD:Number;
+		private var _yCenter:Number;
 		
 		public function BondsRender( host:ASprite, width:Number, height:Number ) {
 			_host = host;
 			_width = width;
 			_height = height;
+			_yCenter = height / 2;
 		}
 		
 		public function init():void {
@@ -58,7 +62,7 @@ package controllers {
 			_maxJD = MoTimeline.me.baseJD + dh / MoTimeline.me.scale;
 			
 			updateScale();
-			updateVisibleBonds();
+//			updateVisibleBonds();
 			
 //			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 //			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onResizeRange );
@@ -72,27 +76,64 @@ package controllers {
 		}
 		
 		public function update( visibleFacts:Dictionary ):void {
-			// visibleFacts = { MoEntity.id: { MoFact.id: Fact } }
-			Log.traceText( "*execute* BondsRender.update" );
-
-			var len:uint = DictionaryUtil.getKeys( visibleFacts ).length;
-			
-			Log.traceText( "len : " + len );
-			
-			var len1:uint = DictionaryUtil.getKeys( _visibleBonds ).length;
-			var len2:uint = DictionaryUtil.getKeys( _cacheBonds ).length;
-			var len3:uint = DictionaryUtil.getKeys( _mapVisibleBonds ).length;
-			
-			_visibleBonds = new Dictionary( true );
-			_cacheBonds = new Dictionary( true );
-			_mapVisibleBonds = new Dictionary( true );
+			return;
 			
 			updateScale();
-			updateVisibleBonds();
+//			updateVisibleBonds();
 			
-			len1 = DictionaryUtil.getKeys( _visibleBonds ).length;
-			len2 = DictionaryUtil.getKeys( _cacheBonds ).length;
-			len3 = DictionaryUtil.getKeys( _mapVisibleBonds ).length;
+			// visibleFacts = { MoEntity.id: { MoFact.id: Fact } }
+			Log.traceText( "*execute* BondsRender.update" );
+			
+			var listIdEnts:Array = DictionaryUtil.getKeys( visibleFacts );
+			var numEnts:uint = listIdEnts.length;
+			Log.traceText( "numEnts : " + numEnts );
+
+			for ( var i:int = 0; i < numEnts; i++ ) {
+				var idEnt:String = listIdEnts[i];
+				var mapFacts:Dictionary = visibleFacts[idEnt];
+				var listIdFacts:Array = DictionaryUtil.getKeys( mapFacts );
+				var numFacts:uint = listIdFacts.length;
+				Log.traceText( idEnt + " - numFacts : " + numFacts );
+				
+				for ( var j:int = 0; j < listIdFacts.length; j++ ) {
+					var idFact:String = listIdFacts[j];
+					var fact:Fact = mapFacts[idFact];
+					var listMoBonds:Vector.<MoBond> = BondsManager.getItems( idFact );
+
+					// Если связей нет - пропускаем дальнейшие операции
+					if ( !listMoBonds ) continue;
+					trace("listMoBonds : " + listMoBonds);
+					
+					var numBonds:uint = listMoBonds.length;
+					for ( var k:int = 0; k < numBonds; k++ ) {
+						var moBond:MoBond = listMoBonds[k];
+						
+						var ent1:MoEntity = EntityManager.getItem( moBond.entityUid1 );
+						var ent2:MoEntity = EntityManager.getItem( moBond.entityUid2 );
+						
+						if ( !ent1 || !ent2 ) continue;
+						
+						Log.traceText( "ent1.xView : " + ent1.xView );
+						
+						var widthBond:Number = ent2.xView - ent1.xView - Settings.ENT_WIDTH;
+						var heightBond:Number = _scale * fact.moFact.period.duration;
+
+						var bond:Bond = new Bond( moBond, k, numBonds, widthBond, heightBond ).init();
+						bond.x = ent1.xView + Settings.ENT_WIDTH;
+//						bond.y = dateToY( fact.moFact.period.beginJD );
+						bond.y = getY( fact.moFact );
+						_host.addChild( bond );
+						
+						Log.traceText( "bond.x, y : " + bond.x + ", " + bond.y );
+						Log.traceText( "bond.wifdth, height : " + bond.width + ", " + bond.height );
+					}
+					
+//					var bond:Bond = new Bond( moBond, countBonds + 1, sumBonds, widthBond, heightBond ).init();
+				}
+			}
+			
+//			updateScale();
+//			updateVisibleBonds();
 		}
 		
 		private function onResizeRange( ev:Event ):void {
@@ -231,6 +272,11 @@ package controllers {
 		
 		private function dateToY( date:Number ):Number {
 			return _scale * ( date - _minJD );
+		}
+
+		private function getY( moFact:MoFact ):Number
+		{
+			return Math.max( 0, _yCenter + MoTimeline.me.scale * ( moFact.period.beginJD - MoTimeline.me.baseJD ) );
 		}
 		
 		public function dispose():void {
