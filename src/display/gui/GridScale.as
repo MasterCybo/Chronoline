@@ -7,6 +7,7 @@ package display.gui {
 
 	import ru.arslanov.core.utils.Calc;
 	import ru.arslanov.core.utils.JDUtils;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 
 	/**
@@ -74,26 +75,42 @@ package display.gui {
 
 			var heightJD:Number = _height / MoTimeline.me.scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
+			
+			Log.traceText( "heightYears : " + heightYears );
 
-			if ( heightYears <= 1 ) {
-				_stepJD = JDUtils.DAYS_PER_YEAR / 12;
-			} else if ( heightYears <= 10 ) {
-				_stepJD = JDUtils.DAYS_PER_YEAR;
-			} else if ( heightYears <= 50 ) {
-				_stepJD = 5 * JDUtils.DAYS_PER_YEAR;
-			} else if ( heightYears <= 100 ) {
-				_stepJD = 10 * JDUtils.DAYS_PER_YEAR;
-			} else if ( heightYears <= 500 ) {
-				_stepJD = 50 * JDUtils.DAYS_PER_YEAR;
-			} else if ( heightYears <= 1000 ) {
-				_stepJD = 100 * JDUtils.DAYS_PER_YEAR;
-			} else {
-				_stepJD = 1000 * JDUtils.DAYS_PER_YEAR;
+			switch ( true ) {
+				case heightYears <= ( 12 / JDUtils.DAYS_PER_YEAR ):
+					_stepJD = 1; // шаг = 1 день
+					break;
+				case heightYears <= 1:
+					_stepJD = JDUtils.DAYS_PER_YEAR / 12; // шаг = 1 месяц
+					break;
+				case heightYears <= 10:
+					_stepJD = JDUtils.DAYS_PER_YEAR; // шаг = 1 год
+					break;
+				case heightYears <= 50:
+					_stepJD = 5 * JDUtils.DAYS_PER_YEAR; // шаг = 5 лет
+					break;
+				case heightYears <= 100:
+					_stepJD = 10 * JDUtils.DAYS_PER_YEAR; // шаг = 10 лет
+					break;
+				case heightYears <= 500:
+					_stepJD = 50 * JDUtils.DAYS_PER_YEAR; // шаг = 50 лет
+					break;
+				case heightYears <= 1000:
+					_stepJD = 100 * JDUtils.DAYS_PER_YEAR; // шаг = 100 лет
+					break;
+				default:
+					_stepJD = 1000 * JDUtils.DAYS_PER_YEAR; // шаг = 1000 лет
 			}
-
+			
+			Log.traceText( "\t_step years : " + ( _stepJD / JDUtils.DAYS_PER_YEAR ) );
+			
 			_div = heightJD / _stepJD;
+			
+			Log.traceText( "\t\t_div : " + _div );
 
-			_fitJD = MoTimeline.me.baseJD;
+			_fitJD = MoTimeline.me.beginJD;
 
 			draw();
 		}

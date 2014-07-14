@@ -6,6 +6,8 @@ package display.gui {
 
 	import events.TimelineEvent;
 
+	import ru.arslanov.core.utils.JDUtils;
+
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.gui.layout.VBox;
 	import ru.arslanov.flash.utils.Display;
@@ -52,7 +54,10 @@ package display.gui {
 
 		private function onInitTimeline( ev:TimelineEvent = null ):void {
 			_minScale = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / MoTimeline.me.duration;
-			_maxScale = MoTimeline.me.duration / (Display.stageHeight - Settings.TOOLBAR_HEIGHT);
+//			_maxScale = MoTimeline.me.duration / (Display.stageHeight - Settings.TOOLBAR_HEIGHT);
+//			Log.traceText( "1 _maxScale : " + _maxScale );
+			_maxScale = JDUtils.DAYS_PER_YEAR; // Максимальное увеличение: 1 день = высоте экрана
+//			Log.traceText( "2 _maxScale : " + _maxScale );
 
 			_zoStepper.step = (_maxScale - _minScale) / (100 * _zoSlider.heightTrack);
 		}
