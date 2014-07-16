@@ -16,6 +16,9 @@ package display.gui {
 	 */
 	public class GridScale extends ASprite {
 
+		static private const MONTH:Number = 0.08333; // 1 year / 12 months
+		static private const WEEK:Number = JDUtils.WEEKS_PER_MONTH / 7;
+		
 		static private var _pool:Array = [];
 		static private var _displayed:Object = {}; // jd = DateGraduation
 
@@ -79,29 +82,32 @@ package display.gui {
 			Log.traceText( "heightYears : " + heightYears );
 
 			switch ( true ) {
-				case heightYears <= ( 12 / JDUtils.DAYS_PER_YEAR ):
-					_stepJD = 1; // шаг = 1 день
+				case heightYears <= WEEK:
+					_stepJD = 1; // шаг = 1 день 
+					break;
+				case heightYears <= MONTH:
+					_stepJD = JDUtils.WEEKS_PER_MONTH; // шаг = 
 					break;
 				case heightYears <= 1:
-					_stepJD = JDUtils.DAYS_PER_YEAR / 12; // шаг = 1 месяц
+					_stepJD = JDUtils.DAYS_PER_MONTH; // шаг = 1 месяц
 					break;
-				case heightYears <= 10:
-					_stepJD = JDUtils.DAYS_PER_YEAR; // шаг = 1 год
+				case heightYears <= 5:
+					_stepJD = JDUtils.DAYS_PER_YEAR * 0.5; // шаг = 6 месяцев
+					break;
+				case heightYears <= 15:
+					_stepJD = JDUtils.DAYS_PER_YEAR; // шаг = 
+					break;
+				case heightYears <= 20:
+					_stepJD = JDUtils.DAYS_PER_YEAR * 2; // шаг = 
 					break;
 				case heightYears <= 50:
-					_stepJD = 5 * JDUtils.DAYS_PER_YEAR; // шаг = 5 лет
+					_stepJD = JDUtils.DAYS_PER_YEAR * 5; // шаг = 5 лет
 					break;
 				case heightYears <= 100:
-					_stepJD = 10 * JDUtils.DAYS_PER_YEAR; // шаг = 10 лет
-					break;
-				case heightYears <= 500:
-					_stepJD = 50 * JDUtils.DAYS_PER_YEAR; // шаг = 50 лет
-					break;
-				case heightYears <= 1000:
-					_stepJD = 100 * JDUtils.DAYS_PER_YEAR; // шаг = 100 лет
+					_stepJD = JDUtils.DAYS_PER_YEAR * 10; // шаг = 10 лет
 					break;
 				default:
-					_stepJD = 1000 * JDUtils.DAYS_PER_YEAR; // шаг = 1000 лет
+//					_stepJD = 1; // шаг = 1 день
 			}
 			
 			Log.traceText( "\t_step years : " + ( _stepJD / JDUtils.DAYS_PER_YEAR ) );
