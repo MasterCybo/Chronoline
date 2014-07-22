@@ -25,7 +25,7 @@ package display.components {
 		}
 		
 		override public function init():* {
-			var body:ABitmap = ABitmap.fromColor( Settings.GUI_COLOR, Settings.NAVBAR_WIDTH, 270 ).init();
+			var body:ABitmap = ABitmap.fromColor( Settings.GUI_COLOR, Settings.NAVBAR_WIDTH, Settings.ZOOM_SLIDER_HEIGHT ).init();
 			_thumb = new BtnIcon( PngThumbZoom ).init();
 			
 			var pad:Number = Math.round( 5 + _thumb.height / 2 );

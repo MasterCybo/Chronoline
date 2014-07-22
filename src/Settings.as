@@ -82,7 +82,7 @@ package  {
 		//=======================================================================================================
 		static public const SBAR_WIDTH:uint = 500;
 		static public const SBAR_LABEL_WIDTH:uint = 30;
-		static public const SBAR_LABEL_HEIGHT:uint = 30;
+		static public const SBAR_LABEL_HEIGHT:uint = 38;
 		
 		// Верхняя панель с кнопками
 		//=======================================================================================================
@@ -90,7 +90,8 @@ package  {
 		
 		// Навигационная панель
 		//=======================================================================================================
-		static public const NAVBAR_WIDTH:uint = 46;
+		static public const NAVBAR_WIDTH:uint = 38; // 46
+		static public const ZOOM_SLIDER_HEIGHT:uint = 530;
 
 		// Масштабная сетка
 		//=======================================================================================================

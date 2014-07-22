@@ -54,7 +54,7 @@ package display.gui {
 			_toolbar.x = int((  Display.stageWidth - _toolbar.width ) / 2 );
 			
 			_navBar.x = Display.stageWidth - _navBar.width;
-			_navBar.y = int((Display.stageHeight - Settings.TOOLBAR_HEIGHT - _navBar.height ) / 2);
+			_navBar.y = int((Display.stageHeight + Settings.TOOLBAR_HEIGHT + Settings.SBAR_LABEL_HEIGHT - _navBar.height ) / 2);
 		}
 		
 		override public function kill():void {

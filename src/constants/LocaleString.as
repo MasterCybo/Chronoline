@@ -13,6 +13,7 @@ package constants {
 		static public const TITLE_PRESETS:String = "Наборы:";
 		static public const DATE_FORMAT:String = "{0} {1} {2} г."; // 24 марта 2005 г.
 		static public const DATE_YYYY_MONTH_DD:String = "{0} {1} {2}"; // 2005 март 24
+		static public const DATE_YYYY:String = "{0} г."; // 2005 г.
 		static public const DATE_FULL_FORMAT:String = "{0} {1} {2} г. {4}:{5}"; // {0}-год, {1}-мес, {2}-ч, {3}-нед, {4}-час, {5}-мин
 		static public const DATE_ENTITY_HINT:String = "{2} {1} {0} г. {4}:{5}"; // 24 марта 2005 г. 18:32:47
 		static public const WAITING_PROCESS:String = "Пожалуйста, подождите...";

@@ -1,5 +1,4 @@
 package display.components {
-	import constants.LocaleString;
 	import constants.TextFormats;
 
 	import display.base.TextApp;
@@ -12,12 +11,10 @@ package display.components {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class DateGraduation extends ASprite {
-//		static public const MODE_GHOST:String = "modeGhost";
-//		static public const MODE_GHOST:String = "modeGhost";
-
+	public class DateLine extends ASprite {
 		private var _jd:Number = 0;
-		private var _width:uint;
+		private var _width:uint = 100;
+		private var _template:String = "";
 		
 		private var _label:TextApp;
 		private var _line:AShape;
@@ -28,9 +25,10 @@ package display.components {
 		private var _colorText:uint;
 		private var _colorBackground:Object;
 		
-		public function DateGraduation( julianDate:Number, width:uint, colorLine:uint = 0x0, colorText:uint = 0x0, colorBackground:Object = null ) {
+		public function DateLine( julianDate:Number, width:uint, template:String = null, colorLine:uint = 0x0, colorText:uint = 0x0, colorBackground:Object = null ) {
 			_jd = julianDate;
 			_width = width;
+			_template = template ? template : _template;
 			_colorLine = colorLine;
 			_colorText = colorText;
 			_colorBackground = colorBackground;
@@ -44,6 +42,18 @@ package display.components {
 			draw();
 			
 			return this;
+		}
+
+		public function reinit( jd:Number, width:uint = 0, template:String = null ):void
+		{
+			_jd = jd;
+			_width = width > 0 ? width : _width;
+			_template = template ? template : _template;
+
+			_changeDate = true;
+			_changeLine = true;
+
+			draw();
 		}
 		
 		public function get jd():Number {
@@ -94,7 +104,8 @@ package display.components {
 			}
 			
 			if ( _changeDate ) {
-				_label.text = JDUtils.getFormatString( _jd, LocaleString.DATE_YYYY_MONTH_DD );
+//				_label.text = JDUtils.getFormatString( _jd, LocaleString.DATE_YYYY_MONTH_DD );
+				_label.text = JDUtils.getFormatString( _jd, _template );
 				_label.y = -_label.height;
 				
 				_changeDate = false;

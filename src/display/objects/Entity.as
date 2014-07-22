@@ -5,6 +5,8 @@ package display.objects
 	import data.MoFact;
 	import data.MoTimeline;
 
+	import display.components.TitleEntity;
+
 	import flash.utils.Dictionary;
 
 	import ru.arslanov.flash.display.ASprite;
@@ -28,8 +30,6 @@ package display.objects
 		private var _hostFacts:ASprite;
 		private var _body:EntityView;
 		private var _scale:Number;
-		//private var _rangeBegin:MoDate;
-		//private var _rangeEnd:MoDate;
 
 		private var _minJD:Number;
 		private var _maxJD:Number;
@@ -50,15 +50,15 @@ package display.objects
 		{
 			super.init();
 
-			//_rangeBegin = MoTimeline.me.rangeBegin;
-			//_rangeEnd = MoTimeline.me.rangeEnd;
-
 			_minJD = MoTimeline.me.beginJD;
 			_maxJD = MoTimeline.me.endJD;
-
+			
 			_body = new EntityView( 1, App.colorPalette.getNextColor() ).init();
 			_hostFacts = new ASprite().init();
-
+			var _title:TitleEntity = new TitleEntity(moEntity.title).init();
+			_title.setXY( -_title.width, 0 );
+			
+			addChild( _title );
 			addChild( _body );
 			addChild( _hostFacts );
 

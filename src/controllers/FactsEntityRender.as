@@ -50,7 +50,7 @@ package controllers
 
 		public function update():void
 		{
-			Log.traceText( "*execute* FactsEntityRender.update" );
+//			Log.traceText( "*execute* FactsEntityRender.update" );
 			
 			if ( !enabled ) return;
 

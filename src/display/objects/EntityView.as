@@ -1,6 +1,7 @@
 package display.objects {
 
 	import flash.display.BitmapData;
+	import flash.filters.GlowFilter;
 
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
@@ -34,6 +35,8 @@ package display.objects {
 			_bmp = new ABitmap().init();
 			
 			draw();
+
+			filters = [ new GlowFilter( 0xff00ff, 1, 2, 2, 3, 3, true ) ];
 			
 			return this;
 		}

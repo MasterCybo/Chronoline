@@ -191,7 +191,7 @@ package {
 		
 		private function hrResizeStage( ev:Event = null ):void {
 			if ( _stats ) {
-				_stats.x = Display.stageWidth - _stats.width;
+				_stats.x = Display.stageWidth - _stats.width - Settings.NAVBAR_WIDTH;
 				_stats.y = Display.stageHeight - _stats.height;
 			}
 			

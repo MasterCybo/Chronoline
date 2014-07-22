@@ -1,5 +1,7 @@
 package display.gui
 {
+	import constants.LocaleString;
+
 	import controllers.BondsRender;
 	import controllers.EntitiesRender;
 	import controllers.EntityController;
@@ -8,7 +10,7 @@ package display.gui
 
 	import data.MoTimeline;
 
-	import display.components.DateGraduation;
+	import display.components.DateLine;
 
 	import events.TimelineEvent;
 
@@ -30,7 +32,7 @@ package display.gui
 		private var _entRender:EntitiesRender;
 		private var _bondRender:BondsRender;
 		private var _entCtrl:EntityController;
-		private var _curDateMarker:DateGraduation;
+		private var _curDateMarker:DateLine;
 		private var _factRender:FactsRender;
 
 		public function Desktop( width:uint, height:uint )
@@ -49,9 +51,10 @@ package display.gui
 
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
-			_curDateMarker = new DateGraduation(
+			_curDateMarker = new DateLine(
 					MoTimeline.me.baseJD,
 					Display.stageWidth,
+					LocaleString.DATE_YYYY_MONTH_DD,
 					Settings.BASE_TEXT_COLOR,
 					Settings.BASE_LINE_COLOR,
 					Settings.BASE_BACKGROUND_COLOR

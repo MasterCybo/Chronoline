@@ -2,23 +2,14 @@ package controllers
 {
 	import collections.EntityManager;
 
-	import com.greensock.motionPaths.MotionPath;
-
 	import data.MoEntity;
 	import data.MoTimeline;
 
-	import display.components.TitleEntity;
 	import display.objects.Entity;
 
 	import events.TimelineEvent;
 
-	import flash.filters.GlowFilter;
-
 	import flash.utils.Dictionary;
-
-	import ru.arslanov.core.utils.Calc;
-
-	import ru.arslanov.core.utils.Log;
 
 	import ru.arslanov.flash.display.ASprite;
 
@@ -45,8 +36,7 @@ package controllers
 
 		// Генерируемые данные
 		private var _mapDisplayEntities:Dictionary/*Entity*/ = new Dictionary( true ); // MoEntity.id = Entity
-		private var _pool:Dictionary/*Entity*/ = new Dictionary( true ); // MoEntity.id = Entity
-		private var _mapTitles:Dictionary/*TitleEntity*/ = new Dictionary( true ); // MoEntity.id = TitleEntity
+		private var _poolEnts:Dictionary/*Entity*/ = new Dictionary( true ); // MoEntity.id = Entity
 
 		public function EntitiesRender( host:ASprite, width:Number, height:Number )
 		{
@@ -84,7 +74,7 @@ package controllers
 			_space = _width / ( _listMoEntities.length + 1 );
 
 			_mapDisplayEntities = new Dictionary( true );
-			_pool = new Dictionary( true );
+			_poolEnts = new Dictionary( true );
 
 //			update();
 		}
@@ -151,7 +141,6 @@ package controllers
 			var moEnt:MoEntity;
 			var moEntVis:MoEntity;
 			var ent:Entity;
-			var title:TitleEntity;
 
 			var listRemoved:Dictionary = new Dictionary( true );
 
@@ -174,13 +163,12 @@ package controllers
 					var yy:Number = getY( moEnt );
 					var hh:Number = getHeight( moEnt );
 					if ( !_mapDisplayEntities[ moEnt.id ] && ( ( ( yy + hh ) > 1 ) && ( yy < _height ) ) ) {
-						ent = _pool[ moEnt.id ];
+						ent = _poolEnts[ moEnt.id ];
 
 						if ( ent ) {
-							delete _pool[ moEnt.id ];
+							delete _poolEnts[ moEnt.id ];
 						} else {
 							ent = new Entity( moEnt ).init();
-							ent.filters = [ new GlowFilter( 0xff00ff, 1, 2, 2, 3, 3, true ) ];
 						}
 						_mapDisplayEntities[ moEnt.id ] = ent;
 					}
@@ -191,7 +179,7 @@ package controllers
 			for each ( ent in listRemoved ) {
 				delete _mapDisplayEntities[ ent.moEntity.id ];
 				_host.removeChild( ent );
-				_pool[ ent.moEntity.id ] = ent;
+				_poolEnts[ ent.moEntity.id ] = ent;
 			}
 
 			// Отображаем новые и обновляем старые
@@ -204,7 +192,7 @@ package controllers
 
 				if ( !_host.contains( ent ) ) {
 					ent.x = getX( _order.indexOf( moEnt.id ) );
-					Log.traceText( "ent.x : " + ent.x );
+//					Log.traceText( "ent.x : " + ent.x );
 					moEnt.xView = ent.x; 
 					_host.addChild( ent );
 				}
@@ -245,8 +233,7 @@ package controllers
 			_listMoEntities = null;
 			_mapMoEntities = null;
 			_mapDisplayEntities = null;
-			_pool = null;
-			_mapTitles = null;
+			_poolEnts = null;
 		}
 	}
 
