@@ -32,6 +32,8 @@ package display.gui {
 		private var _div:Number = 0;
 		private var _yCenter:Number = 0;
 		private var _markerMode:uint = 0;
+		private var _baseJD:Number = 0;
+		private var _scale:Number = 1;
 
 		public function GridScale( width:uint, height:uint ) {
 			_width = width;
@@ -43,13 +45,15 @@ package display.gui {
 		override public function init():* {
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChange );
+			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onBaseChange );
 
 			return super.init();
 		}
 
 		private function onInitTimeline( ev:TimelineEvent ):void {
-			_oldBaseJD = MoTimeline.me.baseJD;
+			_scale = MoTimeline.me.scale;
+			_baseJD = MoTimeline.me.baseJD;
+			_oldBaseJD = _baseJD;
 			_yCenter = _height / 2;
 			_stepJD = 0;
 			_offsetJD = 0;
@@ -58,26 +62,30 @@ package display.gui {
 			updateScale();
 			draw();
 		}
-
-		private function onDateChange( ev:TimelineEvent ):void {
+		
+		private function onBaseChange( ev:TimelineEvent ):void {
 //			Log.traceText( "*execute* GridScale.onDateChange" );
-
-			var dJD:Number = MoTimeline.me.baseJD - _oldBaseJD;
+			
+			_baseJD = MoTimeline.me.baseJD;
+			
+			var dJD:Number = _baseJD - _oldBaseJD;
 
 			_offsetJD += dJD;
-			_oldBaseJD = MoTimeline.me.baseJD - _fitJD;
+			_oldBaseJD = _baseJD;
 
 			draw();
 		}
 
 		private function onScaleChange( ev:TimelineEvent ):void {
+			_scale = MoTimeline.me.scale;
+			
 			updateScale();
 		}
 
 		private function updateScale():void {
 //			Log.traceText( "*execute* GridScale.updateScale" );
 
-			var heightJD:Number = _height / MoTimeline.me.scale;
+			var heightJD:Number = _height / _scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
 			
 			Log.traceText( "heightYears : " + heightYears );
@@ -137,19 +145,20 @@ package display.gui {
 		private function updateParams( stepOfYears:Number ):void {
 			_stepJD = JDUtils.DAYS_PER_YEAR * stepOfYears;
 
-			Log.traceText( "...beginJD : " + MoTimeline.me.baseJD + " = " + JDUtils.getFormatString( MoTimeline.me.baseJD ) );
-			var yy:Number = JDUtils.JDToDate( MoTimeline.me.baseJD ).year;
-			Log.traceText( "yy : " + yy );
-			var abc:Number = yy - yy%50;
-			Log.traceText( "abc : " + abc );
-			var abcJD:Number = JDUtils.dateToJD( abc );
-			Log.traceText( "abcJD : " + abcJD );
+			Log.traceText( "...beginJD : " + _baseJD + " = " + JDUtils.getFormatString( _baseJD ) );
 			
-			_fitJD = MoTimeline.me.baseJD - abcJD + 0.5;
+			var year:Number = JDUtils.JDToDate( _baseJD ).year;
+			var deltaMod:Number = year - ( year % 50 );
+			var deltaModJD:Number = JDUtils.dateToJD( deltaMod );
 			
-			Log.traceText( "_fitJD : " + _fitJD + " = " + JDUtils.getFormatString( MoTimeline.me.baseJD - _fitJD + 0.5 ) );
+			Log.traceText( "year : " + year );
+			Log.traceText( "deltaMod : " + deltaMod );
+			Log.traceText( "deltaModJD : " + deltaModJD );
+			
+			_fitJD = MoTimeline.me.baseJD - deltaModJD + 0.5;
+			
+			Log.traceText( "_fitJD : " + _fitJD + " = " + JDUtils.getFormatString( _baseJD - _fitJD + 0.5 ) );
 		}
-
 
 		private function draw():void {
 			killChildren();
@@ -160,9 +169,9 @@ package display.gui {
 			var lenHalf:Number = int( len / 2 );
 
 			for ( var i:int = 0; i <= len; i++ ) {
-				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetJD;
-				var yy:Number = _yCenter + MoTimeline.me.scale * ( jdi );
-				var jd:Number = MoTimeline.me.baseJD + jdi;
+				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetJD - _fitJD;
+				var yy:Number = _yCenter + _scale * ( jdi );
+				var jd:Number = _baseJD + jdi;
 
 //				dateLine = _displayed[ jd ] as ASprite;
 				
@@ -274,7 +283,7 @@ package display.gui {
 		override public function kill():void {
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChange );
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onBaseChange );
 
 			_displayed = null;
 
