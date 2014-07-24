@@ -12,6 +12,8 @@ package controllers
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
@@ -106,18 +108,16 @@ package controllers
 		{
 			updateBounds();
 
-			if ( _clickMoFact || _overMoFact ) {
-				updateTooltip( _clickMoFact || _overMoFact );
-			}
+			if ( _clickMoFact ) updateTooltip( _clickMoFact );
+			if ( _overMoFact ) updateTooltip( _overMoFact );
 		}
 
 		private function onMoveTimeline( ev:TimelineEvent ):void
 		{
 			updateBounds();
 
-			if ( _clickMoFact || _overMoFact ) {
-				updateTooltip( _clickMoFact || _overMoFact );
-			}
+			if ( _clickMoFact ) updateTooltip( _clickMoFact );
+			if ( _overMoFact ) updateTooltip( _overMoFact );
 		}
 
 		private function onStageDown( ev:MouseEvent ):void
@@ -153,8 +153,8 @@ package controllers
 			var fact:Fact = ev.target.parent as Fact;
 			if ( !fact ) return;
 
-			trace( "*execute* FactTooltipController.onFactOver" );
-			trace("\tfact : " + fact);
+//			trace( "*execute* FactTooltipController.onFactOver" );
+//			trace("\tfact : " + fact);
 
 			if ( fact.moFact == _clickMoFact ) return;
 
@@ -210,33 +210,38 @@ package controllers
 			}
 
 			_clickMoFact = fact.moFact;
-			//_ptClick = _host.globalToLocal( fact.parent.localToGlobal( fact.pivotPoint ) );
 			_ptClick = _ptOver.clone();
 		}
 
 		private function updateTooltip( moFact:MoFact ):void
 		{
+//			Log.traceText( "*execute* FactTooltipController.updateTooltip" );
+//			Log.traceText( "\t(moFact == _clickMoFact) : " + (moFact == _clickMoFact) );
+//			Log.traceText( "\t(moFact == _overMoFact) : " + (moFact == _overMoFact) );
+			
 			if ( !moFact ) return;
 
 			var tooltip:FactTooltip = _tooltips[ moFact.id ];
-
-			if ( !tooltip ) {
+			if ( tooltip ) {
+				// Если тултип выходит за границы экрана - скрываем его, но не уничтожаем
+				if ( ( moFact.period.middle < _minJD ) || ( moFact.period.middle > _maxJD ) ) {
+					if ( _host.contains( tooltip ) ) {
+						_host.removeChild( tooltip );
+					}
+					return;
+				} else {
+					if ( !_host.contains( tooltip ) ) {
+						_host.addChild( tooltip );
+					}
+				}
+			} else {
 				tooltip = displayTooltip( moFact );
 			}
 
-			// Если тултип выходит за границы экрана - скрываем его, но не уничтожаем
-			if ( ( moFact.period.middle < _minJD ) || ( moFact.period.middle > _maxJD ) ) {
-				if ( _host.contains( tooltip ) ) {
-					_host.removeChild( tooltip );
-				}
-
-				return;
-			}
-
-			trace( "(moFact == _clickMoFact) : " + (moFact == _clickMoFact) );
+//			trace( "(moFact == _clickMoFact) : " + (moFact == _clickMoFact) );
 
 			tooltip.x = (moFact == _clickMoFact) ? _ptClick.x : _ptOver.x;
-			tooltip.y = (moFact == _clickMoFact) ? dateToY( moFact.period.middle ) : _ptOver.y;
+			tooltip.y = dateToY( moFact.period.middle );
 		}
 
 		private function displayTooltip( moFact:MoFact ):FactTooltip
@@ -268,11 +273,12 @@ package controllers
 
 		private function updateBounds():void
 		{
-			var newDuration:Number = _maxJD - _minJD;
-			_scale = _height / Math.max( 1, newDuration );
 			var halfJD:Number = _height * 0.5 / MoTimeline.me.scale;
 			_minJD = MoTimeline.me.baseJD - halfJD;
 			_maxJD = MoTimeline.me.baseJD + halfJD;
+
+			var newDuration:Number = _maxJD - _minJD;
+			_scale = _height / Math.max( 1, newDuration );
 		}
 
 		private function dateToY( jd:Number ):Number
