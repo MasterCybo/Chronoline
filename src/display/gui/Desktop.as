@@ -6,7 +6,7 @@ package display.gui
 	import controllers.EntitiesRender;
 	import controllers.EntityController;
 	import controllers.FactsRender;
-	import controllers.PopupController;
+	import controllers.FactTooltipController;
 
 	import data.MoTimeline;
 
@@ -28,12 +28,13 @@ package display.gui
 		private var _height:uint;
 		private var _container:ASprite;
 		private var _gridScale:GridScale;
-		private var _popupController:PopupController;
+		private var _tooltipController:FactTooltipController;
 		private var _entRender:EntitiesRender;
 		private var _bondRender:BondsRender;
 		private var _entCtrl:EntityController;
 		private var _curDateMarker:DateLine;
 		private var _factRender:FactsRender;
+		private var _moTimeline:MoTimeline;
 
 		public function Desktop( width:uint, height:uint )
 		{
@@ -47,12 +48,14 @@ package display.gui
 		{
 			super.init();
 
+			_moTimeline = MoTimeline.me;
+
 			drawBody();
 
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
 			_curDateMarker = new DateLine(
-					MoTimeline.me.baseJD,
+					_moTimeline.baseJD,
 					Display.stageWidth,
 					LocaleString.DATE_YYYY_MONTH_DD,
 					Settings.BASE_TEXT_COLOR,
@@ -77,12 +80,12 @@ package display.gui
 			_entCtrl = new EntityController( _container );
 			_entCtrl.init();
 
-			_popupController = new PopupController( this, _width, height );
-			_popupController.init();
+			_tooltipController = new FactTooltipController( this, _width, height );
+			_tooltipController.init();
 
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangeBase );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
+			_moTimeline.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
+			_moTimeline.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onChangeBase );
+			_moTimeline.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onChangedScale );
 
 			return this;
 		}
@@ -104,7 +107,7 @@ package display.gui
 
 		private function onChangeBase( ev:TimelineEvent = null ):void
 		{
-			_curDateMarker.jd = MoTimeline.me.baseJD;
+			_curDateMarker.jd = _moTimeline.baseJD;
 
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
@@ -155,15 +158,16 @@ package display.gui
 
 		override public function kill():void
 		{
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangeBase );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangedScale );
+			_moTimeline.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
+			_moTimeline.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangeBase );
+			_moTimeline.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onChangedScale );
 
-			_popupController.dispose();
+			_tooltipController.dispose();
 			_entCtrl.dispose();
 
 			super.kill();
 
+			_moTimeline = null;
 		}
 	}
 

@@ -12,11 +12,11 @@ package display.components {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class FactInfoPopup extends ASprite {
+	public class FactTooltip extends ASprite {
 		
 		public var moFact:MoFact;
 		
-		public function FactInfoPopup( moFact:MoFact ) {
+		public function FactTooltip( moFact:MoFact ) {
 			this.moFact = moFact;
 			super();
 		}
