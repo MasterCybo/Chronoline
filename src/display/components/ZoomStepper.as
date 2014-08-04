@@ -40,9 +40,11 @@ package display.components {
 			
 			btnPlus.onRelease = onReleaseButton;
 			btnPlus.onPress = onPressPlus;
+			btnPlus.onOut = stopAction;
 			
 			btnMinus.onRelease = onReleaseButton;
 			btnMinus.onPress = onPressMinus;
+			btnMinus.onOut = stopAction;
 			
 			vbox.addChildAndUpdate( btnPlus );
 			vbox.addChildAndUpdate( btnMinus );
@@ -63,6 +65,11 @@ package display.components {
 			
 			return super.init();
 		}
+
+		private function onOutButton():void
+		{
+			stopAction();
+		}
 		
 		private function onPressPlus():void {
 			_direct = 1;
@@ -76,7 +83,11 @@ package display.components {
 		
 		private function onReleaseButton():void {
 			changePosition();
-			
+			stopAction();
+		}
+
+		private function stopAction():void
+		{
 			_direct = 0;
 			_tmrTick.stop();
 			_tmrDelay.stop();
