@@ -13,7 +13,6 @@ package controllers
 	import flash.utils.Dictionary;
 
 	import ru.arslanov.core.utils.Log;
-
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
@@ -49,11 +48,8 @@ package controllers
 
 		public function init():void
 		{
-			_host.eventManager.addEventListener( MouseEvent.CLICK, onFactClick );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OVER, onFactOver );
 			_host.eventManager.addEventListener( MouseEvent.MOUSE_OUT, onFactOut );
-//			_host.eventManager.addEventListener( MouseEvent.MOUSE_DOWN, onStageDown );
-//			_host.eventManager.addEventListener( MouseEvent.MOUSE_UP, onStageUp );
 
 			Display.stageAddEventListener( MouseEvent.MOUSE_DOWN, onStageDown );
 			Display.stageAddEventListener( MouseEvent.MOUSE_UP, onStageUp );
@@ -65,16 +61,14 @@ package controllers
 
 		public function dispose():void
 		{
-			_host.eventManager.removeEventListener( MouseEvent.CLICK, onFactClick );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OVER, onFactOver );
 			_host.eventManager.removeEventListener( MouseEvent.MOUSE_OUT, onFactOut );
-//			_host.eventManager.removeEventListener( MouseEvent.MOUSE_DOWN, onStageDown );
-//			_host.eventManager.removeEventListener( MouseEvent.MOUSE_MOVE, onStageMove );
 
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_DOWN, onStageDown );
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_UP, onStageUp );
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onStageMove );
 
+			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onMoveTimeline );
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleTimeline );
 
@@ -86,7 +80,10 @@ package controllers
 			_ptClick = null;
 			_ptOver = null;
 		}
-
+		
+		/**
+		 Обработчики Timeline
+		 */
 		private function onInitTimeline( event:TimelineEvent ):void
 		{
 			if ( _clickMoFact ) {
@@ -120,6 +117,9 @@ package controllers
 			if ( _overMoFact ) updateTooltip( _overMoFact );
 		}
 
+		/**
+		 Обработчики Stage
+		 */
 		private function onStageDown( ev:MouseEvent ):void
 		{
 			Display.stageAddEventListener( MouseEvent.MOUSE_MOVE, onStageMove );
@@ -132,30 +132,36 @@ package controllers
 
 		private function onStageUp( ev:MouseEvent ):void
 		{
-			trace( "*execute* FactTooltipController.onStageUp" );
-			trace( "\tev.target : " + ev.target );
-			trace( "\t_host : " + _host );
-
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onStageMove );
-
-			if ( ev.target == _host ) {
-				if ( !_isMouseMove && _clickMoFact ) {
-					killTooltip( _clickMoFact.id );
-					_clickMoFact = null;
+			
+			if ( !_isMouseMove ) {
+				var fact:Fact = ev.target.parent as Fact;
+				
+				if ( fact ) {
+					if ( _clickMoFact && ( fact.moFact != _clickMoFact ) ) {
+						killTooltip( _clickMoFact.id );
+						_clickMoFact = null;
+					}
+					_clickMoFact = fact.moFact;
+					_ptClick = _ptOver.clone();
+				} else {
+					if ( _clickMoFact && ( ev.target == _host ) ) {
+						killTooltip( _clickMoFact.id );
+						_clickMoFact = null;
+					}
 				}
-
-				_isMouseMove = false;
 			}
+			
+			_isMouseMove = false;
 		}
 
+		/**
+		 Обработчики Fact
+		 */
 		private function onFactOver( ev:MouseEvent ):void
 		{
 			var fact:Fact = ev.target.parent as Fact;
 			if ( !fact ) return;
-
-//			trace( "*execute* FactTooltipController.onFactOver" );
-//			trace("\tfact : " + fact);
-
 			if ( fact.moFact == _clickMoFact ) return;
 
 			_overMoFact = fact.moFact;
@@ -173,44 +179,11 @@ package controllers
 			if ( fact.moFact != _clickMoFact ) {
 				var tooltip:FactTooltip = _tooltips[ _overMoFact.id ];
 				if ( tooltip ) {
+					Log.traceText( "--- tooltip : " + tooltip );
 					killTooltip( _overMoFact.id );
 					_overMoFact = null;
 				}
 			}
-		}
-
-		private function onFactClick( ev:MouseEvent ):void
-		{
-//			Log.traceText( "*execute* FactTooltipController.onFactClick" );
-			//if ( !( ev.target.parent is Fact ) ) return;
-
-//			Log.traceText( "_isMouseMove : " + _isMouseMove );
-
-			if ( _isMouseMove ) {
-				_isMouseMove = false;
-				return;
-			}
-
-			var fact:Fact = ev.target.parent as Fact;
-
-			if ( !fact ) {
-				if ( _clickMoFact ) {
-					//if ( !fact || _clickMoFact ) {
-					killTooltip( _clickMoFact.id );
-					_clickMoFact = null;
-				}
-				return;
-			}
-
-			if ( fact.moFact == _clickMoFact ) return;
-
-			if ( _clickMoFact ) {
-				killTooltip( _clickMoFact.id );
-				_clickMoFact = null;
-			}
-
-			_clickMoFact = fact.moFact;
-			_ptClick = _ptOver.clone();
 		}
 
 		private function updateTooltip( moFact:MoFact ):void

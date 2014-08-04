@@ -5,7 +5,6 @@ package {
 	import constants.TextFormats;
 
 	import controllers.EntitiesDataWebService;
-
 	import controllers.PresetsWebService;
 
 	import data.MoPreset;
