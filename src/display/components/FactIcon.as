@@ -13,13 +13,13 @@ package display.components
 	public class FactIcon extends ExternalPicture
 	{
 
-		private var _rank:uint; // Расштаб иконки 0-100%
+		private var _rank:uint; // Масштаб иконки 0-100%
 		private var _drawCompleteHandler:Function;
 
 		public function FactIcon( moPicture:MoPicture, rank:uint = 0, drawCompleteHandler:Function = null )
 		{
-			_rank = Calc.constrain( Settings.MIN_RANK, rank, Settings.MAX_RANK );
-
+			_rank = Calc.constrain( Settings.MIN_RANK, 100 - rank, Settings.MAX_RANK );
+			
 			_drawCompleteHandler = drawCompleteHandler;
 
 			super( Settings.URL_ICONS + encodeURI( moPicture.filename ), onDrawComplete );
@@ -33,8 +33,8 @@ package display.components
 
 		private function onDrawComplete():void
 		{
-//			super.setSize( width, height, true );
-			super.setSize( Settings.ICON_SIZE * _rank * 0.01, Settings.ICON_SIZE * _rank * 0.01, false );
+			var rankScale:Number = Settings.ICON_SIZE * _rank * 0.01;
+			super.setSize( rankScale, rankScale, false );
 
 			if ( _drawCompleteHandler == null ) {
 				return;
