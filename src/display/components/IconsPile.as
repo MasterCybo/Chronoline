@@ -151,7 +151,7 @@ package display.components {
 				maxH = Math.max( icon.height, maxH );
 			}
 			
-			maxW = len * ( icon.width + Settings.ICON_SPACE )
+			maxW = len * ( icon.width + Settings.ICON_SPACE );
 			
 			_body.graphics.clear();
 			_body.graphics.beginFill( 0xff00ff, 0 );

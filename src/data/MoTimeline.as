@@ -35,7 +35,7 @@ package data {
 		private var _eventManager:EventManager = new EventManager();
 		
 		public function init( beginJD:Number, endJD:Number, baseJD:Number, scale:Number = 1 ):void {
-			_timeline.beginJD = beginJD
+			_timeline.beginJD = beginJD;
 			_timeline.endJD = endJD;
 			//_range = new MoPeriod( new MoDate( beginJD ), new MoDate( endJD ) );
 			_baseJD = baseJD;
