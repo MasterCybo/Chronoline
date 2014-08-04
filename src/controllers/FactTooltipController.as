@@ -12,7 +12,6 @@ package controllers
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
@@ -179,7 +178,6 @@ package controllers
 			if ( fact.moFact != _clickMoFact ) {
 				var tooltip:FactTooltip = _tooltips[ _overMoFact.id ];
 				if ( tooltip ) {
-					Log.traceText( "--- tooltip : " + tooltip );
 					killTooltip( _overMoFact.id );
 					_overMoFact = null;
 				}

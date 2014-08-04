@@ -116,12 +116,10 @@ package display.objects
 		private function onMouseOut( ev:MouseEvent ):void
 		{
 			// Возвращаем на предыдущую глубину
-
 			if ( parent ) {
-				parent.setChildIndex( this, Math.max( parent.numChildren - 1, _depth ) );
+				parent.setChildIndex( this, Math.min( parent.numChildren - 1, _depth ) );
 			}
-
-
+			
 			_body.stateOver = false;
 
 			if ( contains( _labelBegin ) ) removeChild( _labelBegin );
