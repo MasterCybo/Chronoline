@@ -2,10 +2,7 @@ package display.windows
 {
 	import data.MoETag;
 
-	import display.base.ExternalPicture;
 	import display.components.ItemLegend;
-
-	import flash.utils.getQualifiedSuperclassName;
 
 	import net.ReqETagList;
 
@@ -22,6 +19,7 @@ package display.windows
 	{
 
 		static public const WINDOW_NAME:String = "winLegend";
+		static public const SPACE:uint = 10;
 
 		private var _listETags:Vector.<MoETag>;
 		private var _vbox1:VBox;
@@ -41,10 +39,10 @@ package display.windows
 
 			_listETags = new Vector.<MoETag>();
 
-			_vbox1 = new VBox( 10 ).init();
+			_vbox1 = new VBox( SPACE ).init();
 			addChildToContent( _vbox1 );
 
-			_vbox2 = new VBox( 10 ).init();
+			_vbox2 = new VBox( SPACE ).init();
 			addChildToContent( _vbox2 );
 
 			App.httpManager.addRequest( new ReqETagList(), onSuccessful, onError );
@@ -64,7 +62,7 @@ package display.windows
 			}
 
 			var num:int = _listETags.length;
-			_sizeIcon = Math.max( ( super.height - 10 * num ) / num, Settings.LEGEND_MIN_SIZE );
+			_sizeIcon = Math.max( ( super.height - SPACE * num ) / num, Settings.LEGEND_MIN_SIZE );
 
 			_vbox1.setXY( _sizeIcon / 2, _sizeIcon / 2 );
 
@@ -77,10 +75,10 @@ package display.windows
 
 		private function onDrawComplete( target:ItemLegend ):void
 		{
-			if ( _vbox1.height < ( height - _sizeIcon ) ) {
+			if ( _vbox1.height < ( height - 2 * _sizeIcon ) ) {
 				_vbox1.addChildAndUpdate( target );
 			} else {
-				_vbox2.x = _vbox1.x + _vbox1.width + 10;
+				_vbox2.x = _vbox1.x + _vbox1.width + SPACE;
 				_vbox2.y = _vbox1.y;
 				_vbox2.addChildAndUpdate( target );
 			}
@@ -95,6 +93,7 @@ package display.windows
 		override public function kill():void
 		{
 			_listETags.length = 0;
+			_listETags = null;
 
 			super.kill();
 		}
