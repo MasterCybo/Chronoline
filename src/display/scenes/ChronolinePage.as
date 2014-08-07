@@ -2,13 +2,9 @@ package display.scenes
 {
 	import by.blooddy.crypto.image.JPEGEncoder;
 
-	import collections.ColorPalette;
 	import collections.EntityManager;
 
 	import controllers.DesktopController;
-	import controllers.EntitiesDataWebService;
-
-	import data.MoPreset;
 
 	import data.MoTimeline;
 
@@ -18,7 +14,6 @@ package display.scenes
 	import display.gui.MainGUI;
 
 	import events.GuideLineNotice;
-	import events.SelectPresetNotice;
 	import events.ServerDataCompleteNotice;
 	import events.SnapshotNotice;
 
@@ -28,9 +23,7 @@ package display.scenes
 	import flash.utils.ByteArray;
 
 	import ru.arslanov.core.events.Notification;
-	import ru.arslanov.core.external.FlashVars;
 	import ru.arslanov.core.utils.JDUtils;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.scenes.AScene;
@@ -125,7 +118,7 @@ package display.scenes
 
 			var curJD:Number = MoTimeline.me.baseJD + dy / MoTimeline.me.scale;
 
-			var gdate:Object = JDUtils.JDNToDate( curJD );
+			var gdate:Object = JDUtils.JDToGregorian( curJD );
 			_guideLine.textLabel = StringUtils.substitute(
 					"{2}.{1}.{0}"
 					, StringUtils.numberToString( gdate.date )

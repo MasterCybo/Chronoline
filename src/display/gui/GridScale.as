@@ -7,7 +7,6 @@ package display.gui {
 
 	import ru.arslanov.core.utils.Calc;
 	import ru.arslanov.core.utils.JDUtils;
-	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 
@@ -147,9 +146,9 @@ package display.gui {
 
 			Log.traceText( "...beginJD : " + _baseJD + " = " + JDUtils.getFormatString( _baseJD ) );
 			
-			var year:Number = JDUtils.JDToDate( _baseJD ).year;
+			var year:Number = JDUtils.JDToGregorian( _baseJD ).year;
 			var deltaMod:Number = year - ( year % 50 );
-			var deltaModJD:Number = JDUtils.dateToJD( deltaMod );
+			var deltaModJD:Number = JDUtils.gregorianToJD( deltaMod );
 			
 			Log.traceText( "year : " + year );
 			Log.traceText( "deltaMod : " + deltaMod );

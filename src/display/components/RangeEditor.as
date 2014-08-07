@@ -53,13 +53,13 @@ package display.components {
 			
 			var year:Number = Number( _inpDate.text );
 			
-			var jd:Number = JDUtils.dateToJD( year );
+			var jd:Number = JDUtils.gregorianToJD( year );
 			
 			MoTimeline.me.baseJD = jd;
 		}
 		
 		private function update():void {
-			var date:Object = JDUtils.JDToDate( MoTimeline.me.baseJD );
+			var date:Object = JDUtils.JDToGregorian( MoTimeline.me.baseJD );
 			
 			_inpDate.text = String( date.year );
 		}
