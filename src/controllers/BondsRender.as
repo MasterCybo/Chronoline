@@ -76,6 +76,7 @@ package controllers {
 		}
 		
 		public function update( visibleFacts:Dictionary ):void {
+			// TODO: Отображение связей
 			return;
 			
 			updateScale();
