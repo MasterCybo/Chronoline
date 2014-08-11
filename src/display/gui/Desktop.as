@@ -17,6 +17,8 @@ package display.gui
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
+	import services.SceneRender;
+
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -97,7 +99,10 @@ package display.gui
 			if( !contains( _container ) ) addChild( _container );
 
 			_container.killChildren();
-
+			
+			var sceneRender:SceneRender = new SceneRender();
+			sceneRender.update();
+			
 			onChangeBase();
 
 //			_entRender.update();
