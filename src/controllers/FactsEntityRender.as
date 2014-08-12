@@ -32,7 +32,7 @@ package controllers
 		private var _positionX:Number;
 		private var _numDisplay:uint = 0;
 		private var _isCalculation:Boolean = false;
-		private var _isLastUpdate:Boolean = false;
+		private var _isDeferredUpdate:Boolean = false; // Отложенный апдейт
 
 		private var _mapDisplayMoFacts:Dictionary/*Fact*/ = new Dictionary( true ); // MoFact.id = MoFact - факты подготовленные для отображения
 		private var _mapDisplayFacts:Dictionary/*Fact*/ = new Dictionary( true ); // MoFact.id = Fact - факты отображённые на экране
@@ -55,7 +55,7 @@ package controllers
 			if ( !enabled ) return;
 
 			if ( _isCalculation ) {
-				_isLastUpdate = true;
+				_isDeferredUpdate = true;
 				return;
 			}
 
@@ -88,7 +88,6 @@ package controllers
 
 			for each ( moFact in _mapDisplayMoFacts ) {
 				fact = _mapDisplayFacts[ moFact.id ];
-//				fact = _host.getChildByName( "fact_" + moFact.id ) as Fact;
 
 				if ( !fact ) {
 					fact = new Fact().init();
@@ -106,13 +105,10 @@ package controllers
 
 			_isCalculation = false;
 
-			if ( _isLastUpdate ) {
-				_isLastUpdate = false;
+			if ( _isDeferredUpdate ) {
+				_isDeferredUpdate = false;
 				update();
 			}
-			
-//			var ln:uint = DictionaryUtil.getKeys(_mapDisplayFacts).length;
-//			Log.traceText( "ln : " + ln );
 		}
 
 		private function takeMiddle( listFacts:Vector.<MoFact>, idx1:uint, idx2:uint ):void

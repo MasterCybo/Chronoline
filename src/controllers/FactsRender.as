@@ -32,8 +32,10 @@ package controllers
 
 		public function update( visibleEntities:Dictionary/*Entity*/ ):void
 		{
+			var fer:FactsEntityRender;
+
 			// Удаляем устаревшие рендеры
-			for each ( var fer:FactsEntityRender in _mapRenders ) {
+			for each ( fer in _mapRenders ) {
 				if ( !visibleEntities[ fer.moEntity.id ] ) {
 					Log.traceText( "- Remove facts render : " + fer.moEntity.title );
 					delete _mapRenders[ fer.moEntity.id ];
@@ -51,9 +53,9 @@ package controllers
 			}
 
 			// Обновляем рендеры каждой сущности
-			for each ( var fer2:FactsEntityRender in _mapRenders ) {
-				fer2.update();
-				_visibleFacts[ fer2.moEntity.id ] = fer2.getVisibleFacts();
+			for each ( fer in _mapRenders ) {
+				fer.update();
+				_visibleFacts[ fer.moEntity.id ] = fer.getVisibleFacts();
 			}
 		}
 

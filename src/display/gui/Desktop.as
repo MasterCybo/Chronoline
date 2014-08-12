@@ -17,7 +17,6 @@ package display.gui
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
-	import services.SceneRender;
 
 	/**
 	 * ...
@@ -99,10 +98,7 @@ package display.gui
 			if( !contains( _container ) ) addChild( _container );
 
 			_container.killChildren();
-			
-			var sceneRender:SceneRender = new SceneRender();
-			sceneRender.update();
-			
+
 			onChangeBase();
 
 //			_entRender.update();
@@ -123,6 +119,7 @@ package display.gui
 		{
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
+			_bondRender.update( _factRender.visibleFacts );
 		}
 
 		override public function get width():Number

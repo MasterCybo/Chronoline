@@ -77,24 +77,24 @@ package controllers {
 		
 		public function update( visibleFacts:Dictionary ):void {
 			// TODO: Отображение связей
-			return;
-			
+//			return;
+
 			updateScale();
 //			updateVisibleBonds();
 			
 			// visibleFacts = { MoEntity.id: { MoFact.id: Fact } }
-			Log.traceText( "*execute* BondsRender.update" );
+//			Log.traceText( "*execute* BondsRender.update" );
 			
 			var listIdEnts:Array = DictionaryUtil.getKeys( visibleFacts );
 			var numEnts:uint = listIdEnts.length;
-			Log.traceText( "numEnts : " + numEnts );
+//			Log.traceText( "numEnts : " + numEnts );
 
 			for ( var i:int = 0; i < numEnts; i++ ) {
 				var idEnt:String = listIdEnts[i];
 				var mapFacts:Dictionary = visibleFacts[idEnt];
 				var listIdFacts:Array = DictionaryUtil.getKeys( mapFacts );
-				var numFacts:uint = listIdFacts.length;
-				Log.traceText( idEnt + " - numFacts : " + numFacts );
+//				var numFacts:uint = listIdFacts.length;
+//				Log.traceText( idEnt + " - numFacts : " + numFacts );
 				
 				for ( var j:int = 0; j < listIdFacts.length; j++ ) {
 					var idFact:String = listIdFacts[j];
@@ -103,7 +103,7 @@ package controllers {
 
 					// Если связей нет - пропускаем дальнейшие операции
 					if ( !listMoBonds ) continue;
-					trace("listMoBonds : " + listMoBonds);
+//					trace("listMoBonds : " + listMoBonds);
 					
 					var numBonds:uint = listMoBonds.length;
 					for ( var k:int = 0; k < numBonds; k++ ) {
@@ -114,19 +114,34 @@ package controllers {
 						
 						if ( !ent1 || !ent2 ) continue;
 						
-						Log.traceText( "ent1.xView : " + ent1.xView );
-						
-						var widthBond:Number = ent2.xView - ent1.xView - Settings.ENT_WIDTH;
+//						Log.traceText( "ent1.xView : " + ent1.xView );
+
+						var x1:Number = Math.min( ent1.xView, ent2.xView );
+						var x2:Number = Math.max( ent1.xView, ent2.xView );
+
+						var widthBond:Number = x2 - x1 - Settings.ENT_WIDTH;
 						var heightBond:Number = _scale * fact.moFact.period.duration;
 
-						var bond:Bond = new Bond( moBond, k, numBonds, widthBond, heightBond ).init();
-						bond.x = ent1.xView + Settings.ENT_WIDTH;
-//						bond.y = dateToY( fact.moFact.period.beginJD );
-						bond.y = getY( fact.moFact );
-						_host.addChild( bond );
-						
-						Log.traceText( "bond.x, y : " + bond.x + ", " + bond.y );
-						Log.traceText( "bond.wifdth, height : " + bond.width + ", " + bond.height );
+						var bond:Bond = _mapVisibleBonds[ moBond.id ];
+
+						if ( !bond ) {
+							bond = new Bond( moBond, k, numBonds, widthBond, heightBond ).init();
+							_host.addChild( bond );
+							_mapVisibleBonds[ moBond.id ] = bond;
+						}
+
+						if ( bond ) {
+//							Log.traceText( "heightBond : " + heightBond );
+
+							bond.setSize( widthBond, heightBond );
+							bond.x = x1 + Settings.ENT_WIDTH;
+		//					bond.y = dateToY( fact.moFact.period.beginJD );
+							bond.y = getY( fact.moFact );
+						}
+
+
+//						Log.traceText( "bond.x, y : " + bond.x + ", " + bond.y );
+//						Log.traceText( "bond.width, height : " + bond.width + ", " + bond.height );
 					}
 					
 //					var bond:Bond = new Bond( moBond, countBonds + 1, sumBonds, widthBond, heightBond ).init();
@@ -153,7 +168,7 @@ package controllers {
 		private function updateScale():void {
 			var newDuration:Number = _maxJD - _minJD;
 			
-			_scale = _height / ( newDuration == 0 ? 1 : newDuration );
+			_scale = MoTimeline.me.scale;
 			
 			_isResize = ( _oldDuration != newDuration );
 			
