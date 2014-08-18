@@ -13,18 +13,16 @@ package display.objects {
 		private var _color:uint;
 		private var _width:Number;
 		private var _height:Number;
-		private var _rank:uint;
-		private var _sum:uint;
+		private var _rank:Number;
 		private var _bmp:ABitmap;
 		private var _bd:BitmapData;
 		private var _alpha:Number;
 		
-		public function BondView( color:uint, alpha:Number, rank:uint, sum:uint, width:int = 100, height:uint = 20 ) {
+		public function BondView( color:uint, alpha:Number, rank:Number, width:int = 100, height:uint = 20 ) {
 			_color = color;
 			_alpha = alpha;
 			_rank = rank;
-			_sum = sum;
-			
+
 			_width = Math.max( width, 2 * Settings.BOND_ROOT_WIDTH );
 			_height = Math.max( height, Settings.BOND_THICKNESS );
 			
@@ -64,7 +62,7 @@ package display.objects {
 			
 			var rw2:Number = widthRoot / 2;
 			var hw:Number = _width - rw2;
-			var h2:Number = (_rank / (_sum + 1)) * ( _height - Settings.BOND_THICKNESS );
+			var h2:Number = _rank * ( _height - Settings.BOND_THICKNESS );
 			var hh:Number = h2 + Settings.BOND_THICKNESS;
 			
 			graphics.clear();

@@ -2,6 +2,7 @@ package collections {
 	import com.adobe.utils.DictionaryUtil;
 
 	import data.MoBond;
+	import data.MoBondsGroup;
 
 	import flash.utils.Dictionary;
 
@@ -13,7 +14,7 @@ package collections {
 	 */
 	public class BondsManager {
 		
-		static private var _bonds:Dictionary/*Vector.<MoBond>*/ = new Dictionary( true ); // MoFact.id = Vector.<MoBond>
+		static private var _bondGroups:Dictionary/*MoBondsGroup*/ = new Dictionary( true ); // MoFact.id = MoBondsGroup
 		
 		public function BondsManager() {
 			
@@ -21,40 +22,31 @@ package collections {
 		
 		static public function addItem( moBond:MoBond ):void {
 			// id связи = id события сущности
-			if ( _bonds[moBond.id] == undefined ) {
-				_bonds[moBond.id] = new Vector.<MoBond>();
+
+			var group:MoBondsGroup = _bondGroups[moBond.id];
+
+			if ( !group ) {
+				group = new MoBondsGroup( moBond.id, moBond.entityUid1, moBond.entityUid2 );
+
+				_bondGroups[group.id] = group;
 			}
-			
-			_bonds[moBond.id].push( moBond );
+
+			group.listBonds.push( moBond );
 		}
 		
-		static public function getItems( factID:String ):Vector.<MoBond> {
-			return _bonds[factID];
+		static public function getItems( factID:String ):MoBondsGroup {
+			return _bondGroups[factID];
 		}
-		
-		static public function getArrayBonds():Array {
-			//for (var name:String in _entities) {
-				//Log.traceText( name + " : " + _entities[name] );
-			//}
-			
-			var arr:Array = DictionaryUtil.getValues( _bonds );
-			
-			//arr.sortOn( ["id"], [Array.NUMERIC] );
-			//arr.sortOn( "id", Array.NUMERIC );
-			//arr.sortOn( "id" );
-			
-			return arr;
-		}
-		
+
 		static public function removeItems( id:String ):void {
-			delete _bonds[id];
+			delete _bondGroups[id];
 		}
 		
-		static public function getListMoFactsIDs():Array/*MoBond*/ {
+		static public function getListIDMoFacts():Array/*MoBond*/ {
 			var arr:Array = [];
 			var name:String;
 			
-			for ( name in _bonds ) {
+			for ( name in _bondGroups ) {
 				arr.push( name );
 			}
 			
@@ -72,7 +64,7 @@ package collections {
 		}
 		
 		static public function clear():void {
-			_bonds = new Dictionary( true );
+			_bondGroups = new Dictionary( true );
 		}
 	}
 

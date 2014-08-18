@@ -27,7 +27,7 @@ package controllers {
 	 * ...
 	 * @author ...
 	 */
-	public class BondsRender {
+	public class EntityBondsRender {
 		
 		private var _visibleBonds:Dictionary /*Bond*/; // MoBond = Bond;
 		private var _cacheBonds:Dictionary /*Bond*/; // MoBond = Bond;
@@ -46,7 +46,7 @@ package controllers {
 		private var _maxJD:Number;
 		private var _yCenter:Number;
 		
-		public function BondsRender( host:ASprite, width:Number, height:Number ) {
+		public function EntityBondsRender( host:ASprite ) {
 			_host = host;
 			_width = width;
 			_height = height;

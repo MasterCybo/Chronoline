@@ -22,16 +22,14 @@ package display.objects {
 		private var _stateNormal:BondView;
 		private var _stateOver:BondView;
 		private var _moBond:MoBond;
-		private var _rank:uint;
-		private var _sum:uint;
+		private var _rank:Number = 0; // 0-1
 		private var _width:int;
 		private var _height:uint;
 		private var _isOver:Boolean;
 		
-		public function Bond( moBond:MoBond, rank:uint, sum:uint, width:int = 100, height:uint = 20 ) {
+		public function Bond( moBond:MoBond, rank:Number, width:int = 100, height:uint = 20 ) {
 			_moBond = moBond;
 			_rank = rank;
-			_sum = sum;
 			_width = width;
 			_height = height;
 			
@@ -59,8 +57,8 @@ package display.objects {
 				default:
 			}*/
 			
-			_stateNormal = new BondView( Math.random() * 0xFFFFFF, Settings.BOND_ALPHA, _rank, _sum, _width, _height ).init();
-			_stateOver = new BondView( Settings.FACT_CLR_OVER, 1, _rank, _sum, _width, _height ).init();
+			_stateNormal = new BondView( Math.random() * 0xFFFFFF, Settings.BOND_ALPHA, _rank, _width, _height ).init();
+			_stateOver = new BondView( Settings.FACT_CLR_OVER, 1, _rank, _width, _height ).init();
 			
 			updateState();
 			

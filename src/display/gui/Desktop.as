@@ -5,7 +5,7 @@ package display.gui
 	import controllers.BondsRender;
 	import controllers.EntitiesRender;
 	import controllers.EntityController;
-	import controllers.FactsRender;
+	import controllers.EntityFactsRender;
 	import controllers.FactTooltipController;
 
 	import data.MoTimeline;
@@ -34,7 +34,7 @@ package display.gui
 		private var _bondRender:BondsRender;
 		private var _entCtrl:EntityController;
 		private var _curDateMarker:DateLine;
-		private var _factRender:FactsRender;
+		private var _factRender:EntityFactsRender;
 		private var _moTimeline:MoTimeline;
 
 		public function Desktop( width:uint, height:uint )
@@ -72,11 +72,11 @@ package display.gui
 			_entRender = new EntitiesRender( _container, _width, height );
 			_entRender.init();
 
-			_factRender = new FactsRender( _container, height );
+			_factRender = new EntityFactsRender( _container, height );
 			_factRender.init();
 
-			_bondRender = new BondsRender( _container, _width, height );
-			_bondRender.init();
+//			_bondRender = new BondsRender( _container, _width, height );
+//			_bondRender.init();
 
 			_entCtrl = new EntityController( _container );
 			_entCtrl.init();
@@ -112,14 +112,14 @@ package display.gui
 
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
-			_bondRender.update( _factRender.visibleFacts );
+//			_bondRender.update( _factRender.visibleFacts );
 		}
 
 		private function onChangedScale( event:TimelineEvent ):void
 		{
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
-			_bondRender.update( _factRender.visibleFacts );
+//			_bondRender.update( _factRender.visibleFacts );
 		}
 
 		override public function get width():Number
