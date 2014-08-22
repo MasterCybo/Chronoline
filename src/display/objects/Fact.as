@@ -3,7 +3,7 @@ package display.objects
 	import data.MoFact;
 
 	import display.components.FactDateLabel;
-	import display.components.IconsPile;
+	import display.components.IconsBundle;
 
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -23,9 +23,8 @@ package display.objects
 		private var _labelBegin:FactDateLabel;
 		private var _labelEnd:FactDateLabel;
 		private var _isFree:Boolean = true;
-		private var _iPile:IconsPile;
+		private var _iPile:IconsBundle;
 		private var _depth:int;
-		private var _posButton:Point = new Point();
 
 		public function Fact()
 		{
@@ -50,7 +49,7 @@ package display.objects
 				addChild( _body );
 			}
 
-			_iPile = new IconsPile( moFact, updatePositionPile );
+			_iPile = new IconsBundle( moFact, updatePositionPile );
 			_iPile.init();
 			_iPile.eventManager.addEventListener( MouseEvent.MOUSE_OVER, onMouseOver );
 			_iPile.eventManager.addEventListener( MouseEvent.MOUSE_OUT, onMouseOut );

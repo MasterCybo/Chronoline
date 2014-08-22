@@ -3,9 +3,15 @@
  */
 package controllers
 {
+	import collections.BondsManager;
+	import collections.EntityManager;
+
+	import data.MoBondsGroup;
 	import data.MoEntity;
 	import data.MoFact;
 	import data.MoTimeline;
+
+	import display.objects.BondsGroup;
 
 	import display.objects.Fact;
 
@@ -34,7 +40,7 @@ package controllers
 		private var _mapDisplayMoFacts:Dictionary/*Fact*/ = new Dictionary( true ); // MoFact.id = MoFact - факты подготовленные для отображения
 		private var _mapDisplayFacts:Dictionary/*Fact*/ = new Dictionary( true ); // MoFact.id = Fact - факты отображённые на экране
 
-		private var _mapDisplayBonds:Dictionary/*EntityBondsRender*/ = new Dictionary( true ); // MoFact.id = EntityBondsRender - рендер связей отображённые на экране
+		private var _mapDisplayBonds:Dictionary/*BondsGroup*/ = new Dictionary( true ); // MoFact.id = BondsGroup - связи отображённые на экране
 
 		private var _spaceJD:Number;
 		private var _yCenter:Number;
@@ -76,25 +82,57 @@ package controllers
 			takeMiddle( _moEntity.facts, 0, _moEntity.facts.length - 1 );
 
 			var fact:Fact;
+			var bonds:BondsGroup;
 
 			// Удаление устаревших фактов
 			for each ( fact in _mapDisplayFacts ) {
 				if ( !_mapDisplayMoFacts[ fact.moFact.id ] ) {
+					bonds = _mapDisplayBonds[ fact.moFact.id ];
+					if (bonds) {
+						bonds.kill();
+						delete _mapDisplayBonds[ fact.moFact.id ];
+					}
+
 					delete _mapDisplayFacts[ fact.moFact.id ];
 					fact.kill();
 				}
 			}
 
 			var moFact:MoFact;
+			var moBonds:MoBondsGroup;
+			var ent1:MoEntity;
+			var ent2:MoEntity;
 
 			// Отображение новых Фактов
 			for each ( moFact in _mapDisplayMoFacts ) {
+				bonds = _mapDisplayBonds[moFact.id];
+				if ( !bonds ) {
+					moBonds = BondsManager.getBonds(moFact.id);
+					if (moBonds) {
+						var widthBond:Number = 10;
+						var x1:Number = 0;
+						var x2:Number = 0;
+						ent1 = EntityManager.getItem( moBonds.idEntity1 );
+						ent2 = EntityManager.getItem( moBonds.idEntity2 );
+
+						if ( ent1 && ent2 ) {
+							x1 = Math.min( ent1.xView, ent2.xView );
+							x2 = Math.max( ent1.xView, ent2.xView );
+
+							widthBond = x2 - x1 - Settings.ENT_WIDTH;
+						}
+
+						bonds = new BondsGroup(moBonds.listBonds, widthBond).init();
+						bonds.x = x1 + Settings.ENT_WIDTH;
+						_host.addChild( bonds );
+
+						_mapDisplayBonds[moFact.id] = bonds;
+					}
+				}
 
 				fact = _mapDisplayFacts[ moFact.id ];
-
 				if ( !fact ) {
 					fact = new Fact().init();
-					fact.name = "fact_" + moFact.id;
 					fact.x = _positionX;
 					fact.initialize( moFact );
 					_host.addChild( fact );
@@ -102,8 +140,14 @@ package controllers
 					_mapDisplayFacts[ moFact.id ] = fact;
 				}
 
+
 				fact.height = moFact.period.duration * MoTimeline.me.scale;
 				fact.y = getY( moFact );
+
+				if (bonds) {
+					bonds.height = fact.height;
+					bonds.y = fact.y;
+				}
 			}
 
 			_isCalculation = false;
@@ -225,14 +269,10 @@ package controllers
 			return _moEntity;
 		}
 
-		public function getVisibleFacts():Dictionary
-		{
-			return _mapDisplayFacts;
-		}
-
 		public function clear():void
 		{
 			_mapDisplayMoFacts = new Dictionary( true );
+			_mapDisplayBonds = new Dictionary(true);
 			_numDisplay = 0;
 		}
 
@@ -241,6 +281,7 @@ package controllers
 			_host = null;
 			_moEntity = null;
 			_mapDisplayMoFacts = null;
+			_mapDisplayBonds = null;
 			_numDisplay = 0;
 		}
 	}

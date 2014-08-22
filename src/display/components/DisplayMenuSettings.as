@@ -7,9 +7,9 @@ package display.components
 	import constants.LocaleString;
 	import constants.TextFormats;
 
-	import controllers.EntitiesDataWebService;
-	import controllers.ParserEntities;
-	import controllers.ParserPartitions;
+	import services.EntitiesDataWebService;
+	import utils.ParserEntities;
+	import utils.ParserPartitions;
 
 	import data.MoListEntity;
 	import data.MoListPartition;

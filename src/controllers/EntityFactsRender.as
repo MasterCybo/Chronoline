@@ -36,7 +36,7 @@ package controllers
 			// Удаляем устаревшие рендеры
 			for each ( fer in _mapFactsRenders ) {
 				if ( !visibleEntities[ fer.moEntity.id ] ) {
-					Log.traceText( "- Remove facts render : " + fer.moEntity.title );
+//					Log.traceText( "- Remove facts render : " + fer.moEntity.title );
 					delete _mapFactsRenders[ fer.moEntity.id ];
 					fer.dispose();
 				}
@@ -45,7 +45,7 @@ package controllers
 			// Добавляем новые
 			for each ( var ent:Entity in visibleEntities ) {
 				if ( !_mapFactsRenders[ ent.moEntity.id ] ) {
-					Log.traceText( "+ Add facts render : " + ent.moEntity.title );
+//					Log.traceText( "+ Add facts render : " + ent.moEntity.title );
 					_mapFactsRenders[ ent.moEntity.id ] = new FactsRender( _host, ent.moEntity, ent.x, _height );
 				}
 			}

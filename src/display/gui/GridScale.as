@@ -87,7 +87,7 @@ package display.gui {
 			var heightJD:Number = _height / _scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
 			
-			Log.traceText( "heightYears : " + heightYears );
+//			Log.traceText( "heightYears : " + heightYears );
 
 			_markerMode = DateLineFactory.MODE_FULL_DATE;
 			if ( heightYears > 5 ) {
@@ -132,11 +132,11 @@ package display.gui {
 					updateParams( 500 ); // шаг = 500 лет
 			}
 			
-			Log.traceText( "\t_step years : " + ( _stepJD / JDUtils.DAYS_PER_YEAR ) );
+//			Log.traceText( "\t_step years : " + ( _stepJD / JDUtils.DAYS_PER_YEAR ) );
 			
 			_div = heightJD / _stepJD;
 			
-			Log.traceText( "\t\t_div : " + _div );
+//			Log.traceText( "\t\t_div : " + _div );
 
 			draw();
 		}
@@ -144,19 +144,19 @@ package display.gui {
 		private function updateParams( stepOfYears:Number ):void {
 			_stepJD = JDUtils.DAYS_PER_YEAR * stepOfYears;
 
-			Log.traceText( "...beginJD : " + _baseJD + " = " + JDUtils.getFormatString( _baseJD ) );
+//			Log.traceText( "...beginJD : " + _baseJD + " = " + JDUtils.getFormatString( _baseJD ) );
 			
 			var year:Number = JDUtils.JDToGregorian( _baseJD ).year;
 			var deltaMod:Number = year - ( year % 50 );
 			var deltaModJD:Number = JDUtils.gregorianToJD( deltaMod );
 			
-			Log.traceText( "year : " + year );
-			Log.traceText( "deltaMod : " + deltaMod );
-			Log.traceText( "deltaModJD : " + deltaModJD );
+//			Log.traceText( "year : " + year );
+//			Log.traceText( "deltaMod : " + deltaMod );
+//			Log.traceText( "deltaModJD : " + deltaModJD );
 			
 			_fitJD = MoTimeline.me.baseJD - deltaModJD + 0.5;
 			
-			Log.traceText( "_fitJD : " + _fitJD + " = " + JDUtils.getFormatString( _baseJD - _fitJD + 0.5 ) );
+//			Log.traceText( "_fitJD : " + _fitJD + " = " + JDUtils.getFormatString( _baseJD - _fitJD + 0.5 ) );
 		}
 
 		private function draw():void {

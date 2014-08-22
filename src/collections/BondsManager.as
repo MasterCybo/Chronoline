@@ -34,35 +34,10 @@ package collections {
 			group.listBonds.push( moBond );
 		}
 		
-		static public function getItems( factID:String ):MoBondsGroup {
+		static public function getBonds( factID:String ):MoBondsGroup {
 			return _bondGroups[factID];
 		}
 
-		static public function removeItems( id:String ):void {
-			delete _bondGroups[id];
-		}
-		
-		static public function getListIDMoFacts():Array/*MoBond*/ {
-			var arr:Array = [];
-			var name:String;
-			
-			for ( name in _bondGroups ) {
-				arr.push( name );
-			}
-			
-			return arr;
-		}
-		
-		static public function parseJSON( json:Object ):void {
-			var num:uint;
-			for ( var name:String in json ) {
-				num++;
-				addItem( MoBond.fromJSON( json[name] ) );
-			}
-			
-			Log.traceText( "Bonds " + num + " added." );
-		}
-		
 		static public function clear():void {
 			_bondGroups = new Dictionary( true );
 		}

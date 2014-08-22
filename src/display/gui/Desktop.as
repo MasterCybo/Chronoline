@@ -2,7 +2,6 @@ package display.gui
 {
 	import constants.LocaleString;
 
-	import controllers.BondsRender;
 	import controllers.EntitiesRender;
 	import controllers.EntityController;
 	import controllers.EntityFactsRender;
@@ -17,7 +16,6 @@ package display.gui
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
-
 	/**
 	 * ...
 	 * @author Artem Arslanov
@@ -31,7 +29,6 @@ package display.gui
 		private var _gridScale:GridScale;
 		private var _tooltipController:FactTooltipController;
 		private var _entRender:EntitiesRender;
-		private var _bondRender:BondsRender;
 		private var _entCtrl:EntityController;
 		private var _curDateMarker:DateLine;
 		private var _factRender:EntityFactsRender;
@@ -65,18 +62,11 @@ package display.gui
 			).init();
 			_curDateMarker.y = int( _height / 2 );
 
-//			addChild( _gridScale );
-//			addChild( _curDateMarker );
-//			addChild( _container );
-
 			_entRender = new EntitiesRender( _container, _width, height );
 			_entRender.init();
 
 			_factRender = new EntityFactsRender( _container, height );
 			_factRender.init();
-
-//			_bondRender = new BondsRender( _container, _width, height );
-//			_bondRender.init();
 
 			_entCtrl = new EntityController( _container );
 			_entCtrl.init();
@@ -100,10 +90,6 @@ package display.gui
 			_container.killChildren();
 
 			onChangeBase();
-
-//			_entRender.update();
-//			_factRender.update( _entRender.visibleEntities );
-//			_bondRender.update();
 		}
 
 		private function onChangeBase( ev:TimelineEvent = null ):void
@@ -112,14 +98,12 @@ package display.gui
 
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
-//			_bondRender.update( _factRender.visibleFacts );
 		}
 
 		private function onChangedScale( event:TimelineEvent ):void
 		{
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
-//			_bondRender.update( _factRender.visibleFacts );
 		}
 
 		override public function get width():Number

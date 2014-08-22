@@ -90,7 +90,9 @@ package display.objects
 		 ***************************************************************************/
 		private function draw():void
 		{
-			var token:String = height + "_" + "0x" + _color.toString( 16 );
+			var token:String = getToken();
+
+			Log.traceText( "*execute* FactBody.draw : " + token );
 
 			var bd:BitmapData = _cache[ token ];
 
@@ -159,9 +161,14 @@ package display.objects
 			_bmp.bitmapData = bd;
 		}
 
+		public function getToken():String
+		{
+			return height + "_" + "0x" + _color.toString( 16 );
+		}
+
 		override public function kill():void
 		{
-			_cache = new Dictionary( true );
+			delete _cache[getToken()];
 			_canvas.kill();
 
 			super.kill();

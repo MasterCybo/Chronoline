@@ -226,8 +226,8 @@ package controllers
 		public function dispose():void
 		{
 			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
+//			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
+//			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 
 			_host = null;
 			_listMoEntities = null;

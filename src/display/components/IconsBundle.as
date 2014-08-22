@@ -16,7 +16,7 @@ package display.components {
 	 * Стопка иконок, пакет, кипа
 	 * @author Artem Arslanov
 	 */
-	public class IconsPile extends ASprite {
+	public class IconsBundle extends ASprite {
 		
 		private var _handlerAllComplete:Function;
 		
@@ -29,7 +29,7 @@ package display.components {
 		private var _body:ASprite;
 		private var _factID:String;
 		
-		public function IconsPile( moFact:MoFact, handlerAllComplete:Function = null ) {
+		public function IconsBundle( moFact:MoFact, handlerAllComplete:Function = null ) {
 			_listMoPics = moFact.categories;
 			_rank = moFact.rank;
 			_handlerAllComplete = handlerAllComplete;
