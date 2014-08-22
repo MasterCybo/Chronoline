@@ -158,7 +158,7 @@ package display.objects
 				_canvas.graphics.clear();
 			}
 
-			_bmp.bitmapData = bd;
+			_bmp.bitmapData = bd.clone();
 		}
 
 		public function getToken():String

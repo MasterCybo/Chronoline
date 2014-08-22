@@ -75,8 +75,6 @@ package controllers
 
 			_mapDisplayEntities = new Dictionary( true );
 			_poolEnts = new Dictionary( true );
-
-//			update();
 		}
 
 		/**

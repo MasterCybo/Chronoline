@@ -1,6 +1,8 @@
 package display.components {
 	import com.greensock.TweenMax;
 
+	import constants.TextFormats;
+
 	import data.MoFact;
 	import data.MoPicture;
 
@@ -8,6 +10,7 @@ package display.components {
 
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
+	import flash.text.TextFormat;
 	import flash.utils.Timer;
 
 	import ru.arslanov.flash.display.ASprite;
@@ -55,7 +58,7 @@ package display.components {
 				var iconEmpty:FactIconEmpty = new FactIconEmpty( _rank ).init();
 				addChild( iconEmpty );
 				
-				var tf:TextApp = new TextApp( _factID ).init();
+				var tf:TextApp = new TextApp( _factID, TextFormats.FACT_ID ).init();
 				tf.mouseEnabled = false;
 				tf.x = int(( iconEmpty.width - tf.width ) * 0.5 );
 				tf.y = int(( iconEmpty.height - tf.height ) * 0.5 );
