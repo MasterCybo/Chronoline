@@ -13,6 +13,8 @@ package display.components
 
 	import flash.media.scanHardware;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 

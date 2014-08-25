@@ -29,6 +29,16 @@ package controllers
 		{
 		}
 
+		public function reset():void
+		{
+			var fer:FactsRender;
+			// Удаляем устаревшие рендеры
+			for each ( fer in _mapFactsRenders ) {
+				fer.dispose();
+			}
+			_mapFactsRenders = new Dictionary( true );
+		}
+
 		public function update( visibleEntities:Dictionary/*Entity*/ ):void
 		{
 			var fer:FactsRender;

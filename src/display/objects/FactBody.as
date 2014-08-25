@@ -92,7 +92,7 @@ package display.objects
 		{
 			var token:String = getToken();
 
-			Log.traceText( "*execute* FactBody.draw : " + token );
+//			Log.traceText( "*execute* FactBody.draw : " + token );
 
 			var bd:BitmapData = _cache[ token ];
 

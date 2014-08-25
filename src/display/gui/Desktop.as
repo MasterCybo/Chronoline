@@ -87,6 +87,9 @@ package display.gui
 			if( !contains( _curDateMarker ) ) addChild( _curDateMarker );
 			if( !contains( _container ) ) addChild( _container );
 
+			_entRender.reset();
+			_factRender.reset();
+
 			_container.killChildren();
 
 			onChangeBase();

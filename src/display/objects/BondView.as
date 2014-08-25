@@ -1,6 +1,8 @@
 package display.objects {
 	import flash.display.BitmapData;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 
@@ -57,12 +59,17 @@ package display.objects {
 			//graphics.beginFill( 0xff00ff, 0.2 );
 			//graphics.drawRect( 0, 0, _width, _height );
 			//graphics.endFill();
-			
-			var widthRoot:Number = _width * 0.05;
-			
+
+//			Log.traceText( "_rank : " + _rank );
+
+//			var widthRoot:Number = _width * 0.05;
+			var widthRoot:Number = Math.min( _height * 0.5, _width * 0.07 ); // Длина корня - половина высоты, но не более 7% от длины связи
+
+
 			var rw2:Number = widthRoot / 2;
 			var hw:Number = _width - rw2;
-			var h2:Number = _rank * ( _height - Settings.BOND_THICKNESS );
+			var sum:Number = 1 / _rank;
+			var h2:Number = ( _rank / (sum + 1) ) * ( _height - Settings.BOND_THICKNESS );
 			var hh:Number = h2 + Settings.BOND_THICKNESS;
 			
 			graphics.clear();
@@ -71,15 +78,15 @@ package display.objects {
 			graphics.beginFill( _color, _alpha );
 			// Левый корень связи - верхняя часть
 			graphics.moveTo( 0, 0 );
-			graphics.cubicCurveTo( rw2, 0,   rw2, h2,   widthRoot, h2 );
+			graphics.cubicCurveTo( rw2, 0, rw2, h2, widthRoot, h2 );
 			graphics.lineTo( _width - widthRoot, h2 ); // Верхняя линия связи
 			// Правый корень связи
-			graphics.cubicCurveTo( hw, h2,   hw, 0,   _width, 0 );
+			graphics.cubicCurveTo( hw, h2, hw, 0, _width, 0 );
 			graphics.lineTo( _width, _height );
-			graphics.cubicCurveTo( hw, _height,   hw, hh,   _width - widthRoot, hh );
+			graphics.cubicCurveTo( hw, _height, hw, hh, _width - widthRoot, hh );
 			graphics.lineTo( widthRoot, hh ); // Нижняя линия связи
 			// Левый корень связи - нижняя часть
-			graphics.cubicCurveTo( rw2, hh,   rw2, _height,   0, _height );
+			graphics.cubicCurveTo( rw2, hh, rw2, _height, 0, _height );
 			graphics.lineTo( 0, 0 );
 			graphics.endFill();
 			
@@ -96,9 +103,9 @@ package display.objects {
 			drawPoint(0, 0);
 			*/
 			
-			if ( (width < 1) || (height < 1) ) {
-				return;
-			}
+//			if ( (width < 1) || (height < 1) ) {
+//				return;
+//			}
 			
 			//rasterize();
 			

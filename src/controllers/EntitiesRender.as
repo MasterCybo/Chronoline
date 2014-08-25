@@ -48,12 +48,9 @@ package controllers
 
 		public function init():void
 		{
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
-//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
-//			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
 		}
 
-		private function onInitTimeline( ev:TimelineEvent ):void
+		public function reset():void
 		{
 			_mapMoEntities = EntityManager.mapMoEntities;
 
@@ -117,16 +114,6 @@ package controllers
 		}
 
 		public function update():void
-		{
-			render();
-		}
-
-		private function onScaleChanged( ev:TimelineEvent ):void
-		{
-			render();
-		}
-
-		private function onDateChanged( ev:TimelineEvent ):void
 		{
 			render();
 		}
@@ -223,10 +210,6 @@ package controllers
 
 		public function dispose():void
 		{
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
-//			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChanged );
-//			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onDateChanged );
-
 			_host = null;
 			_listMoEntities = null;
 			_mapMoEntities = null;

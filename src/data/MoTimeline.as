@@ -2,6 +2,7 @@ package data {
 	import events.TimelineEvent;
 
 	import ru.arslanov.core.events.EventManager;
+	import ru.arslanov.core.utils.Log;
 
 	/**
 	 * ...
@@ -40,6 +41,9 @@ package data {
 			//_range = new MoPeriod( new MoDate( beginJD ), new MoDate( endJD ) );
 			_baseJD = baseJD;
 			_scale = scale;
+
+			Log.traceText( "*execute* MoTimeline.init" );
+			Log.traceText( "_scale : " + _scale );
 			
 			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.INITED ) );
 		}

@@ -7,6 +7,8 @@ package display.objects
 
 	import flash.utils.Dictionary;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
 
 	/**
@@ -101,7 +103,7 @@ package display.objects
 			for ( var i:int = 0; i < len; i++ ) {
 				moBond = _listMoBonds[i];
 
-				bond = new Bond( moBond, i / len, _width, _height ).init();
+				bond = new Bond( moBond, (i + 1) / len, _width, _height ).init();
 				addChild( bond );
 
 				_displayBonds[ moBond.id + "_" + i ] = bond;
