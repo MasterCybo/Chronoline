@@ -85,7 +85,14 @@ package data {
 		}
 		
 		override public function toString():String {
-			return "[" + getQualifiedClassName( this ) + " " + uidStr + ", id=" + id + ", title=" + title.substr( 0, 15 ) + "... " + beginPeriod + " - " + endPeriod + " = " + duration + ", facts=" + facts.length + "]";
+			return "[" + getQualifiedClassName( this )
+					+ " "
+					+ uidStr
+					+ ", id=" + id
+					+ ", title=" + title.substr( 0, 15 )
+					+ "... " + beginPeriod + " - " + endPeriod + " = " + duration
+					+ ", facts=" + facts.length
+					+ "]";
 		}
 		
 		public function dispose():void {
@@ -111,7 +118,7 @@ package data {
 				ent.addFact( MoFact.fromJSON( name, facts[name] ) );
 			}
 			
-			Log.traceText( "\tAdded " + num + " facts." );
+			Log.traceText( "\tTo Entity " + ent.id + " added " + num + " facts." );
 			
 			return ent;
 		}

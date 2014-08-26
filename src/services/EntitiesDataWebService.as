@@ -7,15 +7,11 @@ package services {
 	import data.MoBond;
 	import data.MoEntity;
 	import data.MoFact;
-	import data.MoListEntity;
 
 	import events.ProcessFinishNotice;
 	import events.ProcessStartNotice;
-	import events.ProcessUpdateNotice;
 	import events.ServerDataCompleteNotice;
 	import events.SysMessageDisplayNotice;
-
-	import flash.utils.Dictionary;
 
 	import net.ReqBindingsData;
 	import net.ReqEntityData;
@@ -79,9 +75,9 @@ package services {
 			var countFacts:uint = 0;
 			var name:String;
 			for ( name in json ) {
-				Log.traceText( "Parse entity : " + name );
+				Log.traceText( "Parse Entity data ID = " + name );
 				countFacts += parseEntity( json[ name ] );
-				countFacts++;
+//				countFacts++;
 			}
 			
 			// Если количество обработанных данных
@@ -102,6 +98,12 @@ package services {
 			var numFacts:uint = 0;
 
 			var entNew:MoEntity = MoEntity.fromJSON( entityData );
+
+			if ( (entNew.id == null) || (entNew.title == null) ) {
+				Log.traceError( "Invalid Entity data : " + JSON.stringify(entityData) );
+				return 0;
+			}
+
 			var entExisting:MoEntity = EntityManager.getItem( entNew.id );
 			
 			if ( !entExisting ) {
@@ -122,8 +124,6 @@ package services {
 				
 				entNew.dispose();
 			}
-
-			Log.traceText( "numFacts : " + numFacts );
 
 			return numFacts;
 		}

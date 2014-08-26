@@ -10,8 +10,8 @@ package data {
 		static private var _counter:Number = 0;
 		
 		public var id:String;
-		public var title:String;
-		public var description:String;
+		public var title:String = "";
+		public var description:String = "";
 		
 		private var _uid:Number = 0;
 		
