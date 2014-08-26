@@ -34,7 +34,7 @@ package {
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.Stats;
 	import ru.arslanov.flash.display.ASprite;
-	import ru.arslanov.flash.gui.hints.AHintManager;
+	import ru.arslanov.flash.gui.hints.ATooltipManager;
 	import ru.arslanov.flash.scenes.SceneManager;
 	import ru.arslanov.flash.text.ATextField;
 	import ru.arslanov.flash.utils.Display;
@@ -73,10 +73,10 @@ package {
 			Log.customTracer = Logger.traceMessage;
 
 			// Устанавливаем локализацию месяцев
-			JDUtils.monthsLocale = LocaleString.MONTHS;
+			JDUtils.monthsLocale = LocaleString.MONTHS_GENITIVE;
 			
 			//AWindowsManager.me.init( this );
-			AHintManager.me.init( this, 15 );
+			ATooltipManager.me.init( this, 15 );
 
 			// Скрываем ненужные сообщения
 			Notification.unlog( BondDisplayNotice.NAME );

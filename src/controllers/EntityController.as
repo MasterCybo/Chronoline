@@ -3,14 +3,15 @@ package controllers {
 
 	import data.MoTimeline;
 
-	import display.base.HintApp;
+	import display.base.AppTooltip;
+	import display.gui.EntityTooltip;
 	import display.objects.Entity;
 
 	import flash.events.MouseEvent;
 
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.flash.display.ASprite;
-	import ru.arslanov.flash.gui.hints.AHintManager;
+	import ru.arslanov.flash.gui.hints.ATooltipManager;
 	import ru.arslanov.flash.utils.Display;
 
 	/**
@@ -41,14 +42,15 @@ package controllers {
 								+ "\r"
 								+ JDUtils.getFormatString( ent.moEntity.endPeriod.endJD, LocaleString.DATE_ENTITY_HINT );
 			
-			AHintManager.me.displayHint( HintApp, { text: textHint } );
+			ATooltipManager.me.displayHint( AppTooltip, { text: textHint } );
+//			ATooltipManager.me.displayHint( EntityTooltip, ent.moEntity );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {
 			var ent:Entity = ev.target.parent as Entity;
 			if ( !ent ) return;
 			
-			AHintManager.me.removeHint();
+			ATooltipManager.me.removeHint();
 		}
 
 		/**

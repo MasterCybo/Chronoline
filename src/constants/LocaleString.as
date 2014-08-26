@@ -19,6 +19,7 @@ package constants {
 		static public const WAITING_PROCESS:String = "Пожалуйста, подождите...";
 		static public const SERVER_ERROR_RESPONSE:String = "Ошибка: Сервер не ответил на запрос.";
 		static public const MONTHS:Array = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+		static public const MONTHS_GENITIVE:Array = ["Января","Февраля","Марта","Апреля","Мая","Июня","Июля","Августа","Сентября","Октября","Ноября","Декабря"];
 		public static const HELP_NAME_PRESET:String = "Введите название набора...";
 
 		//{ region КНОПКИ

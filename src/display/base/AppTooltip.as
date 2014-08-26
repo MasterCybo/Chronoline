@@ -1,16 +1,16 @@
 package display.base {
 	import flash.text.TextFieldAutoSize;
 
-	import ru.arslanov.flash.gui.hints.AHint;
+	import ru.arslanov.flash.gui.hints.ATooltip;
 
 	/**
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class HintApp extends AHint {
+	public class AppTooltip extends ATooltip {
 		private var _tf:TextApp;
 		
-		public function HintApp( data:Object = null ) {
+		public function AppTooltip( data:Object = null ) {
 			super( data );
 		}
 		

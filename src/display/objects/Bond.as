@@ -5,13 +5,13 @@ package display.objects {
 	import data.MoEntity;
 	import data.MoFact;
 
-	import display.base.HintApp;
+	import display.base.AppTooltip;
 
 	import flash.events.MouseEvent;
 
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ASprite;
-	import ru.arslanov.flash.gui.hints.AHintManager;
+	import ru.arslanov.flash.gui.hints.ATooltipManager;
 
 	/**
 	 * ...
@@ -82,14 +82,14 @@ package display.objects {
 			title = StringUtils.substitute( title, ent1.title, ent2.title );
 			
 			
-			AHintManager.me.displayHint( HintApp, { text:ent1.beginPeriod + "\n" + title, width:200 } );
+			ATooltipManager.me.displayHint( AppTooltip, { text:ent1.beginPeriod + "\n" + title, width:200 } );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {
 			_isOver = false;
 			updateState();
 			
-			AHintManager.me.removeHint();
+			ATooltipManager.me.removeHint();
 		}
 		
 		private function updateState():void {
@@ -147,7 +147,7 @@ package display.objects {
 		}
 		
 		override public function kill():void {
-			AHintManager.me.removeHint();
+			ATooltipManager.me.removeHint();
 			
 			super.kill();
 			
