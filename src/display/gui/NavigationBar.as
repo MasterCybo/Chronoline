@@ -6,6 +6,8 @@ package display.gui {
 
 	import events.TimelineEvent;
 
+	import ru.arslanov.core.utils.Calc;
+
 	import ru.arslanov.core.utils.JDUtils;
 
 	import ru.arslanov.core.utils.Log;
@@ -76,9 +78,9 @@ package display.gui {
 				return;
 			}
 
-			Log.traceText( "*execute* NavigationBar.onTimelineRescale : non-manual updated!" );
+			var lnds:Number = Calc.ln(_maxScale - _minScale);
 
-			_zoSlider.position = _zoStepper.position = ( MoTimeline.me.scale - _minScale ) / (_maxScale - _minScale);
+			_zoSlider.position = _zoStepper.position = ( MoTimeline.me.scale - _minScale ) * lnds / lnds;
 
 			_isManual = false;
 		}
@@ -103,9 +105,8 @@ package display.gui {
 		{
 			var deltaScale:Number = _maxScale - _minScale;
 			var expScale:Number = Math.pow( deltaScale, position );
-			var newScale:Number = _minScale + position * expScale;
 
-			MoTimeline.me.scale = newScale;
+			MoTimeline.me.scale = _minScale + position * expScale;
 		}
 
 		override public function kill():void {

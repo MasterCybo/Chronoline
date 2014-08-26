@@ -5,6 +5,7 @@ package display.components {
 
 	import ru.arslanov.core.controllers.SimpleDragController;
 	import ru.arslanov.core.events.MouseControllerEvent;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 
@@ -81,9 +82,14 @@ package display.components {
 		}
 		
 		public function set position( value:Number ):void {
+			Log.traceText( "*execute* ZoomSlider.position" );
 			value = Math.max( 0, Math.min( value, 1 ) );
+
+			Log.traceText( "value : " + value );
 			
 			_thumb.y = _dragCtrl.dragArea.y + _dragCtrl.dragArea.height - _dragCtrl.dragArea.height * value - _dragCtrl.target.height / 2;
+
+			Log.traceText( "_thumb.y : " + _thumb.y );
 		}
 		
 		override public function kill():void {
