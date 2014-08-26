@@ -10,7 +10,7 @@ package data {
 	 */
 	public class MoTimeline {
 		
-		//{ region Инициализация синглтона
+		// Инициализация синглтона
 		private static var _instance:MoTimeline;
 		
 		public static function get me():MoTimeline {
@@ -25,11 +25,9 @@ package data {
 				throw new Error( "Error: Instantiation failed: Use MoTimeline.me instead of new." );
 			}
 		}
-		//} endregion
-		
+
 		
 		private var _timeline:MoPeriod = new MoPeriod();
-		private var _range:MoPeriod = new MoPeriod();
 		private var _scale:Number = 1;
 		private var _baseJD:Number = 0;
 		
@@ -38,13 +36,9 @@ package data {
 		public function init( beginJD:Number, endJD:Number, baseJD:Number, scale:Number = 1 ):void {
 			_timeline.beginJD = beginJD;
 			_timeline.endJD = endJD;
-			//_range = new MoPeriod( new MoDate( beginJD ), new MoDate( endJD ) );
 			_baseJD = baseJD;
 			_scale = scale;
 
-			Log.traceText( "*execute* MoTimeline.init" );
-			Log.traceText( "_scale : " + _scale );
-			
 			_eventManager.dispatchEvent( new TimelineEvent( TimelineEvent.INITED ) );
 		}
 		
@@ -56,21 +50,9 @@ package data {
 			return _timeline.beginJD;
 		}
 		
-		//public function set beginJD( value:Number ):void {
-			//if ( _timeline.beginJD == value ) return;
-			//
-			//_timeline.beginJD = value;
-		//}
-		
 		public function get endJD():Number {
 			return _timeline.endJD;
 		}
-		
-		//public function set endJD( value:Number ):void {
-			//if ( _timeline.endJD == value ) return;
-			//
-			//_timeline.endJD = value;
-		//}
 		
 		public function get duration():Number {
 			return _timeline.duration;

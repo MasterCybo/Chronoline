@@ -24,6 +24,7 @@ package display.scenes
 
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.utils.JDUtils;
+	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.StringUtils;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.scenes.AScene;
@@ -132,16 +133,12 @@ package display.scenes
 
 		private function onUpdateChronoline():void
 		{
-//			Log.traceText( "*execute* ChronolinePage.onUpdateChronoline" );
-
-			App.colorPalette.resetIndex();
-
-//			Log.traceText( "EntityManager.period.duration : " + EntityManager.period.duration );
+			App.entityColorPalette.reset();
 
 			var initScale:Number = (Display.stageHeight - Settings.TOOLBAR_HEIGHT) / EntityManager.period.duration;
-			var centralJD:Number = (EntityManager.period.beginJD + EntityManager.period.endJD ) / 2;
+			var baseJD:Number = (EntityManager.period.beginJD + EntityManager.period.endJD ) / 2;
 
-			MoTimeline.me.init( EntityManager.period.beginJD, EntityManager.period.endJD, centralJD, initScale );
+			MoTimeline.me.init( EntityManager.period.beginJD, EntityManager.period.endJD, baseJD, initScale );
 		}
 
 		private function hrResizeStage( ev:Event ):void

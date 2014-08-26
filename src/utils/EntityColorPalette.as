@@ -1,17 +1,17 @@
-package collections
+package utils
 {
 
 	/**
 	 * ...
 	 * @author ...
 	 */
-	public class ColorPalette
+	public class EntityColorPalette
 	{
 
 		private var _colors:Vector.<uint>;
 		private var _curIdx:uint;
 
-		public function ColorPalette()
+		public function EntityColorPalette()
 		{
 			generateNewPalette();
 		}
@@ -63,7 +63,7 @@ package collections
 			return _colors[ prevIdx ];
 		}
 
-		public function resetIndex():void
+		public function reset():void
 		{
 			_curIdx = 0;
 		}

@@ -11,7 +11,7 @@ package net {
 		
 		static public const URL:String = "entitydata.php";
 		
-		public function ReqBindingsData( idEntities:Array, offset:uint, numObjects:uint ) {
+		public function ReqBindingsData( idEntities:Vector.<String>, offset:uint, numObjects:uint ) {
 			var vars:URLVariables = new URLVariables();
 			vars.type = "Binding";
 			vars.entityId = idEntities.join( "," );

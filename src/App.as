@@ -1,5 +1,5 @@
 package {
-	import collections.ColorPalette;
+	import utils.EntityColorPalette;
 
 	import constants.LocaleString;
 	import constants.TextFormats;
@@ -48,7 +48,7 @@ package {
 		
 		static public var httpManager:HTTPManager;
 		static public var presetsService:PresetsWebService;
-		static public var colorPalette:ColorPalette;
+		static public var entityColorPalette:EntityColorPalette;
 
 		private var _stats:Stats;
 		private var _tfVersion:TextApp;
@@ -93,7 +93,7 @@ package {
 			presetsService = new PresetsWebService( httpManager );
 
 			// Создаём цветовую палитру для сущностей
-			colorPalette = new ColorPalette();
+			entityColorPalette = new EntityColorPalette();
 
 			// Инициализируем экраны
 			var sceneContainer:ASprite = new ASprite().init();
@@ -150,7 +150,7 @@ package {
 
 				Notification.send( SelectPresetNotice.NAME, new SelectPresetNotice( preset.id ) );
 
-				EntitiesDataWebService.start( Vector.<String>( preset.listIDs ) );
+				EntitiesDataWebService.downloadDataEntities( Vector.<String>( preset.listIDs ) );
 			}
 		}
 		

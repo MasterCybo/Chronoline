@@ -30,98 +30,42 @@ package services {
 	 */
 	public class EntitiesDataWebService {
 		
-		static public const DEF_LENGTH:uint = 1000;
+		static public const OBJECTS_PER_REQUEST:uint = 1000;
 		
-		static private var _entityIDs:Array;
-		static private var _bindingEntityIDs:Array;
-		static private var _listIDs:Vector.<String>;
+		static private var _downloadEntities:Vector.<String>;
+		static private var _downloadBonds:Vector.<String>;
 		static private var _offsetIdx:uint;
-		static private var _total:uint;
-		static private var _progress:uint;
 
 		
-		static public function start( entitiesID:Vector.<String> ):void {
-			_listIDs = entitiesID;
-			_entityIDs = [];
-			_bindingEntityIDs = [];
-			
-			_total = 0;
-			_progress = 0;
+		static public function downloadDataEntities( listIDs:Vector.<String> ):void {
 			_offsetIdx = 0;
 			
 			BondsManager.clear();
 			
-			//Log.traceText( "_listEntityData : " + _listEntityData );
-			
-			// Вычёркиваем из списка, сущности, которые уже загружены
-			var entID:String;
-			var moEnt:MoEntity;
-			for each ( entID in _listIDs ) {
-				moEnt = EntityManager.getItem( entID );
-				
-				if ( !moEnt ) {
-					_entityIDs.push( entID );
-					_total++;
-				}
-				
-				// Создаём список запроса для связей
-				_bindingEntityIDs.push( entID );
-			}
-			
-			Log.traceText( "_listEntityData.length : " + _listIDs.length );
-			Log.traceText( "_total : " + _total );
+			_downloadEntities = EntityManager.refineMissingEntities( listIDs );
+			_downloadBonds = _downloadEntities.concat();
 
-			// Удаляем из менеджера сущностей те, которые отсутствуют
-			var mapMoEnts:Dictionary = EntityManager.mapMoEntities;
-			var isRemove:Boolean;
-			
-			for each ( moEnt in mapMoEnts ) {
-				isRemove = true;
-				for each ( entID in _listIDs) {
-					if ( entID == moEnt.id ) {
-						isRemove = false;
-						break;
-					}
-				}
-				
-				if ( isRemove ) {
-					//Log.traceText( "--- Удаляем из словаря " + moEnt );
-					EntityManager.removeItem( moEnt.id );
-				}
-			}
-			
-			//Log.traceText( "Enitites ID : " + _entityIDs );
-			//Log.traceText( "Total milestones : " + _total );
-			//Log.traceText( "_bindingEntityIDs : " + _bindingEntityIDs );
-			
 			// Если список запрашиваемых ID пуст, то заканчиваем приём данных
-			if ( !_entityIDs.length ) {
-				dataRequestComplete();
-				return;
+			if ( !_downloadEntities.length ) {
+				completeDataEntities();
+			} else {
+				Notification.send( ProcessStartNotice.NAME );
+				requestDataEntities();
 			}
-			
-			Notification.send( ProcessStartNotice.NAME );
-			
-			sendReqEntityData();
 		}
 		
 		/***************************************************************************
 		Обработка СУЩНОСТЕЙ
 		***************************************************************************/
-		//{ region
-		static private function sendReqEntityData():void {
-			//Log.traceText( "Запрашиваем данные : " + _entityIDs );
-			//Log.traceText( "_offsetIdx : " + _offsetIdx );
-			//Log.traceText( "DEF_LENGTH : " + DEF_LENGTH );
-			
-			App.httpManager.addRequest( new ReqEntityData( _entityIDs, _offsetIdx, DEF_LENGTH ), parseEntityData, onError );
+		static private function requestDataEntities():void {
+			App.httpManager.addRequest( new ReqEntityData( _downloadEntities, _offsetIdx, OBJECTS_PER_REQUEST ), parseDataEntities, onError );
 		}
 		
 		static private function onError():void {
 			Notification.send( SysMessageDisplayNotice.NAME, new SysMessageDisplayNotice( LocaleString.SERVER_ERROR_RESPONSE ) );
 		}
 		
-		static private function parseEntityData( req:ReqEntityData ):void {
+		static private function parseDataEntities( req:ReqEntityData ):void {
 			var json:Object = JSON.parse( String( req.responseData ) );
 			
 			//Log.traceText( "data : " + data );
@@ -130,38 +74,27 @@ package services {
 				Log.traceError( "Not correct incoming responseData. JSON format error: " + req.responseData );
 				return;
 			}
-			
-			// Перебираем объекты данных
 
-			var numData:uint = 0;
+			// Парсим сущности
+			var countFacts:uint = 0;
 			var name:String;
 			for ( name in json ) {
 				Log.traceText( "Parse entity : " + name );
-				numData += parseEntity( json[ name ] );
-				numData++;
+				countFacts += parseEntity( json[ name ] );
+				countFacts++;
 			}
 			
-//			Log.traceText( "numData : " + numData );
-//			_progress ++;
-
-			Log.traceText( "_progress : " + _progress );
-
-//				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
-
 			// Если количество обработанных данных
-			if ( numData < DEF_LENGTH ) {
+			if ( countFacts < OBJECTS_PER_REQUEST ) {
 				// ... меньше величины шага - переходим к связям
 				EntityManager.updateBounds();
 
 				_offsetIdx = 0;
-				sendReqBindings();
+				requestDataBonds();
 			} else {
 				// ... равно величине шага - делаем ещё запрос
-				_progress ++;
-				Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( _progress / _total, 1 ) );
-
-				_offsetIdx += DEF_LENGTH; // Увеличиваем смещение
-				sendReqEntityData();
+				_offsetIdx += OBJECTS_PER_REQUEST; // Увеличиваем смещение
+				requestDataEntities();
 			}
 		}
 		
@@ -199,13 +132,12 @@ package services {
 		/***************************************************************************
 		Обработка СВЯЗЕЙ
 		***************************************************************************/
-		//{ region
-		static private function sendReqBindings():void {
-			App.httpManager.addRequest( new ReqBindingsData( _bindingEntityIDs, _offsetIdx, DEF_LENGTH ), parseBonds );
+		static private function requestDataBonds():void {
+			App.httpManager.addRequest( new ReqBindingsData( _downloadBonds, _offsetIdx, OBJECTS_PER_REQUEST ), parseDataBonds, onError );
 		}
 		
-		static private function parseBonds( req:ReqBindingsData ):void {
-			//Log.traceText( "*execute* EntitiesDataWebService.parseBonds" );
+		static private function parseDataBonds( req:ReqBindingsData ):void {
+			//Log.traceText( "*execute* EntitiesDataWebService.parseDataBonds" );
 			var json:Object = JSON.parse( String( req.responseData ) );
 			
 			//Log.traceText( "data : " + data );
@@ -229,24 +161,21 @@ package services {
 				numAdded++;
 			}
 			
-			Log.traceText( "Bindings added : " + numAdded );
+			Log.traceText( "Bonds added : " + numAdded );
 			
 			//Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( 1 - _listEntityData.length / _total, 1 ) );
 			
-			if ( numAdded < DEF_LENGTH ) {
+			if ( numAdded < OBJECTS_PER_REQUEST ) {
 				// Все данные от сервера получили - отправляем событие
 				Notification.send( ProcessFinishNotice.NAME );
-				dataRequestComplete();
-				return;
+				completeDataEntities();
 			} else {
-				_offsetIdx += DEF_LENGTH;// Увеличиваем смещение
-				
-				sendReqBindings();
+				_offsetIdx += OBJECTS_PER_REQUEST;// Увеличиваем смещение
+				requestDataBonds();
 			}
 		}
-		//} endregion
-		
-		static private function dataRequestComplete():void {
+
+		static private function completeDataEntities():void {
 			Notification.send( ServerDataCompleteNotice.NAME );
 		}
 		

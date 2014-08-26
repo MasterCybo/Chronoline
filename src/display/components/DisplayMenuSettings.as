@@ -366,7 +366,7 @@ package display.components
 				}
 			}
 
-			EntitiesDataWebService.start( listIDs );
+			EntitiesDataWebService.downloadDataEntities( listIDs );
 		}
 
 		override public function get width():Number

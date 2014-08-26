@@ -6,6 +6,8 @@ package collections {
 
 	import flash.utils.Dictionary;
 
+	import ru.arslanov.core.utils.JDUtils;
+
 	import ru.arslanov.core.utils.Log;
 
 	/**
@@ -27,13 +29,12 @@ package collections {
 		 * @param	entity
 		 */
 		static public function addItem( entity:MoEntity ):void {
-			if ( getItem( entity.id ) ) {
+			if ( hasItem( entity.id ) ) {
 				Log.traceWarn( "EntityManager.addItem( " + entity.id + " ) already exists!" );
 				return;
 			}
 			
 			_mapMoEntities[entity.id] = entity;
-			
 			_length++;
 			
 			updateBounds();
@@ -53,6 +54,10 @@ package collections {
 		 * @param	id
 		 */
 		static public function removeItem( id:String ):void {
+			if (!hasItem(id)) {
+				Log.traceWarn( "EntityManager.removeItem( " + id + " ) not exists!" );
+				return;
+			}
 			delete _mapMoEntities[id];
 			_length--;
 		}
@@ -67,7 +72,7 @@ package collections {
 		}
 		
 		/**
-		 * Получения списка Сущностей в виде массива
+		 * Получение списка Сущностей в виде массива, отсортированных по ID
 		 * @return
 		 */
 		static public function getArrayEntities():Array/*MoEntity*/ {
@@ -95,21 +100,7 @@ package collections {
 		static public function get period():MoPeriod {
 			return _period;
 		}
-		
-		/**
-		 * Минимальная дата в списке Сущностей
-		 */
-		static public function get minDate():Number {
-			return _period.beginJD;
-		}
-		
-		/**
-		 * Максимальная дата в списке Сущностей
-		 */
-		static public function get maxDate():Number {
-			return _period.endJD;
-		}
-		
+
 		static public function get length():uint {
 			return _length;
 		}
@@ -118,40 +109,59 @@ package collections {
 		 * Обновление мин/макс дат
 		 */
 		static public function updateBounds():void {
-			var item:MoEntity;
-			for each ( item in _mapMoEntities ) {
+			_period.beginJD = JDUtils.MIN_YEAR;
+			_period.endJD = JDUtils.MIN_YEAR;
+
+			var moEnt:MoEntity;
+			for each ( moEnt in _mapMoEntities ) {
 				// Устанавливаем начальную дату
-				if ( _period.beginJD == 0 ) {
-					_period.beginJD = item.beginPeriod.beginJD;
+				if ( _period.beginJD == JDUtils.MIN_YEAR ) {
+					_period.beginJD = moEnt.beginPeriod.beginJD;
 				} else {
-					if ( item.beginPeriod ) {
-						_period.beginJD = Math.min( _period.beginJD, item.beginPeriod.beginJD );
+					if ( moEnt.beginPeriod ) {
+						_period.beginJD = Math.min( _period.beginJD, moEnt.beginPeriod.beginJD );
 					}
 				}
 				
 				// Устанавливаем конечную дату
-				if ( item.endPeriod ) {
-					_period.endJD = Math.max( _period.endJD, item.endPeriod.endJD );
+				if ( moEnt.endPeriod ) {
+					_period.endJD = Math.max( _period.endJD, moEnt.endPeriod.endJD );
 				}
 			}
-			
-			Log.traceText( "EntityManager.period : " + period );
 		}
-		
-		static public function parseJSON( json:Object ):void {
-			var name:String;
-			for ( name in json ) {
-				addItem( MoEntity.fromJSON( json[name] ) );
-			}
-			
-			Log.traceText( "Entities " + length + " added." );
-		}
-		
+
 		/**
 		 * Обнуление списка Сущностей
 		 */
-		static public function reset():void {
+		static public function removeAllEntities():void {
 			_mapMoEntities = new Dictionary( true );
+			_period.beginJD = JDUtils.MIN_YEAR;
+			_period.endJD = JDUtils.MIN_YEAR;
+			_length = 0;
+		}
+
+		/**
+		 * Удаляет сущности, которых нет в векторе и возвращает список ID новых сущностей, которых нет в словаре (данные не загружены)
+		 * @param listIDs
+		 * @return
+		 */
+		public static function refineMissingEntities( listIDs:Vector.<String> ):Vector.<String>
+		{
+			var listDiff:Vector.<String> = listIDs.concat();
+
+			// Удаляем из словаря которых нет в списке
+			var moEnt:MoEntity;
+			for each ( moEnt in _mapMoEntities ) {
+				if ( listDiff.indexOf(moEnt.id) == -1 ) delete _mapMoEntities[moEnt.id];
+			}
+
+			// Удаляем из списка, которые есть в словаре
+			var len:uint = listDiff.length - 1;
+			for (var i:int = len; i >=0; i--) {
+				if ( hasItem(listDiff[i]) ) listDiff.splice(i, 1);
+			}
+
+			return listDiff;
 		}
 	}
 

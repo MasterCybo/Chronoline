@@ -29,7 +29,7 @@ package display.objects
 		{
 			super.init();
 
-			_body = new EntityView( 1, App.colorPalette.getNextColor() ).init();
+			_body = new EntityView( 1, App.entityColorPalette.getNextColor() ).init();
 			var title:TitleEntity = new TitleEntity(moEntity.title).init();
 			title.setXY( -title.width, 0 );
 			
