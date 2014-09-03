@@ -46,6 +46,7 @@ package  {
 		//=======================================================================================================
 		static public const ENT_SPACE:uint = 70;// 100;
 		static public const ENT_WIDTH:uint = 20; // Ширина
+		static public const ENT_WIDTH_MIN:uint = 5; // Ширина
 		static public const ENT_CLR_BODY:uint = 0xBCD948;//0X88AC0D; // Цвет тела сущности
 		static public const ENT_CLR_SPAN:uint = 0xDFED94; // Цвет неточной границы сущности
 		static public const ENT_CLR_BG_TITLE:uint = 0xE4E4E4; // Цвет бирки сущности
