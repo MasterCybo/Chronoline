@@ -175,7 +175,8 @@ package controllers
 
 //				ent.y = getY( moEnt );
 				ent.y = Math.max( 0, getY( moEnt ) );
-				ent.height = getHeight( moEnt );
+//				ent.height = getHeight( moEnt );
+				ent.setHeight( getHeight( moEnt ), getY( moEnt ) );
 
 				if ( !_host.contains( ent ) ) {
 					ent.x = getX( _order.indexOf( moEnt.id ) );

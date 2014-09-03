@@ -51,6 +51,11 @@ package display.objects
 			_body.height = value;
 		}
 
+		public function setHeight( heightValue:Number, offsetY:Number = 0 ):void
+		{
+			_body.setHeight( heightValue, offsetY );
+		}
+
 		public function get body():EntityView
 		{
 			return _body;
