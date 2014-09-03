@@ -21,6 +21,7 @@ package display.objects {
 		
 		private var _height:Number;
 		private var _bmp:ABitmap;
+		private var _canvas:ASprite;
 		private var _color:uint;
 		private var _moEntity:MoEntity;
 		
@@ -38,7 +39,8 @@ package display.objects {
 			mouseEnabled = true;
 			doubleClickEnabled = true;
 			buttonMode = true;
-			
+
+			_canvas = new ASprite().init();
 			_bmp = new ABitmap().init();
 			
 			draw();
@@ -64,9 +66,10 @@ package display.objects {
 		Рисуем сущность
 		***************************************************************************/
 		private function draw():void {
-			graphics.beginFill( _color );
+			_canvas.graphics.beginFill( _color );
 
 			var ranks:Vector.<MoRankEntity> = _moEntity.ranks;
+//			var hh:Number = _moEntity.duration * MoTimeline.me.scale;
 
 			if ( ranks.length > 0 ) {
 				var minWW:Number = Settings.ENT_WIDTH_MIN;
@@ -75,7 +78,7 @@ package display.objects {
 				var y1:Number = 0;
 				var dy:Number = 0;
 
-				graphics.lineTo( minWW, 0 );
+				_canvas.graphics.lineTo( minWW, 0 );
 
 				for ( var i:uint = 0; i<ranks.length; i++ ) {
 					var moRank:MoRankEntity = ranks[i];
@@ -84,11 +87,11 @@ package display.objects {
 					y1 = moRank.fromPercent * _height;
 					dy = ( y0 + y1 ) / 2;
 
-					graphics.cubicCurveTo( cx, dy, rankWidth, dy, rankWidth, y1 );
+					_canvas.graphics.cubicCurveTo( cx, dy, rankWidth, dy, rankWidth, y1 );
 
 					y1 = moRank.toPercent * _height;
 
-					graphics.lineTo( rankWidth, y1 );
+					_canvas.graphics.lineTo( rankWidth, y1 );
 
 					cx = rankWidth;
 					y0 = y1;
@@ -101,59 +104,40 @@ package display.objects {
 					dy = ( y0 + y1 ) / 2;
 					rankWidth = minWW;
 
-					graphics.cubicCurveTo( cx, dy, rankWidth, dy, rankWidth, y1 );
+					_canvas.graphics.cubicCurveTo( cx, dy, rankWidth, dy, rankWidth, y1 );
 
 					// Если после построения перехода, сущность продолжается дальше,
 					// ... тогда рисуем прямую линию до конца сущности
 					if ( y1 < _height ) {
 						y1 = _height;
-						graphics.lineTo( rankWidth, y1 );
+						_canvas.graphics.lineTo( rankWidth, y1 );
 					}
 				}
 
 				// Дорисосвываем контур до основания x = 0, а затем закрываем контур
-//				graphics.lineTo( minWW, _height );
-				graphics.lineTo( 0, _height );
-				graphics.lineTo( 0, 0 );
+				_canvas.graphics.lineTo( 0, _height );
+				_canvas.graphics.lineTo( 0, 0 );
 			} else {
-				graphics.drawRect( 0, 0, Settings.ENT_WIDTH, uint( _height ) );
+				_canvas.graphics.drawRect( 0, 0, Settings.ENT_WIDTH, uint( _height ) );
 			}
 
-			graphics.endFill();
+			_canvas.graphics.endFill();
 
-
-
-			//*/
-			// Рисуем тело
-			//graphics.beginFill( Settings.ENT_CLR_BODY );
-//			graphics.beginFill( _color );
-//			graphics.drawRect( 0, 0, Settings.ENT_WIDTH, uint( _height ) );
-//			graphics.endFill();
-			
-			/*/
-			// Со стрелками в начале и конце
-			graphics.beginFill( Settings.ENT_CLR_BODY );
-			graphics.moveTo( 0, Settings.ENT_ARROW_HEIGHT );
-			graphics.lineTo( Settings.ENT_WIDTH / 2, 0 );
-			graphics.lineTo( Settings.ENT_WIDTH, Settings.ENT_ARROW_HEIGHT );
-			graphics.lineTo( Settings.ENT_WIDTH, _height - Settings.ENT_ARROW_HEIGHT );
-			graphics.lineTo( Settings.ENT_WIDTH / 2, _height );
-			graphics.lineTo( 0, _height - Settings.ENT_ARROW_HEIGHT );
-			graphics.lineTo( 0, Settings.ENT_ARROW_HEIGHT );
-			graphics.endFill();
-			//*/
-			
 			rasterize();
-			graphics.clear();
+			_canvas.graphics.clear();
 		}
 		
 		private function rasterize():void {
 			if ( contains( _bmp ) ) removeChild( _bmp );
 
+			addChild(_canvas);
+
 			var bmpData:BitmapData = new BitmapData( width, height, true, 0xff0000 );
-			bmpData.draw( this );
+			bmpData.draw( _canvas );
 			
 			_bmp.bitmapData = bmpData;
+
+			removeChild(_canvas);
 			
 			addChild( _bmp );
 		}

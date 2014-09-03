@@ -145,7 +145,8 @@ package controllers
 			// добавляем в список отображения новые объекты
 			for each ( moEnt in _listMoEntities ) {
 				if ( !listRemoved[ moEnt.id ] ) {
-					var yy:Number = getY( moEnt );
+//					var yy:Number = getY( moEnt );
+					var yy:Number = Math.max( 0, getY( moEnt ) );
 					var hh:Number = getHeight( moEnt );
 					if ( !_mapDisplayEntities[ moEnt.id ] && ( ( ( yy + hh ) > 1 ) && ( yy < _height ) ) ) {
 						ent = _poolEnts[ moEnt.id ];
@@ -172,7 +173,8 @@ package controllers
 				moEnt = ent.moEntity;
 
 
-				ent.y = getY( moEnt );
+//				ent.y = getY( moEnt );
+				ent.y = Math.max( 0, getY( moEnt ) );
 				ent.height = getHeight( moEnt );
 
 				if ( !_host.contains( ent ) ) {
@@ -191,7 +193,8 @@ package controllers
 
 		private function getY( moEntity:MoEntity ):Number
 		{
-			return Math.max( 0, _yCenter + MoTimeline.me.scale * ( moEntity.beginPeriod.beginJD - MoTimeline.me.baseJD ) );
+//			return Math.max( 0, _yCenter + MoTimeline.me.scale * ( moEntity.beginPeriod.beginJD - MoTimeline.me.baseJD ) );
+			return _yCenter + MoTimeline.me.scale * ( moEntity.beginPeriod.beginJD - MoTimeline.me.baseJD );
 		}
 
 		private function getHeight( moEntity:MoEntity ):Number

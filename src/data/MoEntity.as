@@ -122,6 +122,8 @@ package data {
 		 * @return
 		 */
 		static public function fromJSON( json:Object ):MoEntity {
+			if ( !json.id || !json.title ) return new MoEntity( null, null );
+
 			var ent:MoEntity = new MoEntity( json.id, json.title );
 			
 			var facts:Object = json["milestones"];
@@ -133,10 +135,10 @@ package data {
 				ent.addFact( MoFact.fromJSON( name, facts[name] ) );
 			}
 			
-			Log.traceText( "\tTo Entity " + ent.id + " added " + num + " facts." );
-			Log.traceText( "\t\tent.beginPeriod.beginJD : " + ent.beginPeriod.beginJD );
-			Log.traceText( "\t\tent.endPeriod.endJD : " + ent.endPeriod.endJD );
-			Log.traceText( "\t\tent.duration : " + ent.duration );
+//			Log.traceText( "\tTo Entity " + ent.id + " added " + num + " facts." );
+//			Log.traceText( "\t\tent.beginPeriod.beginJD : " + ent.beginPeriod.beginJD );
+//			Log.traceText( "\t\tent.endPeriod.endJD : " + ent.endPeriod.endJD );
+//			Log.traceText( "\t\tent.duration : " + ent.duration );
 
 			num = 0;
 			var ranks:Object = json["ranks"];
@@ -145,20 +147,20 @@ package data {
 			for ( name in ranks ) {
 				num++;
 				moRank = MoRankEntity.fromJSON( ranks[name] );
-				Log.traceText( "moRank : " + moRank );
+//				Log.traceText( "moRank : " + moRank );
 
 				moRank.fromJD = JDUtils.gregorianToJD( moRank.from );
 				moRank.toJD = JDUtils.gregorianToJD( moRank.to );
 
-				Log.traceText( "fromJD - toJD : " + moRank.fromJD + " - " + moRank.toJD );
+//				Log.traceText( "fromJD - toJD : " + moRank.fromJD + " - " + moRank.toJD );
 
 				moRank.fromPercent = ( moRank.fromJD - ent.beginPeriod.beginJD ) / ent.duration;
 				moRank.toPercent = ( moRank.toJD - ent.beginPeriod.beginJD ) / ent.duration;
-				Log.traceText( "\t\tfromPercent - toPercent : " + moRank.fromPercent + " - " + moRank.toPercent );
+//				Log.traceText( "\t\tfromPercent - toPercent : " + moRank.fromPercent + " - " + moRank.toPercent );
 				ent.addRank( moRank );
 			}
 
-			Log.traceText( "\tTo Entity " + ent.id + " added " + num + " ranks." );
+//			Log.traceText( "\tTo Entity " + ent.id + " added " + num + " ranks." );
 			
 			return ent;
 		}
