@@ -69,34 +69,50 @@ package display.objects {
 			var ranks:Vector.<MoRankEntity> = _moEntity.ranks;
 
 			if ( ranks.length > 0 ) {
-				var yearHeight:Number = JDUtils.DAYS_PER_YEAR * MoTimeline.me.scale;
-
-				Log.traceText( "yearHeight : " + yearHeight );
-				Log.traceText( "_height : " + _height );
-
 				var minWW:Number = Settings.ENT_WIDTH_MIN;
 				var cx:Number = minWW;
-				var cy:Number = 0;
-				var prevPercent:Number = 0;
+				var y0:Number = 0;
+				var y1:Number = 0;
+				var dy:Number = 0;
 
-				graphics.lineTo( minWW,0 );
+				graphics.lineTo( minWW, 0 );
 
 				for ( var i:uint = 0; i<ranks.length; i++ ) {
 					var moRank:MoRankEntity = ranks[i];
-					var rankWidth:Number = minWW + moRank.rank * 10;
-					cy = moRank.fromPercent * _height;
-					Log.traceText( "Link cy : " + cy );
-//					cy = ( prevPercent + ( moRank.fromPercent - prevPercent ) / 2 ) * _height;
-//					graphics.cubicCurveTo( cx, cy, rankWidth, cy, rankWidth, cy * 2 );
-					graphics.lineTo( rankWidth, cy );
+					var rankWidth:Number = minWW + moRank.rank * minWW;
 
-					cy = moRank.toPercent * _height;
-					Log.traceText( "\tBody cy : " + cy );
-					graphics.lineTo( rankWidth, cy );
+					y1 = moRank.fromPercent * _height;
+					dy = ( y0 + y1 ) / 2;
+
+					graphics.cubicCurveTo( cx, dy, rankWidth, dy, rankWidth, y1 );
+
+					y1 = moRank.toPercent * _height;
+
+					graphics.lineTo( rankWidth, y1 );
+
 					cx = rankWidth;
-					prevPercent = moRank.toPercent;
+					y0 = y1;
 				}
-				graphics.lineTo( minWW, _height );
+
+				// Если последний перепад ширины закончился, а сущность продолжается дальше,
+				// ... тогда строим переход к минимальной ширине
+				if ( y0 < _height ) {
+					y1 = Math.min( y0 + JDUtils.DAYS_PER_YEAR * MoTimeline.me.scale, _height );
+					dy = ( y0 + y1 ) / 2;
+					rankWidth = minWW;
+
+					graphics.cubicCurveTo( cx, dy, rankWidth, dy, rankWidth, y1 );
+
+					// Если после построения перехода, сущность продолжается дальше,
+					// ... тогда рисуем прямую линию до конца сущности
+					if ( y1 < _height ) {
+						y1 = _height;
+						graphics.lineTo( rankWidth, y1 );
+					}
+				}
+
+				// Дорисосвываем контур до основания x = 0, а затем закрываем контур
+//				graphics.lineTo( minWW, _height );
 				graphics.lineTo( 0, _height );
 				graphics.lineTo( 0, 0 );
 			} else {
