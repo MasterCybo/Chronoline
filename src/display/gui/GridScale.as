@@ -41,15 +41,8 @@ package display.gui {
 			super();
 		}
 
-		override public function init():* {
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
-			MoTimeline.me.eventManager.addEventListener( TimelineEvent.BASE_CHANGED, onBaseChange );
-
-			return super.init();
-		}
-
-		private function onInitTimeline( ev:TimelineEvent ):void {
+		public function reset():void
+		{
 			_scale = MoTimeline.me.scale;
 			_baseJD = MoTimeline.me.baseJD;
 			_oldBaseJD = _baseJD;
@@ -58,11 +51,11 @@ package display.gui {
 			_offsetJD = 0;
 			_div = 0;
 
-			updateScale();
+			prepareScale();
 			draw();
 		}
-		
-		private function onBaseChange( ev:TimelineEvent ):void {
+
+		public function updateBaseDate():void {
 //			Log.traceText( "*execute* GridScale.onDateChange" );
 			
 			_baseJD = MoTimeline.me.baseJD;
@@ -75,14 +68,14 @@ package display.gui {
 			draw();
 		}
 
-		private function onScaleChange( ev:TimelineEvent ):void {
+		public function updateScale():void {
 			_scale = MoTimeline.me.scale;
 			
-			updateScale();
+			prepareScale();
 		}
 
-		private function updateScale():void {
-//			Log.traceText( "*execute* GridScale.updateScale" );
+		private function prepareScale():void {
+//			Log.traceText( "*execute* GridScale.prepareScale" );
 
 			var heightJD:Number = _height / _scale;
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
@@ -276,14 +269,10 @@ package display.gui {
 
 			_yCenter = _height / 2;
 
-			updateScale();
+			prepareScale();
 		}
 
 		override public function kill():void {
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.INITED, onInitTimeline );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.SCALE_CHANGED, onScaleChange );
-			MoTimeline.me.eventManager.removeEventListener( TimelineEvent.BASE_CHANGED, onBaseChange );
-
 			_displayed = null;
 
 			super.kill();

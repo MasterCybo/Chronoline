@@ -1,4 +1,5 @@
 package collections {
+
 	import com.adobe.utils.DictionaryUtil;
 
 	import data.MoEntity;

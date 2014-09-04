@@ -54,8 +54,6 @@ package display.objects {
 		}
 		
 		override public function set height( value:Number ):void {
-			if ( value == _height ) return;
-			
 			_height = Math.max( 1, value );
 			
 			draw();

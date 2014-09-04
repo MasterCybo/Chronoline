@@ -89,6 +89,7 @@ package display.gui
 
 			_entRender.reset();
 			_factRender.reset();
+			_gridScale.reset();
 
 			_container.killChildren();
 
@@ -101,12 +102,14 @@ package display.gui
 
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
+			_gridScale.updateBaseDate();
 		}
 
 		private function onChangedScale( event:TimelineEvent ):void
 		{
 			_entRender.update();
 			_factRender.update( _entRender.visibleEntities );
+			_gridScale.updateScale();
 		}
 
 		override public function get width():Number
