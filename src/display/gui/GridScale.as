@@ -16,22 +16,36 @@ package display.gui {
 	 */
 	public class GridScale extends ASprite {
 
+		static private const SCALE:Array = [
+					1000 * JDUtils.DAYS_PER_YEAR    // 1000 лет
+					, 100 * JDUtils.DAYS_PER_YEAR   // 100 лет
+					, 10 * JDUtils.DAYS_PER_YEAR    // 10 лет
+					, JDUtils.DAYS_PER_YEAR         // 1 год
+					, JDUtils.DAYS_PER_YEAR / 12    // 1 месяц
+					, 1                             // 1 день
+					, 1 / 24                        // 1 час
+					, 1 / 24 / 10                   // 10 минут
+					, 1 / 24 / 60                   // 1 минута
+		];
+
+		private var _idxScale:uint = 0;
+
 		static private const MONTH:Number = 0.08333; // Месяц, как часть года. 1 year / 12 months
 		static private const WEEK:Number = 0.019; // Неделя, как часть года
 		
 		static private var _displayed:Object = {}; // jd = DateLine
 
-		private var _oldBaseJD:Number = 0; // Предыдущее значение MoTimeline.me.baseJD
-		private var _offsetJD:Number = 0; // Величина изменения MoTimeline.me.baseJD
-		private var _fitJD:Number = 0; // Величина смещения MoTimeline.me.baseJD, для отображения круглых дат 
+		private var _baseJD:Number = 0;
+		private var _oldBaseJD:Number = 0;      // Старое значение MoTimeline.me.baseJD
+		private var _offsetBaseJD:Number = 0;   // Величина смещения MoTimeline.me.baseJD
+		private var _approxBaseJD:Number = 0;   // Величина аппроксимации MoTimeline.me.baseJD до ближайшей круглой даты
+		private var _stepJD:Number = 0;         // Шаг масштабных линий
 
 		private var _width:uint;
 		private var _height:uint;
-		private var _stepJD:Number = 0;
-		private var _div:Number = 0;
+		private var _numSteps:Number = 0;
 		private var _yCenter:Number = 0;
 		private var _markerMode:uint = 0;
-		private var _baseJD:Number = 0;
 		private var _scale:Number = 1;
 
 		public function GridScale( width:uint, height:uint ) {
@@ -43,26 +57,25 @@ package display.gui {
 
 		public function reset():void
 		{
+//			Log.traceText( "SCALE : " + SCALE );
+
 			_scale = MoTimeline.me.scale;
 			_baseJD = MoTimeline.me.baseJD;
 			_oldBaseJD = _baseJD;
 			_yCenter = _height / 2;
 			_stepJD = 0;
-			_offsetJD = 0;
-			_div = 0;
+			_offsetBaseJD = 0;
+			_numSteps = 0;
 
 			prepareScale();
 			draw();
 		}
 
 		public function updateBaseDate():void {
-//			Log.traceText( "*execute* GridScale.onDateChange" );
+//			Log.traceText( "*execute* GridScale.updateBaseDate" );
 			
 			_baseJD = MoTimeline.me.baseJD;
-			
-			var dJD:Number = _baseJD - _oldBaseJD;
-
-			_offsetJD += dJD;
+			_offsetBaseJD += _baseJD - _oldBaseJD;
 			_oldBaseJD = _baseJD;
 
 			draw();
@@ -78,6 +91,7 @@ package display.gui {
 //			Log.traceText( "*execute* GridScale.prepareScale" );
 
 			var heightJD:Number = _height / _scale;
+//			Log.traceText( "heightJD : " + heightJD );
 			var heightYears:Number = heightJD / JDUtils.DAYS_PER_YEAR;
 			
 //			Log.traceText( "heightYears : " + heightYears );
@@ -127,9 +141,9 @@ package display.gui {
 			
 //			Log.traceText( "\t_step years : " + ( _stepJD / JDUtils.DAYS_PER_YEAR ) );
 			
-			_div = heightJD / _stepJD;
+			_numSteps = heightJD / _stepJD;
 			
-//			Log.traceText( "\t\t_div : " + _div );
+//			Log.traceText( "\t\t_numSteps : " + _numSteps );
 
 			draw();
 		}
@@ -147,9 +161,9 @@ package display.gui {
 //			Log.traceText( "deltaMod : " + deltaMod );
 //			Log.traceText( "deltaModJD : " + deltaModJD );
 			
-			_fitJD = MoTimeline.me.baseJD - deltaModJD + 0.5;
+			_approxBaseJD = MoTimeline.me.baseJD - deltaModJD + 0.5;
 			
-//			Log.traceText( "_fitJD : " + _fitJD + " = " + JDUtils.getFormatString( _baseJD - _fitJD + 0.5 ) );
+//			Log.traceText( "_approxBaseJD : " + _approxBaseJD + " = " + JDUtils.getFormatString( _baseJD - _approxBaseJD + 0.5 ) );
 		}
 
 		private function draw():void {
@@ -157,11 +171,11 @@ package display.gui {
 
 			var dateLine:ASprite;
 
-			var len:uint = _div + 1;
+			var len:uint = _numSteps + 1;
 			var lenHalf:Number = int( len / 2 );
 
 			for ( var i:int = 0; i <= len; i++ ) {
-				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetJD - _fitJD;
+				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetBaseJD/* - _approxBaseJD*/;
 				var yy:Number = _yCenter + _scale * ( jdi );
 				var jd:Number = _baseJD + jdi;
 
@@ -178,8 +192,8 @@ package display.gui {
 				dateLine.y = yy;
 			}
 			
-			if ( Math.abs( _offsetJD ) >= _stepJD ) {
-				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
+			if ( Math.abs( _offsetBaseJD ) >= _stepJD ) {
+				_offsetBaseJD = Calc.sign( _offsetBaseJD ) * ( Math.abs( _offsetBaseJD ) - _stepJD );
 			}
 		}
 
@@ -188,7 +202,7 @@ package display.gui {
 
 			var dateGrad:DateLine;
 
-			var len:uint = _div + 1;
+			var len:uint = _numSteps + 1;
 			var lenHalf:Number = int( len / 2 );
 			var deltaY:Number = MoTimeline.me.scale * lenHalf * _stepJD;
 			var minY:Number = _yCenter - deltaY;
@@ -196,7 +210,7 @@ package display.gui {
 //			Log.traceText( "    minY, maxY : " + minY + ", " + maxY );
 
 			for ( var i:int = 0; i <= len; i++ ) {
-				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetJD;
+				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetBaseJD;
 				var yy:Number = _yCenter + MoTimeline.me.scale * ( jdi );
 				var jd:Number = MoTimeline.me.baseJD + jdi;
 
@@ -245,8 +259,8 @@ package display.gui {
 //				}
 //			}
 
-			if ( Math.abs( _offsetJD ) >= _stepJD ) {
-				_offsetJD = Calc.sign( _offsetJD ) * ( Math.abs( _offsetJD ) - _stepJD );
+			if ( Math.abs( _offsetBaseJD ) >= _stepJD ) {
+				_offsetBaseJD = Calc.sign( _offsetBaseJD ) * ( Math.abs( _offsetBaseJD ) - _stepJD );
 			}
 		}*/
 
