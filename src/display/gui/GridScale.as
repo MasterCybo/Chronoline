@@ -16,7 +16,7 @@ package display.gui {
 	 */
 	public class GridScale extends ASprite {
 
-		static private const RANGES_JD:Array = [
+		static private const STEPS_JD:Array = [
 					1000 * JDUtils.DAYS_PER_YEAR    // 1000 лет
 					, 100 * JDUtils.DAYS_PER_YEAR   // 100 лет
 					, 10 * JDUtils.DAYS_PER_YEAR    // 10 лет
@@ -98,31 +98,42 @@ package display.gui {
 			Log.traceText( "jdPerHeight : " + jdPerHeight );
 			Log.traceText( "yearsPerHeight : " + yearsPerHeight );
 
-			var i:int = -1;
-			while ( RANGES_JD[++i] > jdPerHeight ) {
-				Log.traceText( "i : " + i );
+			var idx:int = -1;
+			while ( STEPS_JD[++idx] > jdPerHeight ) {
+				Log.traceText( "idx : " + idx );
 			}
 
-			Log.traceText( "RANGES_JD[" + i + "] : " + (RANGES_JD[i] / JDUtils.DAYS_PER_YEAR) );
+			Log.traceText( "STEPS_JD[" + idx + "] : " + (STEPS_JD[idx] / JDUtils.DAYS_PER_YEAR) );
 
-			_stepJD = RANGES_JD[i];
+			_stepJD = STEPS_JD[idx];
 			_numSteps = jdPerHeight / _stepJD;
-
-			_approxBaseJD = EntityManager.period.beginJD % _stepJD;
-
-			var mody:Number = EntityManager.period.beginJD-Math.round(EntityManager.period.beginJD/_stepJD)*Math.floor(_stepJD);
-			var delta:Number = (mody/_stepJD >= 0.5) ? _stepJD - mody : -mody;
-			var approxDateJD:Number = EntityManager.period.beginJD + delta;
-
+			
+			var apxDate:Object = JDUtils.JDToGregorian( EntityManager.period.beginJD );
+			var apxYear:Number = apxDate.year;
+			var apxMonth:Number = apxDate.month;
+			var apxDay:Number = apxDate.date;
+			
+			Log.traceText( "1 apxYear : " + apxYear );
+			if ( jdPerHeight >= JDUtils.DAYS_PER_YEAR ) {
+				apxYear = approximation( apxYear, _stepJD / JDUtils.DAYS_PER_YEAR );
+			}
+			Log.traceText( "2 apxYear : " + apxYear );
+			
+			_approxBaseJD = JDUtils.gregorianToJD( apxYear, apxMonth, apxDay );
 
 			Log.traceText( "_stepJD : " + _stepJD );
 			Log.traceText( "_numSteps : " + _numSteps );
-			Log.traceText( "_approxBaseJD : " + _approxBaseJD );
-			Log.traceText( "EntityManager.period.beginJD : " + EntityManager.period.beginJD + " = " + JDUtils.getFormatString(EntityManager.period.beginJD) );
-			Log.traceText( "mody : " + mody );
-			Log.traceText( "delta : " + delta );
-			Log.traceText( "approxDate : " + approxDateJD + " = " + JDUtils.getFormatString( approxDateJD ) );
-			Log.traceText( "JDUtils.gregorianToJD(1650) : " + JDUtils.gregorianToJD(1650) );
+			Log.traceText( "_approxBaseJD : " + _approxBaseJD + " = " + JDUtils.getFormatString(_approxBaseJD) );
+			Log.traceText( "...beginJD : " + EntityManager.period.beginJD + " = " + JDUtils.getFormatString(EntityManager.period.beginJD) );
+		}
+
+		private function approximation( value:Number, base:Number ):Number
+		{
+			var mod:Number = value % base;
+			var k:Number = mod / base;
+			Log.traceText( base + " / " + mod + " = " + k );
+			
+			return k >= 0.5 ? value + ( base - mod ) : value - mod;
 		}
 
 		private function draw():void {
