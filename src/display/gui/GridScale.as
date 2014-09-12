@@ -38,8 +38,7 @@ package display.gui {
 		private var _baseJD:Number = 0;
 		private var _oldBaseJD:Number = 0;      // Старое значение MoTimeline.me.baseJD
 		private var _offsetBaseJD:Number = 0;   // Величина смещения MoTimeline.me.baseJD
-		private var _approxBaseJD:Number = 0;   // Величина аппроксимации MoTimeline.me.baseJD до ближайшей круглой даты
-		private var _approxBeginJD:Number = 0;   // Величина аппроксимации EntityManager.period.beginJD до ближайшей круглой даты
+		private var _approxBeginJD:Number = 0;   // Величина аппроксимации MoTimeline.me.baseJD до ближайшей круглой даты
 		private var _stepJD:Number = 0;         // Шаг масштабных линий
 
 		private var _width:uint;
@@ -107,59 +106,63 @@ package display.gui {
 
 			_stepJD = STEPS_JD[idx];
 			_numSteps = jdPerHeight / _stepJD;
-			
-			var apxDate:Object = JDUtils.JDToGregorian( EntityManager.period.beginJD );
-			var apxYear:Number = apxDate.year;
-			var apxMonth:Number = apxDate.month;
-			var apxDay:Number = apxDate.date;
+
+//			var baseJD:Number = MoTimeline.me.baseJD;
+			var baseJD:Number = EntityManager.period.beginJD;
+			var date:Object = JDUtils.JDToGregorian( baseJD );
+			var apxYear:Number = date.year;
+			var apxMonth:Number = date.month;
+			var apxDay:Number = date.date;
 			
 			Log.traceText( "1 apxYear : " + apxYear );
-			if ( jdPerHeight >= JDUtils.DAYS_PER_YEAR ) {
+			Log.traceText( "1 apxMonth : " + apxMonth );
+			Log.traceText( "1 apxDay : " + apxDay );
+
+			if ( jdPerHeight > JDUtils.DAYS_PER_YEAR ) {
 				apxYear = approximation( apxYear, _stepJD / JDUtils.DAYS_PER_YEAR );
+				apxMonth = approximation( apxMonth, 12 );
+				apxDay = approximation( apxDay, 31 );
 			}
+
 			Log.traceText( "2 apxYear : " + apxYear );
-			
-			_approxBaseJD = JDUtils.gregorianToJD( apxYear, apxMonth, apxDay );
+			Log.traceText( "2 apxMonth : " + apxMonth );
+			Log.traceText( "2 apxDay : " + apxDay );
+
+			_approxBeginJD = JDUtils.gregorianToJD( apxYear, apxMonth, apxDay ) + 0.5;
 
 			Log.traceText( "_stepJD : " + _stepJD );
 			Log.traceText( "_numSteps : " + _numSteps );
-			Log.traceText( "_approxBaseJD : " + _approxBaseJD + " = " + JDUtils.getFormatString(_approxBaseJD) );
-			Log.traceText( "...beginJD : " + EntityManager.period.beginJD + " = " + JDUtils.getFormatString(EntityManager.period.beginJD) );
+			Log.traceText( "...beginJD : " + baseJD + " = " + JDUtils.getFormatString(baseJD) );
+			Log.traceText( "_approxBeginJD : " + _approxBeginJD + " = " + JDUtils.getFormatString(_approxBeginJD) );
 		}
 
 		private function approximation( value:Number, base:Number ):Number
 		{
 			var mod:Number = value % base;
-			var k:Number = mod / base;
-			Log.traceText( base + " / " + mod + " = " + k );
+//			var k:Number = mod / base;
+//			Log.traceText( base + " / " + mod + " = " + k );
 			
-			return k >= 0.5 ? value + ( base - mod ) : value - mod;
+//			return k >= 0.5 ? value + ( base - mod ) : value - mod;
+			var val:Number = value - mod;
+			return val == 0 ? 1 : val;
 		}
 
 		private function draw():void {
 			killChildren();
 
 			var dateLine:ASprite;
-
 			var len:uint = _numSteps + 1;
-			var lenHalf:Number = int( len / 2 );
-
+			
 			for ( var i:int = 0; i <= len; i++ ) {
-				var jdi:Number = ( -lenHalf + i ) * _stepJD - _offsetBaseJD - _approxBaseJD;
-				var yy:Number = _yCenter + _scale * ( jdi );
-				var jd:Number = _baseJD + jdi;
+				var jd:Number = _approxBeginJD + _stepJD * i;
 
-//				dateLine = _displayed[ jd ] as ASprite;
+				Log.traceText( i + " jd : " + jd + " = " + JDUtils.getFormatString(jd) );
 				
-//				if ( !dateLine ) {
-					dateLine = DateLineFactory.createDateMarker( jd, _width, _markerMode );
-					dateLine.name = "" + jd;
-					addChild( dateLine );
-					
-//					_displayed[ jd ] = dateLine;
-//				}
+				dateLine = DateLineFactory.createDateMarker( jd, _width, _markerMode );
+				dateLine.name = "" + jd;
+				addChild( dateLine );
 
-				dateLine.y = yy;
+//				dateLine.y = yy;
 			}
 			
 			if ( Math.abs( _offsetBaseJD ) >= _stepJD ) {

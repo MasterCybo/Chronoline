@@ -125,7 +125,7 @@ package ru.arslanov.core.utils
 			if ( template && template != "" ) {
 				str = StringUtils.substitute( template, date.year // {0}
 						, getNameMonth( date.month ) // {1}
-						, StringUtils.numberToString( date.date ) // {2}
+						, StringUtils.numberToString( date.date, 1 ) // {2}
 						, getNameWeekday( date.weekday ) // {3}
 						, StringUtils.numberToString( date.hours ) // {4}
 						, StringUtils.numberToString( date.minutes ) ); // {5}
