@@ -3,6 +3,8 @@ package display.gui {
 
 	import display.DateLineFactory;
 
+	import ru.arslanov.core.utils.Calc;
+
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
@@ -100,14 +102,14 @@ package display.gui {
 			var apxBeginJD:Number = approxJD( jdb );
 			var deltaBeginJD:Number = jdb - apxBeginJD;
 
-			Log.traceText( "=======================================================" );
-
-			Log.traceText( "_stepJD : " + _stepJD );
-			Log.traceText( "_baseJD : " + _baseJD + " = " + JDUtils.getFormatString(_baseJD) );
-			Log.traceText( "JD per Height : " + jdH );
-			Log.traceText( "errorDays : " + errorDays );
-			Log.traceText( "jdb : " + jdb + " = " + JDUtils.getFormatString(jdb) );
-			Log.traceText( "apxBeginJD : " + apxBeginJD + " = " + JDUtils.getFormatString(apxBeginJD) );
+//			Log.traceText( "=======================================================" );
+//
+//			Log.traceText( "_stepJD : " + _stepJD );
+//			Log.traceText( "_baseJD : " + _baseJD + " = " + JDUtils.getFormatString(_baseJD) );
+//			Log.traceText( "JD per Height : " + jdH );
+//			Log.traceText( "errorDays : " + errorDays );
+//			Log.traceText( "jdb : " + jdb + " = " + JDUtils.getFormatString(jdb) );
+//			Log.traceText( "apxBeginJD : " + apxBeginJD + " = " + JDUtils.getFormatString(apxBeginJD) );
 //			Log.traceText( "deltaBeginJD : " + deltaBeginJD );
 
 			Log.traceText( "----------------------------------" );
@@ -118,8 +120,8 @@ package display.gui {
 			var len:uint = numSteps + 1;
 
 			for ( var i:int = 0; i <= len; i++ ) {
-				var jdVis:Number = apxBeginJD + (_stepJD - 1) * i;
-//				var jdVis:Number = approxJD( jdb + _stepJD * i );
+//				var jdVis:Number = approxJD( apxBeginJD + _stepJD * i );
+				var jdVis:Number = approxJD( jdb + _stepJD * i );
 				var jdPos:Number = -deltaBeginJD + _stepJD * i;
 
 //				var djd:Number = jdVis - apxBeginJD;
@@ -152,6 +154,7 @@ package display.gui {
 			}
 
 			if (_stepJD >= JDUtils.DAYS_PER_MONTH ) {
+				month = approximation( month - 1, 1 );
 				day = approximation( day - 1, JDUtils.DAYS_PER_MONTH );
 			}
 
