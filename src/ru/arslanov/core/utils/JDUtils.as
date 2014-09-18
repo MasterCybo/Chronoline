@@ -2,7 +2,8 @@ package ru.arslanov.core.utils
 {
 
 	/**
-	 * Класс для работы с Юлианским календарём. Формула справедлива для дат после 23 ноября −4713 г.
+	 * Класс для работы с Юлианским календарём.
+	 * Формула справедлива для дат после 23 ноября −4713 года.
 	 * @author Artem Arslanov
 	 */
 	public class JDUtils
@@ -28,14 +29,14 @@ package ru.arslanov.core.utils
 			var wjd:Number = Math.floor( jd - 0.5 ) + 0.5;
 			var depoch:Number = wjd - GREGORIAN_EPOCH;
 			var quadricent:Number = Math.floor( depoch / 146097 );
-			var dqc:Number = depoch % 146097;
+			var dqc:Number = mod( depoch, 146097 );
 			var cent:Number = Math.floor( dqc / 36524 );
-			var dcent:Number = dqc % 36524;
+			var dcent:Number = mod( dqc, 36524 );
 			var quad:Number = Math.floor( dcent / 1461 );
-			var dquad:Number = dcent % 1461;
+			var dquad:Number = mod( dcent, 1461 );
 			var yindex:Number = Math.floor( dquad / 365 );
 			var year:Number = quadricent * 400 + cent * 100 + quad * 4 + yindex;
-
+			
 			if ( !(( cent == 4 ) || ( yindex == 4 ) ) ) year++;
 
 			var yearday:Number = wjd - gregorianToJD( year, 1, 1 );
@@ -44,12 +45,15 @@ package ru.arslanov.core.utils
 			var day:Number = (wjd - gregorianToJD( year, month, 1 )) + 1;
 			
 			var time:Object = JDToTime( jd );
-			
-			var weekday:uint = Math.floor( jd + 1.5 ) % 7; // 0-воскресенье, 1-понедельник, 2-вторник и т.д.
+			var weekday:int = Math.floor( jd + 1.5 ) % 7; // 0-воскресенье, 1-понедельник, 2-вторник и т.д.
 			
 			return { year: year, month: month, date: day, weekday: weekday, hours: time.hours, minutes: time.minutes, seconds: time.seconds };
 		}
-
+		
+		static private function mod( a:Number, b:Number ):Number {
+			return a - (b * Math.floor( a / b ));
+		}
+		
 		/**
 		 * Конвертирование Грегорианской даты в Юлианское число
 		 * Взято с стайта https://www.fourmilab.ch/documents/calendar/
@@ -65,7 +69,8 @@ package ru.arslanov.core.utils
 					+ Math.floor( ( year - 1 ) / 4 )
 					+ ( -Math.floor( ( year - 1 ) / 100 ) )
 					+ Math.floor( ( year - 1 ) / 400 )
-					+ Math.floor( ((( 367 * month ) - 362 ) / 12 ) + (( month <= 2 ) ? 0 : ( isLeapGregorian( year ) ? -1 : -2 ) ) + day )
+					+ Math.floor( ((( 367 * month ) - 362 ) / 12 )
+					+ (( month <= 2 ) ? 0 : ( isLeapGregorian( year ) ? -1 : -2 ) ) + day )
 					+ Math.floor(seconds + 60 * (minutes + 60 * hours) + 0.5) / 86400.0;
 		}
 

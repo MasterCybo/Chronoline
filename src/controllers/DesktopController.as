@@ -12,6 +12,7 @@ package controllers {
 
 	import ru.arslanov.core.controllers.SimpleDragController;
 	import ru.arslanov.core.events.MouseControllerEvent;
+	import ru.arslanov.core.utils.Calc;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
@@ -58,7 +59,7 @@ package controllers {
 				dy = 10 * ev.delta; // Если вращаем колесо, тогда берём шаг колеса
 			}
 			
-			MoTimeline.me.baseJD -= dy / MoTimeline.me.scale;
+			MoTimeline.me.baseJD = MoTimeline.me.baseJD - dy / MoTimeline.me.scale;
 
 			_movement.offset( dx, dy );
 		}

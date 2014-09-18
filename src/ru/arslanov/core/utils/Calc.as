@@ -1,5 +1,4 @@
 ﻿package ru.arslanov.core.utils {
-	import flash.display.DisplayObject;
 	import flash.geom.Point;
 
 	/**
@@ -23,27 +22,27 @@
 		}
 		
 		static public function round1( value:Number ):Number {
-			return Math.round (value * 10) * 0.1;
+			return Math.round (value * 10) / 10;
 		}
 		
 		static public function round2( value:Number ):Number {
-			return Math.round (value * 100) * 0.01;
+			return Math.round (value * 100) / 100;
 		}
 		
 		static public function round3 (value:Number):Number {
-			return Math.round (value * 1000) * 0.001;
+			return Math.round (value * 1000) / 1000;
 		}
 		
 		static public function floor1( value:Number ):Number {
-			return Math.floor (value * 10) * 0.1;
+			return Math.floor (value * 10) / 10;
 		}
 		
 		static public function floor2( value:Number ):Number {
-			return Math.floor (value * 100) * 0.01;
+			return Math.floor (value * 100) / 100;
 		}
 		
 		static public function floor3( value:Number ):Number {
-			return Math.floor (value * 1000) * 0.001;
+			return Math.floor (value * 1000) / 1000;
 		}
 		
 		static public function toRad( degree:Number ):Number {
