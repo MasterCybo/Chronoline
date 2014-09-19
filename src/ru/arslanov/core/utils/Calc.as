@@ -176,5 +176,34 @@
 		static public function ln( val:Number ):Number {
 			return log( Math.E, val );
 		}
+
+		/**
+		 * Линейная интерполяция
+		 * @param a
+		 * @param b
+		 * @param ratio
+		 * @return
+		 */
+		static public function lerp( a:Number, b:Number, ratio:Number ):Number
+		{
+			return a + (b - a) * ratio;
+		}
+
+		/**
+		 * Проверка вхождения угла в диапазон между двумя углами
+		 * @param angle
+		 * @param a
+		 * @param b
+		 * @return
+		 */
+		public static function angleBetween( angle:Number, a:Number, b:Number ):Boolean
+		{
+			var mod:Number = Math.PI * 2;
+			angle = (mod + (angle % mod)) % mod;
+			a = (mod * 100 + a) % mod;
+			b = (mod * 100 + b) % mod;
+			if (a < b) return a <= angle && angle <= b;
+			return a <= angle || angle <= b;
+		}
 	}
 }

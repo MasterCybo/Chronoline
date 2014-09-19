@@ -4,6 +4,7 @@ package display.gui {
 	import display.DateLineFactory;
 
 	import ru.arslanov.core.utils.Calc;
+	import ru.arslanov.core.utils.JDUtils;
 
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
@@ -105,6 +106,7 @@ package display.gui {
 //			Log.traceText( "=======================================================" );
 //
 //			Log.traceText( "_stepJD : " + _stepJD );
+//			Log.traceText( _stepJD + " ===> _stepJD / 365.25 : " + _stepJD / JDUtils.DAYS_PER_YEAR );
 //			Log.traceText( "_baseJD : " + _baseJD + " = " + JDUtils.getFormatString(_baseJD) );
 //			Log.traceText( "JD per Height : " + jdH );
 //			Log.traceText( "errorDays : " + errorDays );
@@ -112,7 +114,7 @@ package display.gui {
 //			Log.traceText( "apxBeginJD : " + apxBeginJD + " = " + JDUtils.getFormatString(apxBeginJD) );
 //			Log.traceText( "deltaBeginJD : " + deltaBeginJD );
 
-			Log.traceText( "----------------------------------" );
+//			Log.traceText( "----------------------------------" );
 
 			killChildren();
 
@@ -120,9 +122,10 @@ package display.gui {
 			var len:uint = numSteps + 1;
 
 			for ( var i:int = 0; i <= len; i++ ) {
-//				var jdVis:Number = approxJD( apxBeginJD + _stepJD * i );
-				var jdVis:Number = approxJD( jdb + _stepJD * i );
-				var jdPos:Number = -deltaBeginJD + _stepJD * i;
+				var step:Number = _stepJD;
+//				var step:Number = JDUtils.isLeapGregorian( JDUtils.JDToGregorian(jdb).year ) ? _stepJD + JDUtils.DAYS_PER_MONTH : _stepJD;
+				var jdVis:Number = approxJD( jdb + step * i );
+				var jdPos:Number = -deltaBeginJD + step * i;
 
 //				var djd:Number = jdVis - apxBeginJD;
 //				var si:Number = _stepJD * i;
@@ -145,18 +148,18 @@ package display.gui {
 			var month:Number = date.month;
 			var day:Number = date.date;
 
-			if (_stepJD >= JDUtils.DAYS_PER_YEAR ) {
+//			Log.traceText( "month : " + month );
+
+			if (_stepJD >= STEPS_JD[3] ) { // >= 1 года
+				month = approximation( month - 1, 12 );
 				year = approximation( year, _stepJD / JDUtils.DAYS_PER_YEAR );
 			}
 
-			if (_stepJD >= STEPS_JD[3] ) {
-				month = approximation( month - 1, 12 );
-			}
-
-			if (_stepJD >= JDUtils.DAYS_PER_MONTH ) {
-				month = approximation( month - 1, 1 );
+			if (_stepJD >= STEPS_JD[4] ) { // >= 1 месяца
 				day = approximation( day - 1, JDUtils.DAYS_PER_MONTH );
 			}
+
+//			Log.traceText( "\tmonth : " + month );
 
 			return JDUtils.gregorianToJD( year, month, day ) + 0.5;
 		}
@@ -164,7 +167,7 @@ package display.gui {
 		private function approximation( value:Number, base:Number ):Number
 		{
 			var val:Number = value - ( value % base );
-			return val == 0 ? 1 : val;
+			return Math.max( 1, val );
 		}
 
 		override public function get width():Number {

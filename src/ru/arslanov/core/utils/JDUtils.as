@@ -15,9 +15,11 @@ package ru.arslanov.core.utils
 		static public const DAYS_PER_MONTH:Number = 30.4375; // Среднее количество дней в месяце 365.25/12
 		static public const WEEKS_PER_MONTH:Number = 4.34821428571428571429; // Среднее количество недель в месяце 30.4375/7
 		
+		static private var _daysInMonths:Array = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+
 		static public var weekdaysLocale:Array = [ "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье" ];
 		static public var monthsLocale:Array = [ "Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря" ];
-		
+
 		/**
 		 * Конвертирование Юлианского числа в Григорианскую дату
 		 * Взято с стайта https://www.fourmilab.ch/documents/calendar/
@@ -83,6 +85,29 @@ package ru.arslanov.core.utils
 		static public function isLeapGregorian( year:Number ):Boolean
 		{
 			return (( year % 4 ) == 0 ) && ( !((( year % 100 ) == 0 ) && (( year % 400 ) != 0 ) ) );
+		}
+
+		/**
+		 * Возвращает количество дней в месяце в зависимости от високосности года
+		 * @param year
+		 * @param month - 1=январь
+		 * @return
+		 */
+		static public function getDaysPerMonthGregorian( year:int, month:uint ):uint
+		{
+			month = Math.max( 1, month ) - 1;
+			return isLeapGregorian( year ) && (month == 2) ? _daysInMonths[month] + 1 : _daysInMonths[month];
+		}
+
+		/**
+		 * Возвращает количество дней в году в зависимости от високосности года
+		 * @param year
+		 * @param month - 0=январь
+		 * @return
+		 */
+		static public function getDaysPerYearGregorian( year:int ):uint
+		{
+			return isLeapGregorian( year ) ? 366 : 365;
 		}
 
 		/**
