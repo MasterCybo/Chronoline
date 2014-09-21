@@ -96,7 +96,7 @@ package ru.arslanov.core.utils
 		static public function getDaysPerMonthGregorian( year:int, month:uint ):uint
 		{
 			month = Math.max( 1, month ) - 1;
-			return isLeapGregorian( year ) && (month == 2) ? _daysInMonths[month] + 1 : _daysInMonths[month];
+			return isLeapGregorian( year ) && (month == 1/*февраль*/) ? _daysInMonths[month] + 1 : _daysInMonths[month];
 		}
 
 		/**

@@ -3,9 +3,6 @@ package display.gui {
 
 	import display.DateLineFactory;
 
-	import ru.arslanov.core.utils.Calc;
-	import ru.arslanov.core.utils.JDUtils;
-
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
@@ -99,45 +96,51 @@ package display.gui {
 
 			_stepJD = STEPS_JD[idx];
 			var numSteps:Number = jdH / _stepJD;
-			var apxBaseJD:Number = approxJD( _baseJD );
 			var apxBeginJD:Number = approxJD( jdb );
 			var deltaBeginJD:Number = jdb - apxBeginJD;
-
-//			Log.traceText( "=======================================================" );
-//
-//			Log.traceText( "_stepJD : " + _stepJD );
-//			Log.traceText( _stepJD + " ===> _stepJD / 365.25 : " + _stepJD / JDUtils.DAYS_PER_YEAR );
-//			Log.traceText( "_baseJD : " + _baseJD + " = " + JDUtils.getFormatString(_baseJD) );
-//			Log.traceText( "JD per Height : " + jdH );
-//			Log.traceText( "errorDays : " + errorDays );
-//			Log.traceText( "jdb : " + jdb + " = " + JDUtils.getFormatString(jdb) );
-//			Log.traceText( "apxBeginJD : " + apxBeginJD + " = " + JDUtils.getFormatString(apxBeginJD) );
-//			Log.traceText( "deltaBeginJD : " + deltaBeginJD );
-
-//			Log.traceText( "----------------------------------" );
 
 			killChildren();
 
 			var dateLine:ASprite;
 			var len:uint = numSteps + 1;
 
+			var date:Object = JDUtils.JDToGregorian(apxBeginJD);
+			var step:Number = JDUtils.getDaysPerMonthGregorian(date.year, date.month);
+			var jdVis:Number = jdb;
+			var offsetVis:Number = 0;
+
+			Log.traceText( ">>> jdb : " + jdb + " = " + JDUtils.getFormatString(jdb) );
+			
 			for ( var i:int = 0; i <= len; i++ ) {
-				var step:Number = _stepJD;
-//				var step:Number = JDUtils.isLeapGregorian( JDUtils.JDToGregorian(jdb).year ) ? _stepJD + JDUtils.DAYS_PER_MONTH : _stepJD;
-				var jdVis:Number = approxJD( jdb + step * i );
-				var jdPos:Number = -deltaBeginJD + step * i;
-
-//				var djd:Number = jdVis - apxBeginJD;
-//				var si:Number = _stepJD * i;
-
-//				Log.traceText( i + " jdVis : " + jdVis + " = " + JDUtils.getFormatString(jdVis) );
-//				Log.traceText( "djd : " + djd + " = si : " + si );
-
-				dateLine = DateLineFactory.createDateMarker( jdVis, _width, _markerMode );
+				var apxJDVis:Number = approxJD( jdVis - offsetVis );
+				
+				
+//				Log.traceText(i + " - step : " + step + ", jdBegin : " + jdb + " = " + JDUtils.getFormatString(jdb) );
+//				Log.traceText("\tjdVis : " + jdVis + " = " + JDUtils.getFormatString(jdVis));
+//				Log.traceText("\t\tapxJDVisible : " + apxJDVis + " = " + JDUtils.getFormatString(apxJDVis));
+				
+				dateLine = DateLineFactory.createDateMarker( apxJDVis, _width, _markerMode );
 				addChild( dateLine );
 
-				dateLine.y = jdPos * _scale;
-//				Log.traceText( "dateLine.y : " + dateLine.y );
+				dateLine.y = (-deltaBeginJD + jdVis - jdb) * _scale;
+				
+				if (_stepJD <= STEPS_JD[4]) {
+					date = JDUtils.JDToGregorian(jdVis);
+					
+					Log.traceText( i + " - jdVis : " + jdVis + " = " + date.month + " = " + JDUtils.getFormatString(jdVis) );
+					
+					step = JDUtils.getDaysPerMonthGregorian(date.year, date.month);
+					offsetVis = date.date - 1;
+					
+					Log.traceText( "    offsetVis : " + offsetVis );
+					Log.traceText( "    New step : " + step );
+					Log.traceText( "    Next jdVis : " + (jdVis + step) + " = " + JDUtils.getFormatString(jdVis + step) );
+					Log.traceText( "    Next apxJDVis : " + (jdVis + step - offsetVis) + " = " + JDUtils.getFormatString(jdVis + step - offsetVis) );
+				} else {
+					step = _stepJD;
+				}
+				
+				jdVis += step;
 			}
 		}
 
