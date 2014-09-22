@@ -1,4 +1,6 @@
 package {
+	import ru.arslanov.core.utils.DateUtils;
+
 	import utils.EntityColorPalette;
 
 	import constants.LocaleString;
@@ -73,7 +75,7 @@ package {
 			Log.customTracer = Logger.traceMessage;
 
 			// Устанавливаем локализацию месяцев
-			JDUtils.monthsLocale = LocaleString.MONTHS_GENITIVE;
+			DateUtils.monthsLocale = LocaleString.MONTHS_GENITIVE;
 			
 			//AWindowsManager.me.init( this );
 			ATooltipManager.me.init( this, 15 );

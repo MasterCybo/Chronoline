@@ -3,6 +3,8 @@ package display.gui {
 
 	import display.DateLineFactory;
 
+	import ru.arslanov.core.utils.DateUtils;
+
 	import ru.arslanov.core.utils.JDUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
@@ -14,15 +16,15 @@ package display.gui {
 	public class GridScale extends ASprite {
 
 		static private const STEPS_JD:Array = [
-					1000 * JDUtils.DAYS_PER_YEAR    // 1000 лет
-					, 100 * JDUtils.DAYS_PER_YEAR   // 100 лет
-					, 10 * JDUtils.DAYS_PER_YEAR    // 10 лет
-					, JDUtils.DAYS_PER_YEAR         // 1 год
-					, JDUtils.DAYS_PER_YEAR / 12    // 1 месяц
-					, 1                             // 1 день
-					, 1 / 24                        // 1 час
-					, 1 / 24 / 10                   // 10 минут
-					, 1 / 24 / 60                   // 1 минута
+					1000 * JDUtils.DAYS_PER_YEAR    // 0: 1000 лет
+					, 100 * JDUtils.DAYS_PER_YEAR   // 1: 100 лет
+					, 10 * JDUtils.DAYS_PER_YEAR    // 2: 10 лет
+					, JDUtils.DAYS_PER_YEAR         // 3: 1 год
+					, JDUtils.DAYS_PER_YEAR / 12    // 4: 1 месяц
+					, 1                             // 5: 1 день
+					, 1 / 24                        // 6: 1 час
+					, 1 / 24 / 10                   // 7: 10 минут
+					, 1 / 24 / 60                   // 8: 1 минута
 		];
 
 		private var _idxRange:uint = 0;
@@ -81,7 +83,6 @@ package display.gui {
 			var jdH:Number = _height / _scale;
 			var hJDH:Number = jdH / 2;
 			var yearsPerHJDH:Number = hJDH / JDUtils.DAYS_PER_YEAR;
-			var errorDays:Number = Math.floor( yearsPerHJDH / 4 );
 			var jdb:Number = _baseJD - hJDH;
 			var jde:Number = _baseJD + hJDH;
 
@@ -97,50 +98,36 @@ package display.gui {
 			_stepJD = STEPS_JD[idx];
 			var numSteps:Number = jdH / _stepJD;
 			var apxBeginJD:Number = approxJD( jdb );
-			var deltaBeginJD:Number = jdb - apxBeginJD;
-
-			killChildren();
+			var offsetBeginJD:Number = jdb - apxBeginJD;
+			var date:Object = JDUtils.JDToGregorian(apxBeginJD);
+			var step:Number = DateUtils.getDaysMonth(date.year, date.month);
+			var jdVis:Number = jdb;
+			var apxJDVis:Number = approxJD( jdVis );
 
 			var dateLine:ASprite;
 			var len:uint = numSteps + 1;
 
-			var date:Object = JDUtils.JDToGregorian(apxBeginJD);
-			var step:Number = JDUtils.getDaysPerMonthGregorian(date.year, date.month);
-			var jdVis:Number = jdb;
-			var offsetVis:Number = 0;
+//			Log.traceText( ">>> Begin : " + jdb + " = " + JDUtils.getFormatString(jdb) + " => " + JDUtils.getFormatString( approxJD( jdb ) ) );
 
-			Log.traceText( ">>> jdb : " + jdb + " = " + JDUtils.getFormatString(jdb) );
-			
+			killChildren();
+
 			for ( var i:int = 0; i <= len; i++ ) {
-				var apxJDVis:Number = approxJD( jdVis - offsetVis );
-				
-				
-//				Log.traceText(i + " - step : " + step + ", jdBegin : " + jdb + " = " + JDUtils.getFormatString(jdb) );
-//				Log.traceText("\tjdVis : " + jdVis + " = " + JDUtils.getFormatString(jdVis));
-//				Log.traceText("\t\tapxJDVisible : " + apxJDVis + " = " + JDUtils.getFormatString(apxJDVis));
-				
-				dateLine = DateLineFactory.createDateMarker( apxJDVis, _width, _markerMode );
+//				Log.traceText( i + " - Draw : " + jdVis + " = " + JDUtils.getFormatString( jdVis ) + " => " + JDUtils.getFormatString( approxJD( jdVis ) ) );
+
+				dateLine = DateLineFactory.createDateMarker( approxJD( apxJDVis ), _width, _markerMode );
+				dateLine.y = Math.floor( (-offsetBeginJD + jdVis - jdb) * _scale );
 				addChild( dateLine );
 
-				dateLine.y = (-deltaBeginJD + jdVis - jdb) * _scale;
-				
-				if (_stepJD <= STEPS_JD[4]) {
+
+				if (_stepJD > STEPS_JD[5] && _stepJD <= STEPS_JD[4]) {
 					date = JDUtils.JDToGregorian(jdVis);
-					
-					Log.traceText( i + " - jdVis : " + jdVis + " = " + date.month + " = " + JDUtils.getFormatString(jdVis) );
-					
-					step = JDUtils.getDaysPerMonthGregorian(date.year, date.month);
-					offsetVis = date.date - 1;
-					
-					Log.traceText( "    offsetVis : " + offsetVis );
-					Log.traceText( "    New step : " + step );
-					Log.traceText( "    Next jdVis : " + (jdVis + step) + " = " + JDUtils.getFormatString(jdVis + step) );
-					Log.traceText( "    Next apxJDVis : " + (jdVis + step - offsetVis) + " = " + JDUtils.getFormatString(jdVis + step - offsetVis) );
+					step = DateUtils.getDaysMonth(date.year, date.month);
 				} else {
 					step = _stepJD;
 				}
 				
-				jdVis += step;
+				jdVis += _stepJD;
+				apxJDVis += step;
 			}
 		}
 
@@ -155,16 +142,16 @@ package display.gui {
 
 			if (_stepJD >= STEPS_JD[3] ) { // >= 1 года
 				month = approximation( month - 1, 12 );
-				year = approximation( year, _stepJD / JDUtils.DAYS_PER_YEAR );
+//				year = approximation( year, _stepJD / 365 );
+				year = approximation( year, Math.floor( _stepJD / JDUtils.DAYS_PER_YEAR ) );
+//				year = approximation( year, Math.floor( _stepJD / DateUtils.getDaysYear(year) ) );
 			}
 
 			if (_stepJD >= STEPS_JD[4] ) { // >= 1 месяца
 				day = approximation( day - 1, JDUtils.DAYS_PER_MONTH );
 			}
 
-//			Log.traceText( "\tmonth : " + month );
-
-			return JDUtils.gregorianToJD( year, month, day ) + 0.5;
+			return JDUtils.gregorianToJD( year, month, day );
 		}
 
 		private function approximation( value:Number, base:Number ):Number
