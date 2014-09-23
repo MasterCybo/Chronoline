@@ -22,7 +22,9 @@ package data {
 		private var _firstMoFact:MoFact;
 		private var _lastMoFact:MoFact;
 		private var _duration:Number = 0;
-		
+
+		private var urlMore:String = "";
+
 		public function MoEntity( id:String, title:String ) {
 			super( id, title );
 		}
@@ -125,6 +127,10 @@ package data {
 			if ( !json.id || !json.title ) return new MoEntity( null, null );
 
 			var ent:MoEntity = new MoEntity( json.id, json.title );
+			ent.urlMore = json.link ? json.link : "";
+
+			// TODO: удалить нахуй этот трейс
+			trace("ent.urlMore : " + ent.urlMore);
 			
 			var facts:Object = json["milestones"];
 
