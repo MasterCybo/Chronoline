@@ -17,14 +17,14 @@ package display
 	{
 		public static const MODE_FULL_DATE:uint = 0;
 		public static const MODE_ONLY_YEAR:uint = 1;
-//		public static const MODE_FULL_WEEK:uint = 2;
+		public static const MODE_MONTH:uint = 2;
 
 		private static var _pool:Array = [];
 		
 		static public function createDateMarker( jd:Number, width:uint, mode:uint = 0 ):ASprite
 		{
 			// TODO: реализовать изменение линии в зависимости от масштаба
-			return new DateLine( jd, width, LocaleString.DATE_YYYY_MONTH_DD, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
+//			return new DateLine( jd, width, LocaleString.DATE_YYYY_MONTH_DD, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
 			
 			var marker:DateLine = _pool.pop();
 			var template:String = LocaleString.DATE_YYYY_MONTH_DD;
@@ -33,9 +33,9 @@ package display
 				case 1:
 					template = LocaleString.DATE_YYYY;
 					break;
-//				case 2:
-//					template = LocaleString.DATE_YYYY;
-//					break;
+				case 2:
+					template = LocaleString.DATE_YYYY_MONTH;
+					break;
 				default:
 					template = LocaleString.DATE_YYYY_MONTH_DD;
 			}

@@ -27,23 +27,10 @@ package display.gui {
 					, 1 / 24 / 60                   // 8: 1 минута
 		];
 
-		private var _idxRange:uint = 0;
-
-		static private const MONTH:Number = 0.08333; // Месяц, как часть года. 1 year / 12 months
-		static private const WEEK:Number = 0.019; // Неделя, как часть года
-		
-		static private var _displayed:Object = {}; // jd = DateLine
-
 		private var _baseJD:Number = 0;
 		private var _stepJD:Number = 0;
-		private var _oldBaseJD:Number = 0;      // Старое значение MoTimeline.me.baseJD
-		private var _offsetBaseJD:Number = 0;   // Величина смещения MoTimeline.me.baseJD
-		private var stepJD:Number = 0;         // Шаг масштабных линий
-
 		private var _width:uint;
 		private var _height:uint;
-		private var numSteps:Number = 0;
-		private var _yCenter:Number = 0;
 		private var _markerMode:uint = 0;
 		private var _scale:Number = 1;
 
@@ -56,14 +43,6 @@ package display.gui {
 
 		public function reset():void
 		{
-//			Log.traceText( "SCALE : " + SCALE );
-
-			_oldBaseJD = _baseJD;
-			_yCenter = _height / 2;
-			stepJD = 0;
-			_offsetBaseJD = 0;
-			numSteps = 0;
-
 			draw();
 		}
 
@@ -106,6 +85,18 @@ package display.gui {
 
 			var dateLine:ASprite;
 			var len:uint = numSteps + 1;
+
+
+			switch ( true ) {
+				case _stepJD >= STEPS_JD[2]:
+					_markerMode = DateLineFactory.MODE_ONLY_YEAR;
+					break;
+				case _stepJD >= STEPS_JD[3]:
+					_markerMode = DateLineFactory.MODE_MONTH;
+					break;
+				default:
+					_markerMode = DateLineFactory.MODE_FULL_DATE;
+			}
 
 //			Log.traceText( ">>> Begin : " + jdb + " = " + JDUtils.getFormatString(jdb) + " => " + JDUtils.getFormatString( approxJD( jdb ) ) );
 
@@ -181,8 +172,6 @@ package display.gui {
 		}
 
 		override public function kill():void {
-			_displayed = null;
-
 			super.kill();
 		}
 	}
