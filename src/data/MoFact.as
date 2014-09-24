@@ -43,7 +43,7 @@ package data {
 			
 //			var moFact:MoFact = new MoFact( id, json.title, newPeriod ); // test
 			var moFact:MoFact = new MoFact( id, json.title, newPeriod, json.rank );
-			moFact.urlMore = json.link ? json.link : "www.yandex.ru";
+			moFact.urlMore = json.link ? json.link : "";
 
 			// Тестовый случайный масштаб иконки для теста
 //			moFact.rank = Calc.randomRange( 30, 100, true );
