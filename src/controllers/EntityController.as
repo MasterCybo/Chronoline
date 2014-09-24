@@ -36,13 +36,6 @@ package controllers {
 			var ent:Entity = ev.target.parent as Entity;
 			if ( !ent ) return;
 			
-			var textHint:String = ent.moEntity.title
-								+ "\r"
-								+ JDUtils.getFormatString( ent.moEntity.beginPeriod.beginJD, LocaleString.DATE_ENTITY_HINT )
-								+ "\r"
-								+ JDUtils.getFormatString( ent.moEntity.endPeriod.endJD, LocaleString.DATE_ENTITY_HINT );
-			
-//			ATooltipManager.me.displayHint( AppTooltip, { text: textHint } );
 			ATooltipManager.me.displayHint( EntityTooltip, ent.moEntity );
 		}
 		

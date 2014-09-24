@@ -107,7 +107,9 @@ package display.gui {
 
 				dateLine = DateLineFactory.createDateMarker( approxJD( apxJDVis ), _width, _markerMode );
 				dateLine.y = Math.floor( (-offsetBeginJD + jdVis - jdb) * _scale );
-				addChild( dateLine );
+//				if( !contains( dateLine ) ){
+					addChild( dateLine );
+//				}
 
 
 				if (_stepJD > STEPS_JD[5] && _stepJD <= STEPS_JD[4]) {

@@ -23,10 +23,7 @@ package display
 		
 		static public function createDateMarker( jd:Number, width:uint, mode:uint = 0 ):ASprite
 		{
-			// TODO: реализовать изменение линии в зависимости от масштаба
-//			return new DateLine( jd, width, LocaleString.DATE_YYYY_MONTH_DD, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
-			
-			var marker:DateLine = _pool.pop();
+//			var marker:DateLine = _pool.pop();
 			var template:String = LocaleString.DATE_YYYY_MONTH_DD;
 			
 			switch ( mode ) {
@@ -41,7 +38,7 @@ package display
 			}
 			
 //			if ( !marker ) {
-				marker = new DateLine( jd, width, template, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
+			var marker:DateLine = new DateLine( jd, width, template, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
 //			} else {
 //				marker.reinit( jd, width, template );
 //			}
