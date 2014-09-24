@@ -36,6 +36,13 @@ package constants {
 		static public const DATE_LABEL:TextFormat = new TextFormat( "Arial", 11, 0xffffff, false, null, null, null, null, "center" );
 		static public const TITLE_ENTITY:TextFormat = new TextFormat( "Arial", 14, 0X6C6C6C, false, null, null, null, null, "left" );
 		public static const FACT_ID:TextFormat = new TextFormat( "Arial", 10, 0x0 );
+
+		/***************************************************************************
+		 Стили всплывающей подсказки событий
+		 ***************************************************************************/
+		static public const TOOLTIP_DATE:TextFormat = new TextFormat( "Arial", 12, 0x0, true );
+		static public const TOOLTIP_TITLE:TextFormat = new TextFormat( "Arial", 12, 0x0 );
+		static public const TOOLTIP_MORE:TextFormat = new TextFormat( "Arial", 12, 0x0090ff, null, null, true );
 	}
 
 }

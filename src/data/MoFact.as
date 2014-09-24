@@ -12,6 +12,7 @@ package data {
 		public var period:MoPeriod;
 		public var rank:uint = 100;
 		public var categories:Vector.<MoPicture> = new Vector.<MoPicture>();
+		public var urlMore:String = "";
 		
 		public function MoFact( id:String, title:String, period:MoPeriod, rank:uint = 100 ) {
 			this.period = period;
@@ -37,22 +38,21 @@ package data {
 		static public function fromJSON( id:String, json:Object ):MoFact {
 			var newPeriod:MoPeriod = new MoPeriod( Number( json.bjd ), Number( json.ejd ) );
 			
-			// TODO: Удалить. Искусственное увеличение продолжительности события
+			// Тестовое увеличение продолжительности события
 			//newPeriod.dateEnd.setValue( newPeriod.dateEnd.getValue() + uint( Math.random() * 5 ) );
 			
-			//var moFact:MoFact = new MoFact( id, json.title, newPeriod, json.rank );
-			var moFact:MoFact = new MoFact( id, json.title, newPeriod ); // test
-			// TODO: Удалить. Cлучайный масштаб иконки для теста
+//			var moFact:MoFact = new MoFact( id, json.title, newPeriod ); // test
+			var moFact:MoFact = new MoFact( id, json.title, newPeriod, json.rank );
+			moFact.urlMore = json.link ? json.link : "www.yandex.ru";
+
+			// Тестовый случайный масштаб иконки для теста
 //			moFact.rank = Calc.randomRange( 30, 100, true );
 			
 			var arrCategory:Array = json.category;
 			
 			var name:String;
 			for ( name in arrCategory ) {
-				// TODO: Удалить внутренний цикл. Для теста, количество иконок в категории задаётся случайно
-				//var len:uint = Calc.randomRange( 0, 10, true );
 				var len:uint = arrCategory.length;
-				//Log.traceText( "len : " + len );
 				for ( var i:int = 0; i < len; i++ ) {
 					moFact.categories.push( MoPicture.fromJSON( arrCategory[ name ] ) );
 				}
