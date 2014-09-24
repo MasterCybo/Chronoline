@@ -42,8 +42,8 @@ package controllers {
 								+ "\r"
 								+ JDUtils.getFormatString( ent.moEntity.endPeriod.endJD, LocaleString.DATE_ENTITY_HINT );
 			
-			ATooltipManager.me.displayHint( AppTooltip, { text: textHint } );
-//			ATooltipManager.me.displayHint( EntityTooltip, ent.moEntity );
+//			ATooltipManager.me.displayHint( AppTooltip, { text: textHint } );
+			ATooltipManager.me.displayHint( EntityTooltip, ent.moEntity );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {
