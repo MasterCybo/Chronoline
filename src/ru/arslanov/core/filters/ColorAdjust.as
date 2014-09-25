@@ -12,8 +12,8 @@ package  ru.arslanov.core.filters
 	import flash.filters.ColorMatrixFilter;
 	import flash.geom.Matrix;
 	/**
-	 * ColorMatrixFilter с методами установоки расхожих параметров цветности <br>
-	 * 
+	 * ColorMatrixFilter с методами установки разных параметров цветности <br>
+	 * Применение: displayObject.filters = [colorAdjust.filter]
 	 * @author silin
 	 */
 	public class ColorAdjust
@@ -36,8 +36,8 @@ package  ru.arslanov.core.filters
 		private static var B_LUM:Number = 0.11;*/
 		
 		//режимы модификации _filter.matrix concat или создание нового							
-		public static const ADD:String = "add";
-		public static const CLEAR:String = "clear";
+		public static const ADD:String = "add"; // сливаем текущую матрицу с добавляемой
+		public static const CLEAR:String = "clear"; // устанавливаемая матрица заменяет текущую
 									
 									
 		private var _mode:String = ADD;
@@ -62,11 +62,16 @@ package  ru.arslanov.core.filters
 		public function get filter():flash.filters.ColorMatrixFilter { return _filter; }
 		
 		/**
-		 * режим изменения матрицы при установке новых значений: CLEAR | ADD <br>
+		 * Режим изменения матрицы при установке новых значений: CLEAR | ADD <br>
 		 * абсолютные величины или конкатенция с текущием состоянием
 		 */
 		public function get mode():String { return _mode; }
-		
+
+		/**
+		 * Режим изменения матрицы при установке новых значений.
+		 * @param value - "add" - сливаем текущую матрицу с добавляемой.
+		 * 				  "clear" - устанавливаемая матрица заменяет текущую.
+		 */
 		public function set mode(value:String):void 
 		{
 			_mode = value;

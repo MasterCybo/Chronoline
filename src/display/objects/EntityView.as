@@ -5,13 +5,10 @@ package display.objects {
 	import data.MoTimeline;
 
 	import flash.display.BitmapData;
-	import flash.filters.GlowFilter;
+	import flash.display.GradientType;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
 
 	import ru.arslanov.core.utils.JDUtils;
-
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 
@@ -48,9 +45,14 @@ package display.objects {
 			
 			draw();
 
-			filters = [ new GlowFilter( 0xff00ff, 1, 2, 2, 3, 3, true ) ];
-			
 			return this;
+		}
+
+		override public function kill():void
+		{
+			super.kill();
+
+			_moEntity = null;
 		}
 		
 		override public function set height( value:Number ):void {
@@ -74,17 +76,27 @@ package display.objects {
 		Рисуем сущность
 		***************************************************************************/
 		private function draw():void {
-			_canvas.graphics.beginFill( _color );
-			_canvas.graphics.moveTo(0, _offsetY);
-
-//			Log.traceText( "_height : " + _height );
-//			Log.traceText( "_offsetY : " + _offsetY );
-
 			var ranks:Vector.<MoRankEntity> = _moEntity.ranks;
 			var hh:Number = _moEntity.duration * MoTimeline.me.scale;
+			var moRank:MoRankEntity;
+			var i:uint;
+			var len:uint = ranks.length;
+			var minWW:Number = Settings.ENT_WIDTH_MIN;
+			var rankWidth:Number = Math.max( minWW, Settings.ENT_WIDTH );
+			
+			for ( i = 0; i<len; i++ ) {
+				moRank = ranks[i];
+				rankWidth = Math.max( rankWidth, minWW + moRank.rank * minWW );
+			}
+			
+//			_canvas.graphics.beginFill( _color );
+			var mtx:Matrix = new Matrix();
+			mtx.createGradientBox( rankWidth, _height/*, -Math.PI*/ );
+//			_canvas.graphics.beginGradientFill( GradientType.LINEAR, [0xc8c8c8, 0xe3e3e3], [1, 1], [0, 255], mtx );
+			_canvas.graphics.beginGradientFill( GradientType.LINEAR, [0xffffff, 0xd9d9d9], [1, 1], [0, 255], mtx );
+			_canvas.graphics.moveTo(0, _offsetY);
 
-			if ( ranks.length > 0 ) {
-				var minWW:Number = Settings.ENT_WIDTH_MIN;
+			if ( len > 0 ) {
 				var cx:Number = minWW;
 				var y0:Number = 0;
 				var y1:Number = 0;
@@ -92,9 +104,9 @@ package display.objects {
 
 				_canvas.graphics.lineTo( minWW, _offsetY );
 
-				for ( var i:uint = 0; i<ranks.length; i++ ) {
-					var moRank:MoRankEntity = ranks[i];
-					var rankWidth:Number = minWW + moRank.rank * minWW;
+				for ( i = 0; i<len; i++ ) {
+					moRank = ranks[i];
+					rankWidth = minWW + moRank.rank * minWW;
 
 					y1 = moRank.fromPercent * hh;
 					dy = ( y0 + y1 ) / 2;
@@ -158,11 +170,9 @@ package display.objects {
 			addChild( _bmp );
 		}
 
-		override public function kill():void
+		public function get color():uint
 		{
-			super.kill();
-
-			_moEntity = null;
+			return _color;
 		}
 	}
 
