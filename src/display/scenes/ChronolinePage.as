@@ -119,14 +119,16 @@ package display.scenes
 
 			var curJD:Number = MoTimeline.me.baseJD + dy / MoTimeline.me.scale;
 
-			var gdate:Object = JDUtils.JDToGregorian( curJD );
-			_guideLine.textLabel = StringUtils.substitute(
-					"{2}.{1}.{0}"
-					, StringUtils.numberToString( gdate.date )
-					//, DateUtils.getMonthName( gdate.month )
-					, StringUtils.numberToString( gdate.month )
-					, gdate.year
-			);
+//			var gdate:Object = JDUtils.JDToGregorian( curJD );
+//			_guideLine.textLabel = StringUtils.substitute(
+//					"{2}.{1}.{0}"
+//					, StringUtils.numberToString( gdate.date )
+//					//, DateUtils.getMonthName( gdate.month )
+//					, StringUtils.numberToString( gdate.month )
+//					, gdate.year
+//			);
+
+			_guideLine.textLabel = JDUtils.getFormatString( curJD, "{0} {1} {2}" );
 
 			_guideLine.y = Display.mouseY;
 		}
