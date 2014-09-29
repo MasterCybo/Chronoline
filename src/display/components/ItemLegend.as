@@ -7,8 +7,6 @@ package display.components
 
 	import display.base.ExternalPicture;
 
-	import ru.arslanov.core.utils.Log;
-
 	import ru.arslanov.flash.gui.ALabel;
 
 	public class ItemLegend extends ALabel

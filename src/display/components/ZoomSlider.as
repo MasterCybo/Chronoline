@@ -5,7 +5,6 @@ package display.components {
 
 	import ru.arslanov.core.controllers.SimpleDragController;
 	import ru.arslanov.core.events.MouseControllerEvent;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
 

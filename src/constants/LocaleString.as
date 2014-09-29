@@ -9,7 +9,7 @@ package constants {
 		static public const SEARCH_HELP:String = "Поиск...";
 		static public const SELECTED_ITEMS:String = "Выбрано {0} из {1}";
 		static public const TITLE_ORIGIN:String = "Доступно:";
-		static public const TITLE_TARGET:String = "Выбрано:";
+		static public const TITLE_DISPLAY:String = "Выбрано:";
 		static public const TITLE_PRESETS:String = "Наборы:";
 		static public const DATE_FORMAT:String = "{0} {1} {2} г."; // 24 марта 2005 г.
 		static public const DATE_TEMPLATE_SHORT:String = "{2} {1} {0}"; // 24 марта 2005

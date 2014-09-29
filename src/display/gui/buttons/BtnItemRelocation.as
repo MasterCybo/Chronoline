@@ -10,7 +10,7 @@ package display.gui.buttons {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class BtnItemTransfer extends BtnPartTransfer {
+	public class BtnItemRelocation extends BtnGroupRelocation {
 		static public const PADDING:uint = 10;
 		
 		private var _caption:String;
@@ -18,7 +18,7 @@ package display.gui.buttons {
 		private var _align:String;
 		private var _height:uint;
 		
-		public function BtnItemTransfer( caption:String = "", width:uint = 150, height:uint = 20, align:String = "left" ) {
+		public function BtnItemRelocation( caption:String = "", width:uint = 150, height:uint = 20, align:String = "left" ) {
 			_caption = caption;
 			_width = width;
 			_height = height;

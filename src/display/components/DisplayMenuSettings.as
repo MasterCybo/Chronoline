@@ -1,15 +1,11 @@
 package display.components
 {
 	import collections.tree.ItemOfList;
-	import collections.tree.ItemOfList;
 	import collections.tree.TreeList;
 
 	import constants.LocaleString;
 	import constants.TextFormats;
-
-	import services.EntitiesDataWebService;
-	import utils.ParserEntities;
-	import utils.ParserPartitions;
+	import constants.TreeListType;
 
 	import data.MoListEntity;
 	import data.MoListPartition;
@@ -29,8 +25,12 @@ package display.components
 	import net.ReqPartitions;
 
 	import ru.arslanov.core.events.Notification;
-	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.flash.display.ASprite;
+
+	import services.EntitiesDataWebService;
+
+	import utils.ParserEntities;
+	import utils.ParserPartitions;
 
 	/**
 	 * ...
@@ -52,7 +52,7 @@ package display.components
 		private var _btnReady:ButtonText;
 
 		private var _originList:TreeList;
-		private var _targetList:TreeList;
+		private var _displayList:TreeList;
 		private var _presetsList:TreeList;
 		// temp
 
@@ -66,13 +66,13 @@ package display.components
 
 		override public function init():*
 		{
-			_originList = new TreeList( "originTree" );
-			_targetList = new TreeList( "targetTree" );
-			_presetsList = new TreeList( "presetsList" );
+			_originList = new TreeList( TreeListType.ORIGIN_LIST );
+			_displayList = new TreeList( TreeListType.DISPLAY_LIST );
+			_presetsList = new TreeList( TreeListType.PRESET_LIST );
 
 			// Заголовки списков
 			_tfOrigin = new TextApp( LocaleString.TITLE_ORIGIN, TextFormats.LIST_HEADER ).init();
-			_tfTarget = new TextApp( LocaleString.TITLE_TARGET, TextFormats.LIST_HEADER ).init();
+			_tfTarget = new TextApp( LocaleString.TITLE_DISPLAY, TextFormats.LIST_HEADER ).init();
 			_tfPresets = new TextApp( LocaleString.TITLE_PRESETS, TextFormats.LIST_HEADER ).init();
 
 			// Список каталога сущностей
@@ -135,7 +135,7 @@ package display.components
 
 			if ( !item ) return;
 
-			_targetList.addItem( item );
+			_displayList.addItem( item );
 			_presetsList.removeItem( item.clone() );
 			updateReadyState();
 		}
@@ -270,13 +270,13 @@ package display.components
 
 		private function onClickOriginal( ev:MouseEvent ):void
 		{
-			var itemView:ItemTreeList = ev.target as ItemTreeList;
+			var itemView:ViewItemList = ev.target as ViewItemList;
 
 			if ( !itemView ) return;
 
 			var item:ItemOfList = ( itemView.customData as ItemOfList ).clone();
 
-			_targetList.addItem( item );
+			_displayList.addItem( item );
 			_originList.removeItem( item.clone() );
 
 			updateReadyState();
@@ -284,7 +284,7 @@ package display.components
 
 		private function onClickTarget( ev:MouseEvent ):void
 		{
-			var itemView:ItemTreeList = ev.target as ItemTreeList;
+			var itemView:ViewItemList = ev.target as ViewItemList;
 
 			if ( !itemView ) {
 				return;
@@ -301,20 +301,20 @@ package display.components
 				_originList.addItem( item );
 			}
 
-			_targetList.removeItem( item.clone() );
+			_displayList.removeItem( item.clone() );
 
 			updateReadyState();
 		}
 
 		private function onClickPreset( event:MouseEvent ):void
 		{
-			var itemView:ItemTreeList = event.target as ItemTreeList;
+			var itemView:ViewItemList = event.target as ViewItemList;
 
 			if ( !itemView ) return;
 
 			var item:ItemOfList = ( itemView.customData as ItemOfList ).clone();
 
-			_targetList.addItem( item );
+			_displayList.addItem( item );
 			_presetsList.removeItem( item.clone() );
 
 			updateReadyState();
@@ -331,7 +331,7 @@ package display.components
 			}
 
 			_originView.setupList( _originList );
-			_targetView.setupList( _targetList );
+			_targetView.setupList( _displayList );
 			_presetsView.setupList( _presetsList );
 
 			updateReadyState();
@@ -339,7 +339,7 @@ package display.components
 
 		private function updateReadyState():void
 		{
-			if ( _targetList.rootItem.countChildren ) {
+			if ( _displayList.rootItem.countChildren ) {
 				if ( !contains( _btnReady ) ) {
 					addChild( _btnReady );
 				}
@@ -352,7 +352,7 @@ package display.components
 
 		private function onReleaseReady():void
 		{
-			var arr:Array = _targetList.getFlatArrayData();
+			var arr:Array = _displayList.getFlatArrayData();
 
 			var listIDs:Vector.<String> = new Vector.<String>();
 

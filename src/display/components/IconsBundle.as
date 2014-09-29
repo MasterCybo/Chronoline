@@ -10,7 +10,6 @@ package display.components {
 
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.text.TextFormat;
 	import flash.utils.Timer;
 
 	import ru.arslanov.flash.display.ASprite;

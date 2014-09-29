@@ -6,14 +6,9 @@ package display.components
 	import collections.EntityManager;
 
 	import data.MoEntity;
-
 	import data.MoTimeline;
 
 	import events.TimelineEvent;
-
-	import flash.media.scanHardware;
-
-	import ru.arslanov.core.utils.Log;
 
 	import ru.arslanov.flash.display.ABitmap;
 	import ru.arslanov.flash.display.ASprite;
