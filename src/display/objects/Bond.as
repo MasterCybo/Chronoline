@@ -5,7 +5,7 @@ package display.objects {
 	import data.MoEntity;
 	import data.MoFact;
 
-	import display.base.AppTooltip;
+	import display.base.TooltipApp;
 
 	import flash.events.MouseEvent;
 
@@ -82,7 +82,7 @@ package display.objects {
 			title = StringUtils.substitute( title, ent1.title, ent2.title );
 			
 			
-			ATooltipManager.me.displayHint( AppTooltip, { text:ent1.beginPeriod + "\n" + title, width:200 } );
+			ATooltipManager.me.displayHint( TooltipApp, { text:ent1.beginPeriod + "\n" + title, width:200 } );
 		}
 		
 		private function hrMouseOut( ev:MouseEvent ):void {

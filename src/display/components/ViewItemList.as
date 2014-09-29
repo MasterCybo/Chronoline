@@ -1,6 +1,10 @@
 package display.components {
 	import collections.tree.ItemOfList;
 
+	import constants.LocaleString;
+
+	import display.base.ToggleApp;
+
 	import display.gui.buttons.BtnGroupItem;
 	import display.gui.buttons.BtnGroupRelocation;
 	import display.gui.buttons.BtnItemRelocation;
@@ -40,6 +44,8 @@ package display.components {
 				( _btnBody as BtnGroupItem ).checked = _item.checked;
 				
 				_btnRelocation = new BtnGroupRelocation().init();
+				( _btnRelocation as ToggleApp).textTootip = LocaleString.TOOLTIP_ADD_GROUP;
+				( _btnRelocation as ToggleApp).textTootipChecked = LocaleString.TOOLTIP_REMOVE_GROUP;
 				_btnRelocation.eventManager.addEventListener( MouseEvent.CLICK, onClickRelocation );
 				_btnRelocation.x = _btnBody.x + _btnBody.width - _btnRelocation.width;
 

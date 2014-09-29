@@ -38,6 +38,16 @@ package constants {
 		static public const NEXT:String = "Продолжить";
 		static public const TOOLTIP_MORE:String = "Подробнее...";
 		//} endregion
+
+		//{ region ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ КНОПОК
+		static public const TOOLTIP_SAVE_PRESET:String = "Сохранить текущий набор";
+		static public const TOOLTIP_SCREENSHOT:String = "Снимок экрана";
+		static public const TOOLTIP_LEGEND:String = "Обозначения";
+		static public const TOOLTIP_MARKER:String = "Указатель-помощник";
+		static public const TOOLTIP_ADD_GROUP:String = "Выбрать группу";
+		static public const TOOLTIP_REMOVE_GROUP:String = "Удалить группу";
+		static public const TOOLTIP_SIDEBAR:String = "Выбор сущностей";
+		//} endregion
 	}
 
 }

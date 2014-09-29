@@ -3,7 +3,7 @@ package controllers {
 
 	import data.MoTimeline;
 
-	import display.base.AppTooltip;
+	import display.base.TooltipApp;
 	import display.gui.EntityTooltip;
 	import display.objects.Entity;
 
