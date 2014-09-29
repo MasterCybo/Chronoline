@@ -83,7 +83,6 @@ package display.components
 			for ( var i:int = 0; i < len; i++ ) {
 				moEnt = entities[i];
 				picEnt = ABitmap.fromColor( Settings.MIN_MAP_COLOR_ENT, ww, Math.max( Settings.MIN_MAP_SIZE_ENTITY, kf * moEnt.duration ) ).init();
-//				picEnt = ABitmap.fromColor( 0x000000, MIN_WIDTH, kf * moEnt.duration ).init();
 				picEnt.x = GAP + (picEnt.width + GAP) * i;
 				picEnt.y = kf * (moEnt.beginPeriod.beginJD - MoTimeline.me.beginJD);
 				addChild( picEnt );
@@ -92,7 +91,7 @@ package display.components
 
 		private function drawBg():void
 		{
-			_bg = ABitmap.fromColor( 0xDDDDDD, _width, _height ).init();
+			_bg = ABitmap.fromColor( 0xc0c0c0, _width, _height ).init();
 			addChildAt( _bg, 0 );
 		}
 	}

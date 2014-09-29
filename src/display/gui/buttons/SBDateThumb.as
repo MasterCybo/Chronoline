@@ -25,14 +25,8 @@ package display.gui.buttons
 
 		override public function init():*
 		{
-//			super.skinUp = ABitmap.fromColor( 0xBFACACAC, _width, _height, true ).init();
-//			super.skinOver = ABitmap.fromColor( 0XBFBBBBBB, super.skinUp.width, super.skinUp.height, true ).init();
-
-//			super.skinUp = getBitmap( 0xACACAC ).init();
-//			super.skinOver = getBitmap( 0xBBBBBB ).init();
-
-			super.skinUp = new SBDateThumbSkin(_width, _height, 0xACACAC ).init();
-			super.skinOver = new SBDateThumbSkin(_width, _height, 0xBBBBBB ).init();
+			super.skinUp = new SBDateThumbSkin(_width, _height ).init();
+//			super.skinOver = new SBDateThumbSkin(_width, _height ).init();
 
 			return super.init();
 		}
