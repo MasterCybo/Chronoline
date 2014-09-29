@@ -78,7 +78,6 @@ package {
 			DateUtils.monthsLocale = LocaleString.MONTHS_GENITIVE;
 			
 			//AWindowsManager.me.init( this );
-			ATooltipManager.me.init( this, 15 );
 
 			// Скрываем ненужные сообщения
 			Notification.unlog( BondDisplayNotice.NAME );
@@ -97,13 +96,18 @@ package {
 			// Создаём цветовую палитру для сущностей
 			entityColorPalette = new EntityColorPalette();
 
+
+
 			// Инициализируем экраны
 			var sceneContainer:ASprite = new ASprite().init();
 			addChild( sceneContainer );
 			
 			SceneManager.me.init( sceneContainer );
 			SceneManager.me.addScene( ChronolinePage, ChronolinePage.SCENE_NAME );
-			
+
+			var tooltipsContainer:ASprite = new ASprite().init();
+			addChild( tooltipsContainer );
+			ATooltipManager.me.init( tooltipsContainer, 15 );
 
 			// Если проигрыватель дебажный, тогда отображаем статистику производительности
 			if ( Capabilities.isDebugger ) {

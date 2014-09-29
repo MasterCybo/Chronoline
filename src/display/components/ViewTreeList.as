@@ -5,7 +5,9 @@ package display.components
 
 	import com.adobe.utils.DictionaryUtil;
 
-	import display.gui.buttons.BtnPartItem;
+	import constants.TreeListType;
+
+	import display.gui.buttons.BtnGroupItem;
 	import display.skins.ScrollbarThumb;
 
 	import flash.events.MouseEvent;
@@ -30,8 +32,8 @@ package display.components
 		private var _vscroller:AVScroller;
 
 		private var _treeList:TreeList;
-		private var _poolViews:Dictionary /*ItemTreeList*/; // Пул кнопок, чтобы не создавать каждый раз новые. keyName = ItemTreeList
-		private var _displayItems:Dictionary /*ItemOfList*/; // ItemTreeList = ItemOfList
+		private var _poolViews:Dictionary /*ViewItemList*/; // Пул кнопок, чтобы не создавать каждый раз новые. keyName = ViewItemList
+		private var _displayItems:Dictionary /*ItemOfList*/; // ViewItemList = ItemOfList
 
 		public function ViewTreeList( width:uint, height:uint )
 		{
@@ -117,7 +119,7 @@ package display.components
 
 			//if ( !len ) return;
 
-			var view:ItemTreeList;
+			var view:ViewItemList;
 			var item:ItemOfList;
 			var i:uint;
 
@@ -161,7 +163,7 @@ package display.components
 		{
 			if ( !list.length ) return;
 
-			var view:ItemTreeList;
+			var view:ViewItemList;
 			var item:ItemOfList;
 
 			var len:uint = list.length;
@@ -185,22 +187,24 @@ package display.components
 		/***************************************************************************
 		 Получение вида элемента
 		 ***************************************************************************/
-		private function getViewItem( item:ItemOfList, level:uint = 0 ):ItemTreeList
+		private function getViewItem( item:ItemOfList, level:uint = 0 ):ViewItemList
 		{
 			if ( !item ) {
 				throw new ArgumentError( "item is null!" );
 			}
 
-			var iView:ItemTreeList = _poolViews[ item.keyName ];
+			var iView:ViewItemList = _poolViews[ item.keyName ];
 
 			if ( !iView ) { // если у элемента нет вида, то создаём вид и помещаем в пул
-				iView = new ItemTreeList( item, _width, level ).init();
+				iView = new ViewItemList( item, _width, level ).init();
 				iView.eventManager.addEventListener( MouseEvent.CLICK, onClickItem );
 				_poolViews[ item.keyName ] = iView;
 			}
 
 			iView.customData = item;
 			iView.width = _width - 2*PADDING;
+
+			iView.modeRemoval = _treeList.rootItem.keyName == TreeListType.DISPLAY_LIST;
 
 			return iView;
 		}
@@ -212,11 +216,11 @@ package display.components
 		{
 //			Log.traceText( "*execute* ViewTreeList.onClickItem" );
 
-			var btn:BtnPartItem = ev.target as BtnPartItem;
+			var btn:BtnGroupItem = ev.target as BtnGroupItem;
 
 			if ( !btn ) return;
 
-			var iView:ItemTreeList = ev.currentTarget as ItemTreeList;
+			var iView:ViewItemList = ev.currentTarget as ViewItemList;
 			var idx:int = _vbox.getChildIndex( iView );
 
 //			Log.traceText( "idx : " + idx );

@@ -12,6 +12,8 @@ package controllers
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
 	import ru.arslanov.flash.utils.Display;
 
@@ -131,10 +133,16 @@ package controllers
 
 		private function onStageUp( ev:MouseEvent ):void
 		{
+			Log.traceText( "*execute* FactTooltipController.onStageUp" );
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onStageMove );
-			
+
+			Log.traceText("_isMouseMove : " + _isMouseMove);
+
 			if ( !_isMouseMove ) {
 				var fact:Fact = ev.target.parent as Fact;
+
+				Log.traceText("fact : " + fact);
+				Log.traceText("_clickMoFact : " + _clickMoFact);
 				
 				if ( fact ) {
 					if ( _clickMoFact && ( fact.moFact != _clickMoFact ) ) {

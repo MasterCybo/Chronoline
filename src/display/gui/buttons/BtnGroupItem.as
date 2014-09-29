@@ -12,7 +12,7 @@ package display.gui.buttons {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class BtnPartItem extends ToggleApp {
+	public class BtnGroupItem extends ToggleApp {
 		static public const PADDING:uint = 0;
 		
 		private var _caption:String;
@@ -22,7 +22,7 @@ package display.gui.buttons {
 		private var _icoClosed:ABitmap;
 		private var _icoOpened:ABitmap;
 		
-		public function BtnPartItem( caption:String = "", width:uint = 150, height:uint = 20, align:String = "left" ) {
+		public function BtnGroupItem( caption:String = "", width:uint = 150, height:uint = 20, align:String = "left" ) {
 			_caption = caption;
 			_width = width;
 			_height = height;

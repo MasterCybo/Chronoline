@@ -9,7 +9,7 @@ package constants {
 		static public const SEARCH_HELP:String = "Поиск...";
 		static public const SELECTED_ITEMS:String = "Выбрано {0} из {1}";
 		static public const TITLE_ORIGIN:String = "Доступно:";
-		static public const TITLE_TARGET:String = "Выбрано:";
+		static public const TITLE_DISPLAY:String = "Выбрано:";
 		static public const TITLE_PRESETS:String = "Наборы:";
 		static public const DATE_FORMAT:String = "{0} {1} {2} г."; // 24 марта 2005 г.
 		static public const DATE_TEMPLATE_SHORT:String = "{2} {1} {0}"; // 24 марта 2005
@@ -37,6 +37,16 @@ package constants {
 		static public const HELPER:String = "Помощник";
 		static public const NEXT:String = "Продолжить";
 		static public const TOOLTIP_MORE:String = "Подробнее...";
+		//} endregion
+
+		//{ region ВСПЛЫВАЮЩИЕ ПОДСКАЗКИ КНОПОК
+		static public const TOOLTIP_SAVE_PRESET:String = "Сохранить текущий набор";
+		static public const TOOLTIP_SCREENSHOT:String = "Снимок экрана";
+		static public const TOOLTIP_LEGEND:String = "Обозначения";
+		static public const TOOLTIP_MARKER:String = "Указатель-помощник";
+		static public const TOOLTIP_ADD_GROUP:String = "Выбрать группу";
+		static public const TOOLTIP_REMOVE_GROUP:String = "Удалить группу";
+		static public const TOOLTIP_SIDEBAR:String = "Выбор сущностей";
 		//} endregion
 	}
 

@@ -2,6 +2,8 @@ package display.gui
 {
 	import collections.EntityManager;
 
+	import constants.LocaleString;
+
 	import data.MoTimeline;
 
 	import display.components.RangeEditor;
@@ -49,6 +51,11 @@ package display.gui
 			_btnSave = new BtnIcon( PngBtnSavePreset ).init();
 			var btnSnapshot:BtnIcon = new BtnIcon( PngBtnScreenshot ).init();
 			var btnLegend:ToggleIcon = new ToggleIcon( PngBtnLegendOff, null, PngBtnLegendOn ).init();
+
+			btnGuide.textTootip = LocaleString.TOOLTIP_MARKER;
+			_btnSave.textTootip = LocaleString.TOOLTIP_SAVE_PRESET;
+			btnSnapshot.textTootip = LocaleString.TOOLTIP_SCREENSHOT;
+			btnLegend.textTootip = LocaleString.TOOLTIP_LEGEND;
 
 			btnGuide.onRelease = onDisplayGuideLine;
 			_btnSave.onRelease = hrClickSave;

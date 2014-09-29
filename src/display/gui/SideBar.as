@@ -1,6 +1,8 @@
 package display.gui {
 	import com.greensock.TweenLite;
 
+	import constants.LocaleString;
+
 	import display.components.DisplayMenuSettings;
 	import display.gui.buttons.TogglerSidebar;
 
@@ -39,6 +41,7 @@ package display.gui {
 		
 		override public function init():* {
 			_btn = new TogglerSidebar().init();
+			_btn.textTootip = LocaleString.TOOLTIP_SIDEBAR;
 			_btn.x = -_btn.width;
 			_btn.onRelease = hrClickButton;
 			

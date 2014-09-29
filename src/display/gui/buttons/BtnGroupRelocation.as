@@ -4,12 +4,12 @@ package display.gui.buttons {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class BtnPartTransfer extends ToggleIcon {
+	public class BtnGroupRelocation extends ToggleIcon {
 		
-		public function BtnPartTransfer() {
+		public function BtnGroupRelocation() {
 			super( PngBtnPartAddNormal, PngBtnPartAddOver, PngBtnPartDelNormal, PngBtnPartDelOver );
 		}
-		
+
 	}
 
 }

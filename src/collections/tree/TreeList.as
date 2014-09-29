@@ -27,7 +27,7 @@ package collections.tree
 
 		public function set rootItem( value:ItemOfList ):void
 		{
-			trace( "*execute* TreeList.rootItem" );
+//			trace( "*execute* TreeList.rootItem" );
 			value.keyName = _root.keyName;
 			_root = value;
 			_root.isRootList = true;
