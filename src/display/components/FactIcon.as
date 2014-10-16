@@ -5,6 +5,7 @@ package display.components
 	import display.base.ExternalPicture;
 
 	import ru.arslanov.core.utils.Calc;
+	import ru.arslanov.core.utils.Log;
 
 	/**
 	 * ...
@@ -33,8 +34,8 @@ package display.components
 
 		private function onDrawComplete():void
 		{
-			var rankScale:Number = Settings.ICON_SIZE * _rank * 0.01;
-			super.setSize( rankScale, rankScale, false );
+			var size:Number = Settings.ICON_SIZE * _rank * 0.01;
+			super.setSize( size, size, false );
 
 			if ( _drawCompleteHandler == null ) {
 				return;

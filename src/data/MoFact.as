@@ -2,6 +2,7 @@ package data {
 	import flash.utils.getQualifiedClassName;
 
 	import ru.arslanov.core.utils.Calc;
+	import ru.arslanov.core.utils.Log;
 
 	/**
 	 * Событие, веха сущности Fact
@@ -10,14 +11,14 @@ package data {
 	public class MoFact extends ModelBase {
 		
 		public var period:MoPeriod;
-		public var rank:uint = 100;
+		public var rank:uint = 0;
 		public var categories:Vector.<MoPicture> = new Vector.<MoPicture>();
 		public var urlMore:String = "";
 		
-		public function MoFact( id:String, title:String, period:MoPeriod, rank:uint = 100 ) {
+		public function MoFact( id:String, title:String, period:MoPeriod, rank:uint = 0 ) {
 			this.period = period;
 			this.rank = rank;
-			
+
 			super( id, title );
 		}
 		
@@ -40,7 +41,7 @@ package data {
 			
 			// Тестовое увеличение продолжительности события
 			//newPeriod.dateEnd.setValue( newPeriod.dateEnd.getValue() + uint( Math.random() * 5 ) );
-			
+
 //			var moFact:MoFact = new MoFact( id, json.title, newPeriod ); // test
 			var moFact:MoFact = new MoFact( id, json.title, newPeriod, json.rank );
 			moFact.urlMore = json.link ? json.link : "";

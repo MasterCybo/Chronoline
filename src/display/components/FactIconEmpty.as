@@ -15,7 +15,7 @@ package display.components
 
 		public function FactIconEmpty( rank:uint = 0 )
 		{
-			_rank = Calc.constrain( Settings.MIN_RANK, rank, Settings.MAX_RANK );
+			_rank = Calc.constrain( Settings.MIN_RANK, 100 - rank, Settings.MAX_RANK );
 
 			super();
 		}
