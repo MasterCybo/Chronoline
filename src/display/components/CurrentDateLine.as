@@ -11,13 +11,13 @@ package display.components {
 	 * ...
 	 * @author Artem Arslanov
 	 */
-	public class DateLine extends ASprite {
-		private var _text:String = "";
+	public class CurrentDateLine extends ASprite {
+		private var _jd:Number = 0;
 		private var _width:uint = 100;
-		private var _height:uint = 1;
+		private var _template:String = "";
 
 		private var _label:TextApp;
-		private var _body:AShape;
+		private var _line:AShape;
 
 		private var _changeLine:Boolean = true;
 		private var _changeDate:Boolean = true;
@@ -25,10 +25,10 @@ package display.components {
 		private var _colorText:uint;
 		private var _colorBackground:Object;
 
-		public function DateLine( text:String, width:uint, height:uint, colorLine:uint = 0x0, colorText:uint = 0x0, colorBackground:Object = null ) {
-			_text = text;
+		public function CurrentDateLine( julianDate:Number, width:uint, template:String = null, colorLine:uint = 0x0, colorText:uint = 0x0, colorBackground:Object = null ) {
+			_jd = julianDate;
 			_width = width;
-			_height = height;
+			_template = template ? template : _template;
 			_colorLine = colorLine;
 			_colorText = colorText;
 			_colorBackground = colorBackground;
@@ -44,14 +44,27 @@ package display.components {
 			return this;
 		}
 
-		public function reinit( text:String, width:uint = 0 ):void
+		public function reinit( jd:Number, width:uint = 0, template:String = null ):void
 		{
-			_text = text;
+			_jd = jd;
 			_width = width > 0 ? width : _width;
+			_template = template ? template : _template;
 
 			_changeDate = true;
 			_changeLine = true;
 
+			draw();
+		}
+		
+		public function get jd():Number {
+			return _jd;
+		}
+		
+		public function set jd( value:Number ):void {
+			_jd = value;
+			
+			_changeDate = true;
+			
 			draw();
 		}
 		
@@ -68,17 +81,16 @@ package display.components {
 		}
 		
 		private function draw():void {
-			if ( !_body ) {
-				_body = new AShape().init();
-				addChild( _body );
+			if ( !_line ) {
+				_line = new AShape().init();
+				addChild( _line );
 			}
 			
 			if ( _changeLine ) {
-				_body.graphics.clear();
-				_body.graphics.beginFill( _colorLine );
-				_body.graphics.drawRect( 0,0,_width, _height - 1 );
-				_body.graphics.endFill();
-				
+				_line.graphics.clear();
+				_line.graphics.lineStyle( 1, _colorLine, 1 );
+				_line.graphics.lineTo( _width, 0 );
+
 				_changeLine = false;
 			}
 			
@@ -93,10 +105,9 @@ package display.components {
 			
 			if ( _changeDate ) {
 //				_label.text = JDUtils.getFormatString( _jd, LocaleString.DATE_YYYY_MONTH_DD );
-				_label.text = _text;//JDUtils.getFormatString( _jd, _template );
-//				_label.y = -_label.height;
-				_label.y = uint( (_body.height - _label.height) / 2 );
-
+				_label.text = JDUtils.getFormatString( _jd, _template );
+				_label.y = -_label.height;
+				
 				_changeDate = false;
 			}
 		}

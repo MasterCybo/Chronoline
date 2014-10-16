@@ -81,10 +81,11 @@ package display.gui {
 			var date:Object = JDUtils.JDToGregorian(apxBeginJD);
 			var step:Number = DateUtils.getDaysMonth(date.year, date.month);
 			var jdVis:Number = jdb;
-			var apxJDVis:Number = approxJD( jdVis );
+//			var apxJDVis:Number = approxJD( jdVis );
+			var apxJDVis:Number = jdVis;
 
 			var dateLine:ASprite;
-			var len:uint = numSteps + 1;
+			var len:uint = numSteps;// + 1;
 
 
 			switch ( true ) {
@@ -102,12 +103,20 @@ package display.gui {
 
 			killChildren();
 
+			trace("len : " + len);
+			trace("offsetBeginJD : " + offsetBeginJD );
+			trace("_stepJD : " + _stepJD );
+
 			for ( var i:int = 0; i <= len; i++ ) {
 //				Log.traceText( i + " - Draw : " + jdVis + " = " + JDUtils.getFormatString( jdVis ) + " => " + JDUtils.getFormatString( approxJD( jdVis ) ) );
 
-				dateLine = DateLineFactory.createDateMarker( approxJD( apxJDVis ), _width, _markerMode );
+				var visJD:Number = approxJD( apxJDVis );
+
+				var isFilled:Boolean = ( i % 2 ) == 0;
+
+				dateLine = DateLineFactory.createDateMarker( JDUtils.getFormatString( visJD, DateLineFactory.getDateTemplate( _markerMode ) ), _width, _stepJD * _scale, isFilled );
 				dateLine.y = Math.floor( (-offsetBeginJD + jdVis - jdb) * _scale );
-//				if( !contains( dateLine ) ){
+//				if ( !contains( dateLine ) ) {
 					addChild( dateLine );
 //				}
 

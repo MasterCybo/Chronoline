@@ -9,6 +9,8 @@ package display.gui
 
 	import data.MoTimeline;
 
+	import display.components.CurrentDateLine;
+
 	import display.components.DateLine;
 
 	import events.TimelineEvent;
@@ -30,7 +32,7 @@ package display.gui
 		private var _tooltipController:FactTooltipController;
 		private var _entRender:EntitiesRender;
 		private var _entCtrl:EntityController;
-		private var _curDateMarker:DateLine;
+		private var _curDateMarker:CurrentDateLine;
 		private var _factRender:EntityFactsRender;
 		private var _moTimeline:MoTimeline;
 
@@ -52,7 +54,7 @@ package display.gui
 
 			_gridScale = new GridScale( _width, _height ).init();
 			_container = new ASprite().init();
-			_curDateMarker = new DateLine(
+			_curDateMarker = new CurrentDateLine(
 					_moTimeline.baseJD,
 					Display.stageWidth,
 					LocaleString.DATE_YYYY_MONTH_DD,

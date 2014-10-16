@@ -20,13 +20,35 @@ package display
 		public static const MODE_MONTH:uint = 2;
 
 		private static var _pool:Array = [];
+
+		private static var _isFill:Boolean = true;
 		
-		static public function createDateMarker( jd:Number, width:uint, mode:uint = 0 ):ASprite
+		static public function createDateMarker( text:String, width:uint, height:uint, isFilled:Boolean = false ):ASprite
 		{
 //			var marker:DateLine = _pool.pop();
-			var template:String = LocaleString.DATE_YYYY_MONTH_DD;
+
 			
-			switch ( mode ) {
+//			if ( !marker ) {
+			var marker:DateLine = new DateLine( text, width, height, isFilled ? 0xF3F3F3 : Settings.DESK_CLR_BG, Settings.GRID_TEXT_COLOR ).init();
+//			} else {
+//				marker.reinit( jd, width, template );
+//			}
+
+			_isFill = !_isFill;
+			
+			return marker;
+		}
+
+		public static function removeDateMarker( dateMarker:DateLine ):void
+		{
+			_pool.push( dateMarker );
+		}
+
+		public static function getDateTemplate( markerMode:uint ):String
+		{
+			var template:String = LocaleString.DATE_YYYY_MONTH_DD;
+
+			switch ( markerMode ) {
 				case 1:
 					template = LocaleString.DATE_YYYY;
 					break;
@@ -36,19 +58,8 @@ package display
 				default:
 					template = LocaleString.DATE_YYYY_MONTH_DD;
 			}
-			
-//			if ( !marker ) {
-			var marker:DateLine = new DateLine( jd, width, template, Settings.GRID_TEXT_COLOR, Settings.GRID_LINE_COLOR ).init();
-//			} else {
-//				marker.reinit( jd, width, template );
-//			}
-			
-			return marker;
-		}
 
-		public static function removeDateMarker( dateMarker:DateLine ):void
-		{
-			_pool.push( dateMarker );
+			return template;
 		}
 	}
 }
