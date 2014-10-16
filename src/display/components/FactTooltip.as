@@ -26,11 +26,17 @@ package display.components
 
 		public var moFact:MoFact;
 
+		private var _body:ASprite = new ASprite();
+		private var _tfMore:TextApp = new TextApp("", TextFormats.TOOLTIP_MORE).init();
+
 		public function FactTooltip( moFact:MoFact )
 		{
 			this.moFact = moFact;
+			mouseChildren = true;
 			super();
 		}
+
+
 
 		override public function init():*
 		{
@@ -44,62 +50,68 @@ package display.components
 
 			var tail:AShape = new AShape();
 			tail.graphics.beginFill( 0x9b9c7f );
-			tail.graphics.moveTo( 0, 36 );
-			tail.graphics.lineTo( 61, 0 );
-			tail.graphics.lineTo( 61, 13 );
-			tail.graphics.lineTo( 0, 37 );
+			tail.graphics.moveTo( 0, 0 );
+			tail.graphics.lineTo( 61, 36 );
+			tail.graphics.lineTo( 61, 47 );
+			tail.graphics.lineTo( 0, 0 );
 			tail.graphics.endFill();
 			addChild( tail );
 
 
-			var body:ASprite = new ASprite();
-			// header
-			body.graphics.beginFill( 0xc5c6ac );
-			body.graphics.drawRect( 0, 0, DEF_WIDTH, DEF_DATE_HEIGHT );
-			body.graphics.endFill();
-			addChild( body );
+			addChild( _body );
 
 
 			tail.x = 0;
-			tail.y = -tail.height;
-			body.x = tail.x + tail.width;
-			body.y = tail.y - 33;
+			tail.y = 0;
+			_body.x = tail.x + tail.width;
+			_body.y = tail.y + int(Settings.ICON_SIZE / 2) + 2;
 
-			mouseChildren = true;
 
 			var tfDate:TextApp = new TextApp( dateText ? dateText : "not found", TextFormats.TOOLTIP_DATE ).init();
-			tfDate.x = body.x + 5;
-			tfDate.y = body.y + (DEF_DATE_HEIGHT - tfDate.height) / 2;
+			tfDate.x = _body.x + 5;
+			tfDate.y = _body.y + (DEF_DATE_HEIGHT - tfDate.height) / 2;
 			addChild( tfDate );
 
 			var tfTitle:TextApp = new TextApp( moFact.title, TextFormats.TOOLTIP_TITLE ).init();
-			tfTitle.setWidth( DEF_WIDTH - 10 );
+			tfTitle.setWidth( DEF_WIDTH );
+//			tfTitle.setWidth( DEF_WIDTH - 10 );
 			tfTitle.x = tfDate.x;
-			tfTitle.y = body.y + DEF_DATE_HEIGHT + 5;
+			tfTitle.y = _body.y + DEF_DATE_HEIGHT + 5;
+
+//			while ( (tfTitle.height > tfTitle.width) && (tfTitle.width < 2 * DEF_WIDTH) ) {
+			while ( ( tfTitle.width / tfTitle.height ) < 1.3 ) {
+				tfTitle.setWidth( tfTitle.width + 10 );
+//				trace( "tfTitle.width : " + tfTitle.width );
+			}
+
 			addChild(tfTitle);
 
+			var bodyWidth:uint = tfTitle.width + 10;
 			var bodyHeight:uint = tfTitle.height + 10;
 
 			if ( (moFact.urlMore != null) && (moFact.urlMore != "") ) {
-				var tfLinkMore:TextApp = new TextApp("", TextFormats.TOOLTIP_MORE).init();
-				tfLinkMore.htmlText = "<a href='" + moFact.urlMore + "' target='_blank'>" + LocaleString.TOOLTIP_MORE + "</a>";
-				tfLinkMore.x = tfTitle.x;
-				tfLinkMore.y = tfTitle.y + tfTitle.height + 5;
-				addChild( tfLinkMore );
+				_tfMore.htmlText = "<a href='" + moFact.urlMore + "' target='_blank'>" + LocaleString.TOOLTIP_MORE + "</a>";
+				_tfMore.x = tfTitle.x;
+				_tfMore.y = tfTitle.y + tfTitle.height + 5;
+				addChild( _tfMore );
 
-				bodyHeight += tfLinkMore.height + 5;
+				bodyHeight += _tfMore.height + 5;
 			}
 
+			// header
+			_body.graphics.beginFill( 0xc5c6ac );
+			_body.graphics.drawRect( 0, 0, bodyWidth, DEF_DATE_HEIGHT );
+			_body.graphics.endFill();
 
 			// text
-			body.graphics.beginFill( 0xf2f0d5 );
-			body.graphics.drawRect( 0, DEF_DATE_HEIGHT, DEF_WIDTH, bodyHeight/*DEF_BODY_HEIGHT*/ );
-			body.graphics.endFill();
+			_body.graphics.beginFill( 0xf2f0d5 );
+			_body.graphics.drawRect( 0, DEF_DATE_HEIGHT, bodyWidth, bodyHeight/*DEF_BODY_HEIGHT*/ );
+			_body.graphics.endFill();
 			// border
-			body.graphics.lineStyle( 1, 0x9b9c7f, 1, true );
-			body.graphics.drawRect( 0, 0, DEF_WIDTH, /*DEF_BODY_HEIGHT*/bodyHeight + DEF_DATE_HEIGHT );
+			_body.graphics.lineStyle( 1, 0x9b9c7f, 1, true );
+			_body.graphics.drawRect( 0, 0, bodyWidth, bodyHeight + DEF_DATE_HEIGHT );
 
-			body.filters = [ new DropShadowFilter( 0, 0, 0x0, 0.3, 7, 7 ) ];
+			_body.filters = [ new DropShadowFilter( 0, 0, 0x0, 0.3, 7, 7 ) ];
 
 
 			return this;

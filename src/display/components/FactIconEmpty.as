@@ -22,8 +22,6 @@ package display.components
 
 		override public function init():*
 		{
-//			scaleX = scaleY = _rank * 0.01;
-			
 			var bmp:ABitmap = ABitmap.fromColor( 0x80ff0000,
 												 Settings.ICON_SIZE * _rank * 0.01,
 												 Settings.ICON_SIZE * _rank * 0.01,

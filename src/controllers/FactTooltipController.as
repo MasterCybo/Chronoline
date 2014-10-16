@@ -133,16 +133,16 @@ package controllers
 
 		private function onStageUp( ev:MouseEvent ):void
 		{
-			Log.traceText( "*execute* FactTooltipController.onStageUp" );
+//			Log.traceText( "*execute* FactTooltipController.onStageUp" );
 			Display.stageRemoveEventListener( MouseEvent.MOUSE_MOVE, onStageMove );
 
-			Log.traceText("_isMouseMove : " + _isMouseMove);
+//			Log.traceText("_isMouseMove : " + _isMouseMove);
 
 			if ( !_isMouseMove ) {
 				var fact:Fact = ev.target.parent as Fact;
 
-				Log.traceText("fact : " + fact);
-				Log.traceText("_clickMoFact : " + _clickMoFact);
+//				Log.traceText("fact : " + fact);
+//				Log.traceText("_clickMoFact : " + _clickMoFact);
 				
 				if ( fact ) {
 					if ( _clickMoFact && ( fact.moFact != _clickMoFact ) ) {
