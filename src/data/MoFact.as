@@ -50,13 +50,10 @@ package data {
 //			moFact.rank = Calc.randomRange( 30, 100, true );
 			
 			var arrCategory:Array = json.category;
-			
+
 			var name:String;
 			for ( name in arrCategory ) {
-				var len:uint = arrCategory.length;
-				for ( var i:int = 0; i < len; i++ ) {
-					moFact.categories.push( MoPicture.fromJSON( arrCategory[ name ] ) );
-				}
+				moFact.categories.push( MoPicture.fromJSON( arrCategory[ name ] ) );
 			}
 			
 			return moFact;

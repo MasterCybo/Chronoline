@@ -12,6 +12,8 @@ package display.components {
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 
+	import ru.arslanov.core.utils.Log;
+
 	import ru.arslanov.flash.display.ASprite;
 
 	/**
@@ -68,7 +70,6 @@ package display.components {
 			}
 			
 			var icon:FactIcon;
-			
 			for ( var i:int = 0; i < len; i++ ) {
 				icon = new FactIcon( _listMoPics[ i ], _rank, onLoadComplete );
 				_listIcons.push( icon );
