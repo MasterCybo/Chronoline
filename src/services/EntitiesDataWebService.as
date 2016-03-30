@@ -33,55 +33,64 @@ package services {
 		static private var _offsetIdx:uint;
 
 		
-		static public function downloadDataEntities( listIDs:Vector.<String> ):void {
+		static public function downloadDataEntities(listIDs:Vector.<String>):void
+		{
+			Log.traceText("Load entities...");
+			Log.traceText(listIDs);
+
 			_offsetIdx = 0;
 			
 			BondsManager.clear();
 			
-			_downloadEntities = EntityManager.refineMissingEntities( listIDs );
+			_downloadEntities = EntityManager.refineMissingEntities(listIDs);
 			_downloadBonds = _downloadEntities.concat();
 
 			// Если список запрашиваемых ID пуст, то заканчиваем приём данных
-			if ( !_downloadEntities.length ) {
+			if (!_downloadEntities.length) {
 				completeDataEntities();
 			} else {
-				Notification.send( ProcessStartNotice.NAME );
+				Notification.send(ProcessStartNotice.NAME);
 				requestDataEntities();
 			}
 		}
 		
 		/***************************************************************************
-		Обработка СУЩНОСТЕЙ
-		***************************************************************************/
-		static private function requestDataEntities():void {
-			App.httpManager.addRequest( new ReqEntityData( _downloadEntities, _offsetIdx, OBJECTS_PER_REQUEST ), parseDataEntities, onError );
+		 Обработка СУЩНОСТЕЙ
+		 ***************************************************************************/
+		static private function requestDataEntities():void
+		{
+			App.httpManager.addRequest(
+					new ReqEntityData(_downloadEntities, _offsetIdx, OBJECTS_PER_REQUEST),
+					parseDataEntities,
+					onError);
 		}
 		
-		static private function onError():void {
-			Notification.send( SysMessageDisplayNotice.NAME, new SysMessageDisplayNotice( LocaleString.SERVER_ERROR_RESPONSE ) );
+		static private function onError():void
+		{
+			Notification.send(
+					SysMessageDisplayNotice.NAME,
+					new SysMessageDisplayNotice(LocaleString.SERVER_ERROR_RESPONSE));
 		}
 		
-		static private function parseDataEntities( req:ReqEntityData ):void {
-			var json:Object = JSON.parse( String( req.responseData ) );
+		static private function parseDataEntities(req:ReqEntityData):void
+		{
+			var json:Object = JSON.parse(String(req.responseData));
 			
-			//Log.traceText( "data : " + data );
-			
-			if ( json == null ) {
-				Log.traceError( "Not correct incoming responseData. JSON format error: " + req.responseData );
+			if (json == null) {
+				Log.traceError("Not correct incoming responseData. JSON format error: " + req.responseData);
 				return;
 			}
 
 			// Парсим сущности
 			var countFacts:uint = 0;
 			var name:String;
-			for ( name in json ) {
-				Log.traceText( "Parse Entity data ID = " + name );
-				countFacts += parseEntity( json[ name ] );
+			for (name in json) {
+				countFacts += parseEntity(json[name]);
 //				countFacts++;
 			}
-			
+
 			// Если количество обработанных данных
-			if ( countFacts < OBJECTS_PER_REQUEST ) {
+			if (countFacts < OBJECTS_PER_REQUEST) {
 				// ... меньше величины шага - переходим к связям
 				EntityManager.updateBounds();
 
@@ -94,21 +103,22 @@ package services {
 			}
 		}
 		
-		static private function parseEntity( entityData:Object ):uint {
+		static private function parseEntity(entityData:Object):uint
+		{
 			var numFacts:uint = 0;
 
-			var entNew:MoEntity = MoEntity.fromJSON( entityData );
+			var entNew:MoEntity = MoEntity.fromJSON(entityData);
 
-			if ( (entNew.id == null) || (entNew.title == null) ) {
-				Log.traceError( "Invalid Entity data : " + JSON.stringify(entityData) );
+			if ((entNew.id == null) || (entNew.title == null)) {
+				Log.traceError("Invalid Entity data : " + JSON.stringify(entityData));
 				return 0;
 			}
 
-			var entExisting:MoEntity = EntityManager.getItem( entNew.id );
+			var entExisting:MoEntity = EntityManager.getItem(entNew.id);
 			
-			if ( !entExisting ) {
+			if (!entExisting) {
 				//Log.traceText( "Add new Entity : " + entNew );
-				EntityManager.addItem( entNew );
+				EntityManager.addItem(entNew);
 				entNew.sortFacts();
 				numFacts += entNew.facts.length;
 			} else {
@@ -116,7 +126,7 @@ package services {
 				var listMStones:Vector.<MoFact> = entNew.facts;
 				var mstone:MoFact;
 				for each (mstone in listMStones) {
-					entExisting.addFact( mstone );
+					entExisting.addFact(mstone);
 					numFacts++;
 				}
 				
@@ -127,23 +137,29 @@ package services {
 
 			return numFacts;
 		}
+
 		//} endregion
 
 		/***************************************************************************
-		Обработка СВЯЗЕЙ
-		***************************************************************************/
-		static private function requestDataBonds():void {
-			App.httpManager.addRequest( new ReqBindingsData( _downloadBonds, _offsetIdx, OBJECTS_PER_REQUEST ), parseDataBonds, onError );
+		 Обработка СВЯЗЕЙ
+		 ***************************************************************************/
+		static private function requestDataBonds():void
+		{
+			App.httpManager.addRequest(
+					new ReqBindingsData(_downloadBonds, _offsetIdx, OBJECTS_PER_REQUEST),
+					parseDataBonds,
+					onError);
 		}
 		
-		static private function parseDataBonds( req:ReqBindingsData ):void {
+		static private function parseDataBonds(req:ReqBindingsData):void
+		{
 			//Log.traceText( "*execute* EntitiesDataWebService.parseDataBonds" );
-			var json:Object = JSON.parse( String( req.responseData ) );
+			var json:Object = JSON.parse(String(req.responseData));
 			
 			//Log.traceText( "data : " + data );
 			
-			if ( json == null ) {
-				Log.traceError( "Not correct incoming responseData. JSON format error: " + req.responseData );
+			if (json == null) {
+				Log.traceError("Not correct incoming responseData. JSON format error: " + req.responseData);
 				return;
 			}
 			
@@ -154,20 +170,20 @@ package services {
 			for (name in json) {
 				bondData = json[name];
 				
-				moBond = MoBond.fromJSON( bondData );
+				moBond = MoBond.fromJSON(bondData);
 				
-				BondsManager.addItem( moBond );
+				BondsManager.addItem(moBond);
 				
 				numAdded++;
 			}
 			
-			Log.traceText( "Bonds added : " + numAdded );
+			Log.traceText("Bonds added : " + numAdded);
 			
 			//Notification.send( ProcessUpdateNotice.NAME, new ProcessUpdateNotice( 1 - _listEntityData.length / _total, 1 ) );
 			
-			if ( numAdded < OBJECTS_PER_REQUEST ) {
+			if (numAdded < OBJECTS_PER_REQUEST) {
 				// Все данные от сервера получили - отправляем событие
-				Notification.send( ProcessFinishNotice.NAME );
+				Notification.send(ProcessFinishNotice.NAME);
 				completeDataEntities();
 			} else {
 				_offsetIdx += OBJECTS_PER_REQUEST;// Увеличиваем смещение
@@ -175,16 +191,18 @@ package services {
 			}
 		}
 
-		static private function completeDataEntities():void {
-			Notification.send( ServerDataCompleteNotice.NAME );
+		static private function completeDataEntities():void
+		{
+			Notification.send(ServerDataCompleteNotice.NAME);
 		}
 		
-		static private function traceObject( obj:Object, level:uint = 0 ):void {
-			var ind:String = StringUtils.repeat( "\t", level );
+		static private function traceObject(obj:Object, level:uint = 0):void
+		{
+			var ind:String = StringUtils.repeat("\t", level);
 			
 			for (var name:String in obj) {
-				Log.traceText( ind + name + " : " + obj[name] );
-				traceObject( obj[name], level + 1 );
+				Log.traceText(ind + name + " : " + obj[name]);
+				traceObject(obj[name], level + 1);
 			}
 		}
 	}

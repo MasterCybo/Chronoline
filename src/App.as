@@ -1,13 +1,6 @@
 package {
-	import ru.arslanov.core.utils.DateUtils;
-
-	import utils.EntityColorPalette;
-
 	import constants.LocaleString;
 	import constants.TextFormats;
-
-	import services.EntitiesDataWebService;
-	import services.PresetsWebService;
 
 	import data.MoPreset;
 
@@ -32,7 +25,7 @@ package {
 	import ru.arslanov.core.events.Notification;
 	import ru.arslanov.core.external.FlashVars;
 	import ru.arslanov.core.http.HTTPManager;
-	import ru.arslanov.core.utils.JDUtils;
+	import ru.arslanov.core.utils.DateUtils;
 	import ru.arslanov.core.utils.Log;
 	import ru.arslanov.core.utils.Stats;
 	import ru.arslanov.flash.display.ASprite;
@@ -41,6 +34,11 @@ package {
 	import ru.arslanov.flash.text.ATextField;
 	import ru.arslanov.flash.utils.Display;
 	import ru.arslanov.flash.utils.Logger;
+
+	import services.EntitiesDataWebService;
+	import services.PresetsWebService;
+
+	import utils.EntityColorPalette;
 
 	/**
 	 * ...
@@ -57,21 +55,23 @@ package {
 		private var _messFullScreen:ASprite;
 		private var _onCloseMessage:Function;
 		
-		public function App() {
+		public function App()
+		{
 			super();
 		}
 		
-		override public function init():* {
-			FlashVars.init( stage );
-			Display.init( stage, root );
+		override public function init():*
+		{
+			FlashVars.init(stage);
+			Display.init(stage, root);
 			
-			EventManager.tracer( null );
+			EventManager.tracer(null);
 			
 			ATextField.textFormatDefault = TextFormats.DEFAULT;
 			//ATextField.defaultEmbedFonts = true;
 			//ATextField.defaultBorder = true;
 			
-			Logger.init( this, "right" );
+			Logger.init(this, "right");
 			Log.customTracer = Logger.traceMessage;
 
 			// Устанавливаем локализацию месяцев
@@ -80,59 +80,58 @@ package {
 			//AWindowsManager.me.init( this );
 
 			// Скрываем ненужные сообщения
-			Notification.unlog( BondDisplayNotice.NAME );
-			Notification.unlog( BondRemoveNotice.NAME );
-			Notification.unlog( GetPositionNotice.NAME );
+			Notification.unlog(BondDisplayNotice.NAME);
+			Notification.unlog(BondRemoveNotice.NAME);
+			Notification.unlog(GetPositionNotice.NAME);
 
 
 			// Определяем адрес приложения и инициализирем HTTPManager
 			var url:String = Display.root.loaderInfo.url;
-			url = url != "" ? url.substring( 0, url.lastIndexOf( "/" ) + 1 ) : "";
+			url = url != "" ? url.substring(0, url.lastIndexOf("/") + 1) : "";
 
 			// Создаём HTTP-сервис
-			httpManager = new HTTPManager( url );
-			presetsService = new PresetsWebService( httpManager );
+			httpManager = new HTTPManager(url);
+			presetsService = new PresetsWebService(httpManager);
 
 			// Создаём цветовую палитру для сущностей
 			entityColorPalette = new EntityColorPalette();
 
 
-
 			// Инициализируем экраны
 			var sceneContainer:ASprite = new ASprite().init();
-			addChild( sceneContainer );
+			addChild(sceneContainer);
 			
-			SceneManager.me.init( sceneContainer );
-			SceneManager.me.addScene( ChronolinePage, ChronolinePage.SCENE_NAME );
+			SceneManager.me.init(sceneContainer);
+			SceneManager.me.addScene(ChronolinePage, ChronolinePage.SCENE_NAME);
 
 			var tooltipsContainer:ASprite = new ASprite().init();
-			addChild( tooltipsContainer );
-			ATooltipManager.me.init( tooltipsContainer, 15 );
+			addChild(tooltipsContainer);
+			ATooltipManager.me.init(tooltipsContainer, 15);
 
 			// Если проигрыватель дебажный, тогда отображаем статистику производительности
-			if ( Capabilities.isDebugger ) {
+			if (Capabilities.isDebugger) {
 				_stats = new Stats();
-				addChild( _stats );
+				addChild(_stats);
 			}
 
 			// Отображаем текущую версию сборки
-			_tfVersion = new TextApp( "v." + Version.major + "." + Version.minor + "." + Version.build + " - " + Version.timestamp, TextFormats.VERSION ).init();
+			_tfVersion = new TextApp("v." + Version.major + "." + Version.minor + "." + Version.build + " - " + Version.timestamp, TextFormats.VERSION).init();
 			_tfVersion.mouseEnabled = false;
-			addChild( _tfVersion );
+			addChild(_tfVersion);
 			
 			hrResizeStage();
 			
-			SceneManager.me.displayScene( ChronolinePage.SCENE_NAME );
+			SceneManager.me.displayScene(ChronolinePage.SCENE_NAME);
 			
-			Notification.add( ProcessStartNotice.NAME, onShowProcess );
-			Notification.add( ProcessFinishNotice.NAME, onHideProcess );
-			Notification.add( SysMessageDisplayNotice.NAME, onSystemMessage );
+			Notification.add(ProcessStartNotice.NAME, onShowProcess);
+			Notification.add(ProcessFinishNotice.NAME, onHideProcess);
+			Notification.add(SysMessageDisplayNotice.NAME, onSystemMessage);
 			
-			Display.stageAddEventListener( Event.RESIZE, hrResizeStage );
+			Display.stageAddEventListener(Event.RESIZE, hrResizeStage);
 
 
 			// Загружаем список пресетов. Делаем это, перед тем как определить автозагрузку дефолтного пресета
-			presetsService.eventManager.addEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
+			presetsService.eventManager.addEventListener(PresetsListEvent.COMPLETE, onPresetsListComplete);
 			presetsService.getList();
 
 			return super.init();
@@ -142,73 +141,79 @@ package {
 		 * Определяем и загружаем пресет по ID, переданному из HTML.
 		 * @param event
 		 */
-		private function onPresetsListComplete( event:PresetsListEvent ):void
+		private function onPresetsListComplete(event:PresetsListEvent):void
 		{
-			presetsService.eventManager.removeEventListener( PresetsListEvent.COMPLETE, onPresetsListComplete );
-
+			presetsService.eventManager.removeEventListener(PresetsListEvent.COMPLETE, onPresetsListComplete);
+			
 			// Определяем, какой пресет загружать при инициализации приложения
-			var autoLoadPresetID:String = FlashVars.getString( "presetID", "" );
+			var autoLoadPresetID:String = FlashVars.getString("presetID", "");
+			
+			Log.traceText("FlashVars PresetID : " + autoLoadPresetID);
+			
+			if (autoLoadPresetID != "") {
+				var preset:MoPreset = presetsService.getPreset(autoLoadPresetID);
+				if (!preset) return;
 
-			if ( autoLoadPresetID != "" ) {
-				var preset:MoPreset = presetsService.getPreset( autoLoadPresetID );
-
-				if( !preset ) return;
-
-				Notification.send( SelectPresetNotice.NAME, new SelectPresetNotice( preset.id ) );
-
-				EntitiesDataWebService.downloadDataEntities( Vector.<String>( preset.listIDs ) );
+				Notification.send(SelectPresetNotice.NAME, new SelectPresetNotice(preset.id));
+				EntitiesDataWebService.downloadDataEntities(Vector.<String>(preset.listIDs));
 			}
 		}
 		
-		private function onSystemMessage( notice:SysMessageDisplayNotice ):void {
+		private function onSystemMessage(notice:SysMessageDisplayNotice):void
+		{
 			_onCloseMessage = notice.handlerAfterClose;
-			displayFullScreenMessage( new MessageFullScreen( Display.stageWidth, Display.stageHeight, notice.message, removeFullScreenMessage ).init() );
+			displayFullScreenMessage(new MessageFullScreen(Display.stageWidth, Display.stageHeight, notice.message, removeFullScreenMessage).init());
 		}
 		
-		private function onShowProcess():void {
-			displayFullScreenMessage( new LockScreenProcess( Display.stageWidth, Display.stageHeight ).init() );
+		private function onShowProcess():void
+		{
+			displayFullScreenMessage(new LockScreenProcess(Display.stageWidth, Display.stageHeight).init());
 		}
 		
-		private function onHideProcess():void {
+		private function onHideProcess():void
+		{
 			removeFullScreenMessage();
 		}
 		
-		private function displayFullScreenMessage( displayObject:ASprite ):void {
+		private function displayFullScreenMessage(displayObject:ASprite):void
+		{
 			removeFullScreenMessage();
 			
 			_messFullScreen = displayObject;
 			
-			addChild( _messFullScreen );
+			addChild(_messFullScreen);
 		}
 		
-		private function removeFullScreenMessage():void {
-			if ( !_messFullScreen ) return;
+		private function removeFullScreenMessage():void
+		{
+			if (!_messFullScreen) return;
 			
 			_messFullScreen.kill();
 			_messFullScreen = null;
 			
-			if ( _onCloseMessage != null ) {
+			if (_onCloseMessage != null) {
 				var fn:Function = _onCloseMessage;
 				_onCloseMessage = null;
 				fn();
 			}
 		}
 		
-		private function hrResizeStage( ev:Event = null ):void {
-			if ( _stats ) {
+		private function hrResizeStage(ev:Event = null):void
+		{
+			if (_stats) {
 				_stats.x = Display.stageWidth - _stats.width - Settings.NAVBAR_WIDTH;
 				_stats.y = Display.stageHeight - _stats.height;
 			}
 			
-			if ( _messFullScreen ) {
+			if (_messFullScreen) {
 				_messFullScreen.width = Display.stageWidth;
 				_messFullScreen.height = Display.stageHeight;
 			}
 			
-			_tfVersion.x = int(( Display.stageWidth - _tfVersion.width ) / 2 );
+			_tfVersion.x = int(( Display.stageWidth - _tfVersion.width ) / 2);
 			_tfVersion.y = Display.stageHeight - _tfVersion.height;
 		}
-	
+
 	}
 
 }
